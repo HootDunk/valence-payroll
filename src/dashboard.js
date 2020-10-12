@@ -6,16 +6,30 @@ const path = require('path');
 // const remote = require('electron').remote; // the remote module
 // const { BrowserWindow } = remote;
 
-const submitBtn = document.getElementById("submit");
+let activeJobs = [];
 
-submitBtn.addEventListener('click', () => {
-    console.log("You clicked me")
-    // add conditional logic to load different windows for if it's an admin or moe (admin page could be idential to the
-    // the page that allows moe to see active jobs except admin page wont have a button to access the dashboard)
-    const mainWindow = remote.getCurrentWindow(); //remote module
-    mainWindow.loadFile(path.join(__dirname, 'dashboard.html'));
-})
+const addJob = (ev) =>{
+    ev.preventDefault(); // to stop the form submitting
+    // let job = {
+    //     id: Date.now(),
+    //     driver: document.getElementById('driver').value,
+    //     client: document.getElementById('client').value,
+    //     origin: document.getElementById('origin').value,
+    //     destination: document.getElementById('destination').value,
+    //     routeLength: document.getElementById('routeLength').value,
+    //     deadline: document.getElementById('deadline').value,
+    // }
+    activeJobs.push(job);
+    document.querySelector('form').reset();
+    console.log('added', {moives});
+    let pre = document.querySelector("#msg pre");
+    pre.textContent = '\n' + JSON.stringify(movies, '\t', 2);
+}
 
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    document.getElementById('submitBtn').addEventListener('click', addJob);
+});
 
 
 //Currently not being used or needed
