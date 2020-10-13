@@ -1,15 +1,50 @@
-// const { app, BrowserWindow } = require('electron');
-// const path = require('path');
 
 const { remote } = require('electron');
 const path = require('path');
-// const remote = require('electron').remote; // the remote module
-// const { BrowserWindow } = remote;
 
+// function Job(driver, client, origin, destination, routeLength, deadline){
+//     this.id = Date.now(),
+//     this.driver = driver;
+//     this.client = client;
+//     this.origin = origin;
+//     this.destination = destination;
+//     this.routLength = routeLength;
+//     this.deadline = deadline;
+// }
+
+
+// class Job {
+//     contructor(driver, client, origin, destination, routeLength, deadline){
+//         this.id = Date.now(),
+//         this.driver = driver;
+//         this.client = client;
+//         this.origin = origin;
+//         this.destination = destination;
+//         this.routLength = routeLength;
+//         this.deadline = deadline;
+//     }
+// }
 let activeJobs = [];
+
+// Figure out a different counter approach. (one that isn't global)
+
+let count = 0;
+const activeJob = (driver, client, origin, destination, routeLength, deadline) =>{
+
+    const counter = () =>{
+        count++;
+        return count;
+    }
+    
+    const id = counter();
+
+    return{id, driver, client, origin, destination, routeLength, deadline}
+};
+
 
 const addJob = (ev) =>{
     ev.preventDefault(); // to stop the form submitting
+    // Convert to use the active job factory function
     let job = {
         id: Date.now(),
         driver: document.getElementById('driver').value,
@@ -19,16 +54,16 @@ const addJob = (ev) =>{
         routeLength: document.getElementById('routeLength').value,
         deadline: document.getElementById('deadline').value,
     }
+
+
     activeJobs.push(job);
     document.querySelector('form').reset();
-    console.log('added', {activeJobs});
-
     createRow(job);
 
 }
 
 const createRow = (job) => {
-    let table = document.getElementById('activeJobsTable');
+    let table = document.getElementById('tableBody');
     let row = table.insertRow(-1); //Inserts row to last position in table
     // Give the row an ID that corresponds to the job id
     row.id = job.id;
@@ -54,23 +89,110 @@ const createRow = (job) => {
     successButton.innerHTML = "Submit";
     cell7.appendChild(successButton);
     row.append(cell7);
-
+    successButton.addEventListener('click', () => {
+        // this will be where we submit the data to the database
+        console.log(job.id)
+        retrieveObject(job.id)
+        // let pre = document.querySelector('#msg pre');
+        //     pre.textContent = '\n' + JSON.stringify(activeJobs, '\t', 2);
+        
+    })
     // Create another cell and add delete button to it
     let cell8 = document.createElement("td");
-    let button = document.createElement("BUTTON");
-    button.className = "btn btn-outline-danger";
-    button.innerHTML = "Delete";
-    cell8.appendChild(button);
+    let deleteButton = document.createElement("BUTTON");
+    deleteButton.className = "btn btn-outline-danger";
+    deleteButton.innerHTML = "Delete";
+    cell8.appendChild(deleteButton);
     row.append(cell8);
-    
-
-    // tableButton.addEventListener('click', (row) => {
-    //     row.remove();
-    // });
-
+    deleteButton.addEventListener('click', () => {
+        row.remove();
+        // Need to add logic to remove from the database and 
+        // the client side javascript object
+    })
 }
-
 
 document.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('submitBtn').addEventListener('click', addJob);
 });
+
+
+
+// Some test values
+
+let existingJob = activeJob(
+    "Clint Eastwood", "Crown Windows", "17371 N Outer 40 Rd, Chesterfield, MO 63005",
+    "400 S State St", 1432, "10/16/20");
+createRow(existingJob);
+activeJobs.push(existingJob);
+
+existingJob = activeJob(
+    "Scotty Upshall", "St. Louis Blues", "700 Clark Ave",
+    "400 S State St", 210, "10/16/20");
+createRow(existingJob);
+activeJobs.push(existingJob);
+
+existingJob = activeJob(
+    "Alex Clark", "Private Homeowner", "700 Clark Ave",
+    "400 S State St", 1303, "10/17/20");
+createRow(existingJob);
+activeJobs.push(existingJob);
+
+existingJob = activeJob(
+    "Trey Canard", "Sample Business", "700 Clark Ave",
+    "400 S State St", 1303, "10/17/20");
+createRow(existingJob);
+activeJobs.push(existingJob);
+
+existingJob = activeJob(
+    "Ryan Villopoto", "Sample Business", "700 Clark Ave",
+    "400 S State St", 1303, "10/17/20");
+createRow(existingJob);
+activeJobs.push(existingJob);
+
+existingJob = activeJob(
+    "James Stewart", "Sample Business", "700 Clark Ave",
+    "400 S State St", 1303, "10/17/20");
+createRow(existingJob);
+activeJobs.push(existingJob);
+
+
+
+//The function to sort the names alphabetically and store them in a list called names
+const sortNames = (activeJobs) => {
+    let names = [];
+    activeJobs.forEach(job => {
+        names.push(job.driver);
+    })
+    console.log(names)
+    names.sort()
+    return names;
+}
+
+let names = sortNames(activeJobs);
+console.log(names);
+//The function to add the names to the drop down
+// let names = ["Ryan Villopoto", "Scotty Upshall", "Clint Eastwood", "Chad Reed",
+// "James Stewart", "Trey Canard"];
+
+const populateDropdown = (names) =>{
+    const dropdown = document.getElementById('driver');
+    names.forEach(name => {
+        let nameOption = document.createElement("option")
+        nameOption.innerHTML = name;
+        dropdown.appendChild(nameOption);
+    })
+}
+
+populateDropdown(names);
+
+
+//Function to return matching object (to demonstrate submit)
+const retrieveObject = (id) => {
+    activeJobs.forEach(job => {
+        if(job.id === id){
+            let pre = document.querySelector('#msg pre');
+            pre.textContent = '\n' + JSON.stringify(job, '\t', 2);
+
+        }
+    })
+}
