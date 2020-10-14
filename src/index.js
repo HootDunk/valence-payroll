@@ -15,10 +15,13 @@ const createWindow = () => {
       nodeIntegration: true,
       enableRemoteModule: true
     },
-    //Hides the frame on startup.  Enable later. 
+    //Hides the frame on startup. May or may not enable.  setMenu() function seems better. 
     // frame: false,
     show: false,
   });
+
+  // Hides the default menu panel that appears
+  mainWindow.setMenu(null);
 
 
 
@@ -34,7 +37,7 @@ const createWindow = () => {
   //   mainWindow = null
   // });
 
-  // Open the DevTools.
+  // Open the DevTools on startup.  be sure to remove before packaging .exe
   mainWindow.webContents.openDevTools();
 
 
