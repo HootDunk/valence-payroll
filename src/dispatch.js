@@ -1,4 +1,8 @@
 
+
+
+
+
 const { remote } = require('electron');
 const path = require('path');
 
@@ -208,3 +212,9 @@ const retrieveObject = (id) => {
 // Prints entire json object, kinda handy, saving for later
 // let pre = document.querySelector('#msg pre');
 //     pre.textContent = '\n' + JSON.stringify(activeJobs, '\t', 2);
+
+
+
+
+
+
