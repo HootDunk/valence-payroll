@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-    <link rel="stylesheet" href="dispatch.css">
+    <link rel="stylesheet" href="payperiod.css">
 
   </head>
   
@@ -30,186 +30,178 @@
             </div>
           </nav>
     </header>
-    <div class="container-fluid">
-      <h1>Salaried Driver</h1>
+    <div class="container">
+      <form>
+        <div class="form-group">
+          <label for="exampleFormControlSelect2">Select Driver</label>
+          <select multiple class="form-control" id="driver">
+  
+          </select>
+        </div>
+      </form>
     </div>
 
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-3">
-          <table class="table table-bordered table-sm">
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Reimbursments</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Toll</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colspan="2">Scale</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colspan="2">Extras</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td class="text-info" colspan="2"><b>Total</b></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
 
-          <table class="table table-bordered table-sm">
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Deductions</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Insurance</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colspan="2">Accidental</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td  colspan="2">Cash Advance</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colspan="2">Escrow</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td  colspan="2">Reserve</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td class="text-info" colspan="2"><b>Total</b></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col col-lg-9">
-          <table class="table table-hover table-bordered table-sm">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col">Pickup</th>
-                <th scope="col">Delivery</th>
-                <th scope="col">With Empty Miles</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>sample value</td>
-                <td>sample value</td>
-                <td>sample value</td>
-              </tr>
-              <tr>
-                <td>sample value</td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>sample value</td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-            <table class="table table-sm table-bordered">
+
+    <div class="salaried-div">
+      <div class="container">
+        <h1 class="text-center">Salary Driver</h1>
+        <ul class="font-weight-bold driverInfo">
+          <li>Name:</li>
+          <li>Address:</li>
+          <li>Week:</li>
+        </ul>
+      </div>
+  
+      <div id="salaried-driver-container" class="container">
+        <div class="row">
+          <div class="col-lg-3">
+            <table class="table table-bordered table-sm">
               <thead class="thead-light">
                 <tr>
-                  <th scope="col">Total Miles</th>
-                  <th scope="col">Pay</th>
-                  <th scope="col">Total</th>
+                  <th class="text-info" scope="col" colspan="2">Reimbursments</th>
+                  <th scope="col">Amount</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>0.00</td>
-                  <td>$0.50</td>
-                  <td>$0.00</td>
+                  <td colspan="2">Toll</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Scale</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Extras</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td class="text-info" colspan="2"><b>Total</b></td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
-          </table>
-          <table class="table table-sm table-bordered">
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">YTD Miles</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Miles</td>
-                <td>48</td>
-              </tr>
-            </tbody>
-          </table>
+  
+            <table class="table table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Deductions</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Insurance</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Accidental</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td  colspan="2">Cash Advance</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Escrow</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td  colspan="2">Reserve</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td class="text-info" colspan="2"><b>Total</b></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col col-lg-9">
+            <table class="table table-hover table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Pickup</th>
+                  <th scope="col">Delivery</th>
+                  <th scope="col">With Empty Miles</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>sample value</td>
+                  <td>sample value</td>
+                  <td>sample value</td>
+                </tr>
+                <tr>
+                  <td>sample value</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>sample value</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+              <table class="table table-sm table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Total Miles</th>
+                    <th scope="col">Pay</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>0.00</td>
+                    <td>$0.50</td>
+                    <td>$0.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </table>
+            <table class="table table-sm table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">YTD Miles</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Miles</td>
+                  <td>48</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
+    </div>
 
-    </div>
-    <div class="container-fluid">
-      <h1>Owner Operator</h1>
-    </div>
-    <div class="container">
-      <!-- this div needs a class-->
-      <div>
-        <h4 class="text-info">Load Summary</h4>
-        <table class="table table-hover table-bordered table-sm">
-          <thead class="thead-light">
-            <tr>
-              <th>Load</th>
-              <th>Rate</th>
-              <th scope="col">90%</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Crown Windows Chesterfield 10/20/20</td>
-              <td>sample value</td>
-              <td>sample value</td>
-              <td>sample value</td>
-            </tr>
-            <tr>
-              <td>Crown Windows Chesterfield 10/20/20</td>
-              <td>sample value</td>
-              <td>sample value</td>
-              <td>sample value</td>
-            </tr>
-            <tr>
-              <td class="text-info"><b>Total</b></td>
-              <td>$0.00</td>
-              <td>$0.00</td>
-              <td>$0.00</td>
-            </tr>
-          </tbody>
-        </table>
+<!-- START OF OWNER OPERATOR -->
+
+    <div class="ownerOp-div">
+      <div class="container">
+        <h1 class="text-center">Owner Operator</h1>
+        <ul class="font-weight-bold driverInfo">
+          <li>Name:</li>
+          <li>Address:</li>
+          <li>Week:</li>
+        </ul>
       </div>
-      
-      <div class="row">
-
-        <div class="col-lg-8">
-          <h4 class="text-info">Fuel Summary</h4>
+      <div class="container">
+        <!-- this div needs a class-->
+        <div>
+          <h4 class="text-info">Load Summary</h4>
           <table class="table table-hover table-bordered table-sm">
             <thead class="thead-light">
               <tr>
-                <th>City + State</th>
-                <th>Gallons</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Savings</th>
+                <th>Load</th>
+                <th>Rate</th>
+                <th scope="col">90%</th>
+                <th scope="col">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -233,221 +225,253 @@
               </tr>
             </tbody>
           </table>
-          <div class = "row">
-            
-            <div class="col-lg-6">
-              <table class="table table-bordered table-sm">
-                <thead class="thead-light">
-                  <tr>
-                    <th class="text-info" scope="col">Week Fuel</th>
-                    <th scope="col">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Spent</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Gallons</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Fee</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="col-lg-6">
-              <table class="table table-bordered table-sm">
-                <thead class="thead-light">
-                  <tr>
-                    <th class="text-info" scope="col">YTD Fuel</th>
-                    <th scope="col">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td >YTD Spent</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>YTD Gallons</td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>YTD Fee</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <h4 class="text-info">Earnings Report</h4>
-          <div class = "row">
-            <div class="col-lg-6">
-              <table class="table table-bordered table-sm">
-                <thead class="thead-light">
-                  <tr>
-                    <th class="text-info" scope="col">Week Earnings</th>
-                    <th scope="col">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td >Flat Rate Total</td>
-                    <td></td>
-                  </tr>
-                    <td >Gross Pay</td>
-                    <td></td>
-                  </tr>
-                </tr>
-                  <td >Net Pay</td>
-                  <td></td>
-                </tr>
-                </tr>
-                  <td >Reserve</td>
-                  <td></td>
-                </tr>
-                </tr>
-                  <td >Reimbursments</td>
-                  <td></td>
-                </tr>
-
-                </tbody>
-              </table>
-            </div>
-
-            <div class="col-lg-6">
-              <table class="table table-bordered table-sm">
-                <thead class="thead-light">
-                  <tr>
-                    <th class="text-info" scope="col">YTD Earnings</th>
-                    <th scope="col">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td >Flat Rate Total</td>
-                    <td></td>
-                  </tr>
-                    <td >Gross Pay</td>
-                    <td></td>
-                  </tr>
-                </tr>
-                  <td >Net Pay</td>
-                  <td></td>
-                </tr>
-                </tr>
-                  <td >Reserve</td>
-                  <td></td>
-                </tr>
-                </tr>
-                  <td >Reimbursments</td>
-                  <td></td>
-                </tr>
- 
-                </tbody>
-              </table>
-            </div>
-          </div>
-         
-        </div>
-      
-
-        <div class="col-lg-4">
-          <h4 class="text-info">Weekly Cash Flow</h4>
-
-          <table class="table table-bordered table-sm">
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Reimbursments</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Detention/Layover</td>
-                <td></td>
-              </tr>
-                <td colspan="2">Extras</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td class="text-info" colspan="2"><b>Total</b></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table class="table table-bordered table-sm">
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Deductions</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Fuel</td>
-                <td></td>
-              </tr>
-                <td colspan="2">Insurance</td>
-                <td></td>
-              </tr>
-            </tr>
-            <td colspan="2">Reserve</td>
-            <td></td>
-          </tr>
-              <tr>
-                <td class="text-info" colspan="2"><b>Total</b></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-          <table class="table table-bordered table-sm">
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Net Pay</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Load Total Amount</td>
-                <td></td>
-              </tr>
-                <td colspan="2">Reimbursments</td>
-                <td></td>
-              </tr>
-            </tr>
-            <td colspan="2">Deductions</td>
-            <td></td>
-          </tr>
-              <tr>
-                <td class="text-info" colspan="2"><b>Total</b></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        <!-- End of col-lg-4 div -->
         </div>
         
-        <!-- End of row div -->
+        <div class="row">
+  
+          <div class="col-lg-8">
+            <h4 class="text-info">Fuel Summary</h4>
+            <table class="table table-hover table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th>City + State</th>
+                  <th>Gallons</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Savings</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Crown Windows Chesterfield 10/20/20</td>
+                  <td>sample value</td>
+                  <td>sample value</td>
+                  <td>sample value</td>
+                </tr>
+                <tr>
+                  <td>Crown Windows Chesterfield 10/20/20</td>
+                  <td>sample value</td>
+                  <td>sample value</td>
+                  <td>sample value</td>
+                </tr>
+                <tr>
+                  <td class="text-info"><b>Total</b></td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row">
+              
+              <div class="col-lg-6">
+                <table class="table table-bordered table-sm">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="text-info" scope="col">Week Fuel</th>
+                      <th scope="col">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Spent</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Gallons</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>Fee</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+  
+              <div class="col-lg-6">
+                <table class="table table-bordered table-sm">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="text-info" scope="col">YTD Fuel</th>
+                      <th scope="col">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td >YTD Spent</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>YTD Gallons</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>YTD Fee</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <h4 class="text-info">Earnings Report</h4>
+            <div class = "row">
+              <div class="col-lg-6">
+                <table class="table table-bordered table-sm">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="text-info" scope="col">Week Earnings</th>
+                      <th scope="col">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td >Flat Rate Total</td>
+                      <td></td>
+                    </tr>
+                      <td >Gross Pay</td>
+                      <td></td>
+                    </tr>
+                  </tr>
+                    <td>Net Pay</td>
+                    <td></td>
+                  </tr>
+                  </tr>
+                    <td >Reserve</td>
+                    <td></td>
+                  </tr>
+                  </tr>
+                    <td>Reimbursments</td>
+                    <td></td>
+                  </tr>
+  
+                  </tbody>
+                </table>
+              </div>
+  
+              <div class="col-lg-6">
+                <table class="table table-bordered table-sm">
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="text-info" scope="col">YTD Earnings</th>
+                      <th scope="col">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td >Flat Rate Total</td>
+                      <td></td>
+                    </tr>
+                      <td >Gross Pay</td>
+                      <td></td>
+                    </tr>
+                  </tr>
+                    <td >Net Pay</td>
+                    <td></td>
+                  </tr>
+                  </tr>
+                    <td >Reserve</td>
+                    <td></td>
+                  </tr>
+                  </tr>
+                    <td >Reimbursments</td>
+                    <td></td>
+                  </tr>
+   
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        
+  
+          <div class="col-lg-4">
+            <h4 class="text-info">Weekly Cash Flow</h4>
+  
+            <table class="table table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Reimbursments</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Detention/Layover</td>
+                  <td></td>
+                </tr>
+                  <td colspan="2">Extras</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td class="text-info" colspan="2"><b>Total</b></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+  
+            <table class="table table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Deductions</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Fuel</td>
+                  <td></td>
+                </tr>
+                  <td colspan="2">Insurance</td>
+                  <td></td>
+                </tr>
+              </tr>
+              <td colspan="2">Reserve</td>
+              <td></td>
+            </tr>
+                <tr>
+                  <td class="text-info" colspan="2"><b>Total</b></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+  
+            <table class="table table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Net Pay</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Load Total Amount</td>
+                  <td></td>
+                </tr>
+                  <td colspan="2">Reimbursments</td>
+                  <td></td>
+                </tr>
+              </tr>
+              <td colspan="2">Deductions</td>
+              <td></td>
+            </tr>
+                <tr>
+                  <td class="text-info" colspan="2"><b>Total</b></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          <!-- End of col-lg-4 div -->
+          </div>
+          <!-- End of row div -->
+        </div>
       </div>
-
-      
-
     </div>
 
 
 
     <script>
-        // require('./INSERT CORRESPONGING FILE HERE.js');
-      </script>
+        require('./payperiod.js');
+    </script>
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script type="text/javascript" src="jquery.min.js"></script>
