@@ -13,7 +13,7 @@ submitBtn.addEventListener('click', () => {
     // add conditional logic to load different windows for if it's an admin or moe (admin page could be idential to the
     // the page that allows moe to see active jobs except admin page wont have a button to access the dashboard)
     const mainWindow = remote.getCurrentWindow(); //remote module
-    mainWindow.loadFile(path.join(__dirname, 'dashboard.html'));
+    mainWindow.loadFile(path.join(__dirname, '../html/dashboard.html'));
 })
 
 /*TO DO*/
