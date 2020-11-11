@@ -1,16 +1,13 @@
 
 
-
-
-
 const { remote } = require('electron');
 const path = require('path');
 
+var database = require('../database');
 
 let activeJobs = [];
 
 // Figure out a different counter approach. (one that isn't global)
-
 let count = 0;
 const activeJob = (driver, client, origin, destination, routeLength, deadline) =>{
 
@@ -153,13 +150,12 @@ const sortNames = (activeJobs) => {
     activeJobs.forEach(job => {
         names.push(job.driver);
     })
-    console.log(names)
     names.sort()
     return names;
 }
 
 let names = sortNames(activeJobs);
-console.log(names);
+
 //The function to add the names to the drop down
 const populateDropdown = (names) =>{
     const dropdown = document.getElementById('driver');
@@ -215,6 +211,14 @@ const retrieveObject = (id) => {
 
 
 
+database.logDriver();
 
+// function logDriver() {
+//     db.collection('Driver').get().then((snapshot) => {
+//         snapshot.docs.forEach(doc => {
+//             console.log(doc.data())
+//         })
+//     })
+// }
 
-
+// logDriver();
