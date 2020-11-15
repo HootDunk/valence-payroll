@@ -2,223 +2,169 @@
 
 const { remote } = require('electron');
 const path = require('path');
+const db = require('../database');
 
-var database = require('../database');
+db.AuthStateListener();
 
-let activeJobs = [];
+// Make sure this page only does UI stuff based on objects from database.js
+let dropdownFlag = false;
 
-// Figure out a different counter approach. (one that isn't global)
-let count = 0;
-const activeJob = (driver, client, origin, destination, routeLength, deadline) =>{
-
-    const counter = () =>{
-        count++;
-        return count;
+class Driver {
+    constructor(doc){
+        this.id = doc.id;
+        this.fname = doc.data().fname;
+        this.lname  = doc.data().lname;
+        this.driverType = doc.data().type;
+        this.driverRate = doc.data().rate;
     }
-    
-    const id = counter();
-
-    return{id, driver, client, origin, destination, routeLength, deadline}
-};
-
-
-const addJob = (ev) =>{
-    ev.preventDefault(); // to stop the form submitting
-    // Convert to use the active job factory function
-    // let job = {
-    //     id: Date.now(),
-    //     driver: document.getElementById('driver').value,
-    //     client: document.getElementById('client').value,
-    //     origin: document.getElementById('origin').value,
-    //     destination: document.getElementById('destination').value,
-    //     routeLength: document.getElementById('routeLength').value,
-    //     deadline: document.getElementById('deadline').value,
-    // }
-    let driver = document.getElementById('driver').value;
-    let client = document.getElementById('client').value;
-    let origin = document.getElementById('origin').value;
-    let destination = document.getElementById('destination').value;
-    let routeLength = document.getElementById('routeLength').value;
-    let deadline = document.getElementById('deadline').value;
-
-    let job = activeJob(driver, client, origin, destination,
-        routeLength, deadline);
-
-    
-    activeJobs.push(job);
-    document.querySelector('form').reset();
-    createRow(job);
 }
 
-const createRow = (job) => {
-    let table = document.getElementById('tableBody');
-    let row = table.insertRow(-1); //Inserts row to last position in table
-    // Give the row an ID that corresponds to the job id
-    row.id = job.id;
-    //Create the data rows
-    let cell1 = row.insertCell(0);
-    let cell2 = row.insertCell(1);
-    let cell3 = row.insertCell(2);
-    let cell4 = row.insertCell(3);
-    let cell5 = row.insertCell(4);
-    let cell6 = row.insertCell(5);
-    //Set text value to the corresponding object value
-    cell1.innerHTML = job.driver;
-    cell2.innerHTML = job.client;
-    cell3.innerHTML = job.origin;
-    cell4.innerHTML = job.destination;
-    cell5.innerHTML = job.routeLength;
-    cell6.innerHTML = job.deadline;
-
-    // Create another cell and add submit button
-    let cell7 = document.createElement("td");
-    let successButton = document.createElement("BUTTON");
-    successButton.className = "btn btn-outline-success";
-    successButton.innerHTML = "Submit";
-    cell7.appendChild(successButton);
-    row.append(cell7);
-    successButton.addEventListener('click', () => {
-        // this will be where we submit the data to the database
-        console.log(job.id)
-        retrieveObject(job.id)
-        
-    })
-    // Create another cell and add delete button to it
-    let cell8 = document.createElement("td");
-    let deleteButton = document.createElement("BUTTON");
-    deleteButton.className = "btn btn-outline-danger";
-    deleteButton.innerHTML = "Delete";
-    cell8.appendChild(deleteButton);
-    row.append(cell8);
-    deleteButton.addEventListener('click', () => {
-        row.remove();
-        // Need to add logic to remove the job from the database and 
-        // the client side javascript object
-    })
+class Job {
+    constructor(obj, formElement){
+        this.driverID = obj.id;
+        this.driverFname = obj.fname;
+        this.driverLname = obj.lname;
+        this.driverRate = obj.driverRate;
+        this.driverType = obj.driverType;
+        this.client = formElement['client'].value;
+        this.deadline = formElement['deadline'].value;
+        this.destination = formElement['destination'].value;
+        this.loadRate = formElement['rate'].value;
+        this.jobStatus = 0;
+        this.origin = formElement['origin'].value;
+        this.miles = formElement['routeLength'].value;
+    }
 }
 
-// Event listener for submit button is only loaded when DOMcontent is
-document.addEventListener('DOMContentLoaded', ()=>{
-    document.getElementById('submitBtn').addEventListener('click', addJob);
+const logoutBtn = document.querySelector('#logout');
+logoutBtn.addEventListener('click', () => {
+    db.logout(); // function from database.js
+})
+
+const tableBody = document.querySelector('#tableBody')
+const renderRows = (data) => {
+    if(data.length){
+        let html = "";
+
+        data.forEach((doc) => {
+            const job = doc.data();
+            // submit and delete will have the job id
+            // click event will lead to firebase handling
+            const tr = `
+                <tr>
+                    <td>${job.driverFname} ${job.driverLname}</td>
+                    <td>${job.client}</td>
+                    <td>$${job.loadRate}</td>
+                    <td>${job.origin}</td>
+                    <td>${job.destination}</td>
+                    <td>${job.miles}</td>
+                    <td>${job.deadline}</td>
+                    <td><button data-id=${doc.id} class="btn btn-outline-success btn-sm">Submit</button></td>
+                    <td><button data-id=${doc.id} class="btn btn-outline-danger btn-sm">Delete</button></td>
+                </tr>
+            `;
+            html += tr;
+        })
+        tableBody.innerHTML = html;
+    }else {
+        console.log('no data')
+        // deletes the last remaining row without need to refresh the page
+        if (tableBody.rows.length == 1){
+            tableBody.deleteRow(0);
+        }
+    }
+}
+
+// Event listeners for submit and delete buttons
+document.querySelector('table tbody').addEventListener('click', (event) => {
+    
+    // get ID from button, call update.method(id)/delete.method(id) 
+    if(event.target.className === "btn btn-outline-danger btn-sm"){
+        // console.log(event.target.dataset.id)
+        db.deleteData.deleteJob(event.target.dataset.id)
+
+    }
+    if (event.target.className === "btn btn-outline-success btn-sm") {
+        // console.log(event.target.dataset.id)
+        db.update.sendToPayroll(event.target.dataset.id)
+    }
 });
 
 
 
-// Some test values
 
-let existingJob = activeJob(
-    "Clint Eastwood", "Crown Windows", "17371 N Outer 40 Rd, Chesterfield, MO 63005",
-    "400 S State St", 1432, "10/16/2020");
-createRow(existingJob);
-activeJobs.push(existingJob);
+const drivers = [];
+const populateDropdown = (data) => {
+    if(data.length){
+        data.forEach((doc) => {
+            // create driver object to re-use data
+            const driver = new Driver(doc)
+            // add object to list
+            drivers.push(driver)
+        })
+        // curiously drivers is sorted before calling it, but only if you call sort. if you dont it isn't...
+        // sort this list by last name then first name
+        drivers.sort((a, b) => a.lname.localeCompare(b.lname))
 
-existingJob = activeJob(
-    "Scotty Upshall", "St. Louis Blues", "700 Clark Ave",
-    "400 S State St", 210, "10/16/2020");
-createRow(existingJob);
-activeJobs.push(existingJob);
-
-existingJob = activeJob(
-    "Alex Clark", "Private Homeowner", "1662 Park Place",
-    "1543 South Place Dr", 1303, "10/17/2020");
-createRow(existingJob);
-activeJobs.push(existingJob);
-
-existingJob = activeJob(
-    "Trey Canard", "Sample Business", "700 Clark Ave",
-    "1234 Numbers Ct.", 1303, "10/17/2020");
-createRow(existingJob);
-activeJobs.push(existingJob);
-
-existingJob = activeJob(
-    "Ryan Villopoto", "Sample Business", "125 Central Ave",
-    "16335 Sheffield Pt Ct", 1303, "10/17/2020");
-createRow(existingJob);
-activeJobs.push(existingJob);
-
-// existingJob = activeJob(
-//     "James Stewart", "Sample Business", "700 Clark Ave",
-//     "1200 Ridge Road", 1303, "10/17/2020");
-// createRow(existingJob);
-// activeJobs.push(existingJob);
-
-
-
-//The function to sort the names alphabetically and store them in a list
-const sortNames = (activeJobs) => {
-    let names = [];
-    activeJobs.forEach(job => {
-        names.push(job.driver);
-    })
-    names.sort()
-    return names;
+        let html = "";
+        const dropdown = document.getElementById('driver');
+        drivers.forEach((driver) => {
+            const option = `
+                <option data-id=${driver.id}>${driver.lname}, ${driver.fname}</option>
+            `;
+            html += option;
+        })
+        dropdown.innerHTML = html;
+    }else {
+        console.log('no drivers found')
+    }
+    // flag for submit button. makes sure no one presses submit before driver info is properly loaded
+    dropdownFlag = true;
 }
 
-let names = sortNames(activeJobs);
-
-//The function to add the names to the drop down
-const populateDropdown = (names) =>{
-    const dropdown = document.getElementById('driver');
-    names.forEach(name => {
-        let nameOption = document.createElement("option")
-        nameOption.innerHTML = name;
-        dropdown.appendChild(nameOption);
-    })
-}
-
-populateDropdown(names);
 
 
-//Function to return matching object (to demonstrate submit)
-const retrieveObject = (id) => {
-    activeJobs.forEach(job => {
-        if(job.id === id){
-            let pre = document.querySelector('#msg pre');
-            pre.textContent = '\n' + JSON.stringify(job, '\t', 2);
+// if you dont want to figure out the prevent default shit then just use a modal
+// but i think if you specify event.prevent default if all data is present then it will work as intended
+document.querySelector('#formSubmit').addEventListener('click', (event) => {
+    event.preventDefault() //add conditionals. only prevent defaul if everything has an input
+    
+    if(dropdownFlag == true){
+         db.create.newJob(jobObject())
+         document.getElementById('create-job-form').reset();
+    }
+});
 
+//Create job object and send object to database.js to create new entry
+const jobObject = () => {
+    // gets reference to entire dropdown element
+    const driverSelect = document.getElementById('driver');
+    // get selected drivers id
+    const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+    
+    // get driver object
+    let driverObj = "";
+    drivers.forEach((driver) => {
+        if(currentDriverId == driver.id){
+            driverObj = driver;
         }
     })
+    // console.log(driverObj)
+    const form = document.getElementById('create-job-form');
+    // create job object 
+    const newJob = new Job(driverObj, form);
+    console.log(newJob.deadline)
+    return newJob;
 }
 
 
-// function Job(driver, client, origin, destination, routeLength, deadline){
-//     this.id = Date.now(),
-//     this.driver = driver;
-//     this.client = client;
-//     this.origin = origin;
-//     this.destination = destination;
-//     this.routLength = routeLength;
-//     this.deadline = deadline;
-// }
+
+// read data, get active job collection, render the rows.
+db.read.getActiveJobs(renderRows)
+db.read.getAllDrivers(populateDropdown)
 
 
-// class Job {
-//     contructor(driver, client, origin, destination, routeLength, deadline){
-//         this.id = Date.now(),
-//         this.driver = driver;
-//         this.client = client;
-//         this.origin = origin;
-//         this.destination = destination;
-//         this.routLength = routeLength;
-//         this.deadline = deadline;
-//     }
-// }
-
-
-// Prints entire json object, kinda handy, saving for later
-// let pre = document.querySelector('#msg pre');
-//     pre.textContent = '\n' + JSON.stringify(activeJobs, '\t', 2);
-
-
-
-database.logDriver();
-
-// function logDriver() {
-//     db.collection('Driver').get().then((snapshot) => {
-//         snapshot.docs.forEach(doc => {
-//             console.log(doc.data())
-//         })
-//     })
-// }
-
-// logDriver();
+// page is kinda sorta done
+// a couple of things that still need work
+// find some sort of logical order for rendering shit to the table
+// also add client side error catching
