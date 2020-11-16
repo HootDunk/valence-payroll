@@ -4,6 +4,7 @@ const { remote } = require('electron');
 const path = require('path');
 const db = require('../database');
 
+// listens to the authentication state and handles changes
 db.AuthStateListener();
 
 // Make sure this page only does UI stuff based on objects from database.js

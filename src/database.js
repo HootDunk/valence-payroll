@@ -58,6 +58,14 @@
         myFunction(Snapshot.docs)
       })
     });
+
+    // get user
+    const userRoleRedirect = (userId) => {
+      db.collecction('users').where('role', '==', userId)
+        .onSnapshot(Snapshot => {
+          console.log(Snapshot.docs.role)
+        })
+    }
   
   
     return{
