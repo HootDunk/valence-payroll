@@ -8,7 +8,6 @@
       });
   }
   
-  
   // Create
   const create = (() => {
     const newJob = (obj) => {
@@ -42,12 +41,27 @@
   // Read data
   const read = (() => {
     // gets active job documents as a snapshot(listens for changes)
-    // myFunction is placeholder for whichever UI function we are using in the other .js files  
-    const jobsByStatus = ((myFunction, jobStatus) => {
-      db.collection("jobs").where("jobStatus", "==", jobStatus)
-        .onSnapshot(Snapshot => {
-          myFunction(Snapshot.docs);
-        })
+    // myFunction is placeholder for whichever UI function we are using in the other .js files 
+    // could add 3rd param that dicates whether its an onSnapshotListener or just a simple call
+    const jobsByStatus = ((myFunction, jobStatus, listener) => {
+      if(listener){
+        
+        db.collection("jobs")
+          .where("jobStatus", "==", jobStatus)
+          .onSnapshot(Snapshot => {
+            myFunction(Snapshot.docs);
+          })
+      }
+      else {
+        
+        db.collection('jobs')
+          .where("jobStatus", "==", jobStatus)
+          .get()
+          .then(Snapshot => {
+            myFunction(Snapshot.docs)
+          })
+      }
+
     });
 
   
@@ -57,12 +71,52 @@
         myFunction(Snapshot.docs)
       })
     });
+
+    // get jobs by driver id and status
+    const getDriverJobs = ((myFunction, jobStatus, driverID) => {
+      db.collection('jobs')
+        .where("jobStatus", "==", jobStatus)
+        .where("driverID", "==", driverID)
+        .onSnapshot(Snapshot => {
+          myFunction(Snapshot.docs);
+        })
+      //   .get()
+      //   .then(Snapshot => {
+      //     myFunction(Snapshot.docs)
+      // })
+    });
+
+    const getJobByID = ((myFunction, driverID) => {
+
+      var docRef = db.collection("jobs").doc(driverID);
+
+      docRef.get().then(doc => {
+        if (doc.exists) {
+          myFunction(doc)
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+      }).catch(function(error) {
+          console.log("Error getting document:", error);
+      })
+      // db.collection('jobs')
+      //   .where("driverID", "==", driverID)
+      //   .get()
+      //   .then(doc => {
+      //     myFunction(doc)
+      //   })
+      //   .catch(error => {
+      //     console.log(error)
+      // })
+    });
   
   
     return{
       jobsByStatus,
       getAllDrivers,
-
+      getDriverJobs,
+      getJobByID
     }
   })();
   
@@ -81,10 +135,21 @@
         console.log("Error updating document: ", error);
       });
     })
-  
+
+    // not finished
+    const editJob = ((job, id) => {
+      db.collection('jobs').doc(id).update({
+
+      })
+      .then()
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
   
     return {
       sendToPayroll,
+      editJob,
     }
   })();
   
@@ -103,7 +168,6 @@
       deleteJob,
     }
   })();
-  
   
   
   

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <link rel="stylesheet" type="text/css" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/overview.css">
+
+  </head>
+  
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-light">
+          <a class="navbar-brand" href="dashboard.html">
+              <img id="valence-logo" src="../assets/valence-logo.png"  alt="valence-logo"/>
+          </a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+              <a class="nav-link" href="dashboard.html">Home</a>
+              <a class="nav-link" href="dispatch.html">Dispatcher Terminal</a>
+              <a class="nav-link" href="payperiod.html">Current Pay Period</a>
+              <a class="nav-link active" href="weeklyinputs.html">Test</a>
+              <a class="nav-link" href="#">View Records</a>
+              <a class="nav-link" href="#">User Guide</a>
+              <!-- <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
+            </div>
+          </div>
+        </nav>
+  </header>
+  <ul class="nav nav-tabs">
+    <!-- <li class="nav-item">
+      <a class="nav-link active" href="#">Overview</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        Review & Confirm
+        <span class="badge badge badge-pill badge-primary">4</span>
+      </a>
+    </li> -->
+    <li class="nav-item">
+      <a class="nav-link active" href="#">Review & Add Weekly Inputs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Process Payroll</a>
+    </li>
+  </ul>
+
+  <div class="container">
+    <form>
+      <div class="form-group">
+        <label for="exampleFormControlSelect2">Select Driver</label>
+        <select multiple class="form-control" id="driver">
+
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="container-fluid">
+    <table class="table" id="activeJobsTable">
+        <thead class="thead-light">
+          <tr>
+
+            <th scope="col">Client</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Origin</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Miles</th>
+            <th scope="col">Deadline</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+
+        </tbody>
+      </table>
+
+
+  </div>
+  <div class="modal fade" id="editJobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Edit Job</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editJobForm">
+            <div class="row form-group">
+              <div class="col">
+                <label for="client">Client:</label>
+                <input type="text" class="form-control" id="client"  required>
+              </div>
+              <div class="col">
+                <label for="client">Rate:</label>
+                <input type="number" class="form-control"  id="rate" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label for="client">Origin:</label>
+                <input type="text" class="form-control"  id="origin" required>
+              </div>
+              <div class="col">
+                <label for="client">Destination:</label>
+                <input type="text" class="form-control"  id="destination" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label for="client">Route length:</label>
+                <input type="number" class="form-control"  id="routeLength" required>
+              </div>
+              <div class="col">
+                <label for="client">Delivery Deadline:</label>
+                <input type="date" class="form-control" id="deadline" required>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          
+          <!-- <button type="button" class="btn btn-danger mr-lg" data-dismiss="modal">Delete Job</button>
+          <button type="button" class="btn btn-success" data-dismiss="modal">Confirm</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6"><button type="button" class="btn btn-danger" data-dismiss="modal">Delete Job</button></div>
+              <div class="col-3">
+                <button id="submitJobEdit" type="button" class="btn btn-success" data-dismiss="modal">Confirm</button>
+              </div>
+              <div class="col-2">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-firestore.js"></script>
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+      apiKey: "AIzaSyBMNYM2n9DV7iU2EHQNg_r7CObQiwkFSrc",
+      authDomain: "valence-trans.firebaseapp.com",
+      databaseURL: "https://valence-trans.firebaseio.com",
+      projectId: "valence-trans",
+      storageBucket: "valence-trans.appspot.com",
+      messagingSenderId: "640777304596",
+      appId: "1:640777304596:web:1b2d67ce31f64ca2690501",
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+  require('../javascript/weeklyinputs.js');
+</script>
+
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script type="text/javascript" src="../assets/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/bootstrap.min.js"></script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+  </body>
+</html>
