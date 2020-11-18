@@ -23,7 +23,7 @@
               <div class="navbar-nav">
                 <a class="nav-link" href="dashboard.html">Home</a>
                 <!-- <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a> -->
-                <a class="nav-link" href="dispatch.html">Dispatcher Terminal</a>
+                <a class="nav-link active" href="dispatch.html">Dispatcher Terminal</a>
                 <a class="nav-link" href="payperiod.html">Current Pay Period</a>
                 <a class="nav-link" href="#">Manage Employees</a>
                 <a class="nav-link" href="#">View Records</a>
@@ -56,32 +56,30 @@
             </div>
             <div class="col">
               <label for="client">Rate:</label>
-              <input type="text" class="form-control" placeholder="2651" id="rate" required>
+              <input type="number" class="form-control" placeholder="2651" id="rate" required>
             </div>
           </div>
           <div class="row form-group">
             <div class="col">
-              <label for="client">Rate:</label>
+              <label for="client">Origin:</label>
               <input type="text" class="form-control" placeholder="123 Park Place Dr., Wildwood MO" id="origin" required>
             </div>
             <div class="col">
               <label for="client">Destination:</label>
-              <input type="text" class="form-control" placeholder="632 Clark Ave, Chicago IL" id="destination">
+              <input type="text" class="form-control" placeholder="632 Clark Ave, Chicago IL" id="destination" required>
             </div>
           </div>
           <div class="row form-group">
             <div class="col">
               <label for="client">Route length:</label>
-              <input type="number" class="form-control" placeholder="532" id="routeLength">
+              <input type="number" class="form-control" placeholder="532" id="routeLength" required>
             </div>
             <div class="col">
               <label for="client">Delivery Deadline:</label>
-              <input type="date" class="form-control" id="deadline">
+              <input type="date" class="form-control" id="deadline" required>
             </div>
           </div>
-
           <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
-
         </form>
       </div>
 
@@ -136,8 +134,6 @@
     <script type="text/javascript" src="../assets/bootstrap.min.js"></script>
     <!-- Insert this line after script imports -->
     <script>if (window.module) module = window.module;</script>
-
-    
 
   </body>
 </html>

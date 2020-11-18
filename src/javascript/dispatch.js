@@ -7,7 +7,7 @@ const db = require('../database');
 // listens to the authentication state and handles changes
 db.AuthStateListener();
 
-// Make sure this page only does UI stuff based on objects from database.js
+// prevents form submit from being pressed before 
 let dropdownFlag = false;
 
 class Driver {
@@ -39,16 +39,15 @@ class Job {
 
 const logoutBtn = document.querySelector('#logout');
 logoutBtn.addEventListener('click', () => {
-    db.logout(); // function from database.js
+    db.logout();
 })
 
 const tableBody = document.querySelector('#tableBody')
 const renderRows = (data) => {
     if(data.length){
         let html = "";
-
         data.forEach((doc) => {
-            const job = doc.data();
+            const job = doc.data(); // maybe create an id var to make it slightly more intuitive
             // submit and delete will have the job id
             // click event will lead to firebase handling
             const tr = `
@@ -78,7 +77,6 @@ const renderRows = (data) => {
 
 // Event listeners for submit and delete buttons
 document.querySelector('table tbody').addEventListener('click', (event) => {
-    
     // get ID from button, call update.method(id)/delete.method(id) 
     if(event.target.className === "btn btn-outline-danger btn-sm"){
         // console.log(event.target.dataset.id)
@@ -90,9 +88,6 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
         db.update.sendToPayroll(event.target.dataset.id)
     }
 });
-
-
-
 
 const drivers = [];
 const populateDropdown = (data) => {
@@ -123,13 +118,9 @@ const populateDropdown = (data) => {
     dropdownFlag = true;
 }
 
+document.querySelector('#create-job-form').addEventListener('submit', (e) => {
+    e.preventDefault() //add conditionals. only prevent defaul if everything has an input
 
-
-// if you dont want to figure out the prevent default shit then just use a modal
-// but i think if you specify event.prevent default if all data is present then it will work as intended
-document.querySelector('#formSubmit').addEventListener('click', (event) => {
-    event.preventDefault() //add conditionals. only prevent defaul if everything has an input
-    
     if(dropdownFlag == true){
          db.create.newJob(jobObject())
          document.getElementById('create-job-form').reset();
@@ -158,14 +149,12 @@ const jobObject = () => {
     return newJob;
 }
 
-
-
-// read data, get active job collection, render the rows.
-db.read.getActiveJobs(renderRows)
+// getJobsStatus takes in renderRows function and 0 (indicates the job status)
+db.read.jobsByStatus(renderRows, 0)
 db.read.getAllDrivers(populateDropdown)
 
 
 // page is kinda sorta done
 // a couple of things that still need work
 // find some sort of logical order for rendering shit to the table
-// also add client side error catching
+// also add client side error catching (re-use function from login page)

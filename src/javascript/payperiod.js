@@ -1,5 +1,29 @@
 
+const db = require('../database');
+// listens to the authentication state and handles changes
+// db.AuthStateListener();
+
 let activeJobs = [];
+
+
+const clearDisplay = () => {
+    let salaryDiv = document.getElementsByClassName('salaried-div');
+    const ownerOp = document.getElementsByClassName('ownerOp-div');
+    salaryDiv[0].style.display = "none";
+    ownerOp[0].style.display = "none";
+}
+
+const showTables = (job) => {
+    if(job.isSalary === true){
+        let salaryDiv = document.getElementsByClassName('salaried-div');
+        salaryDiv[0].style.display = "block";
+    }
+    else if (job.isSalary === false){
+        const ownerOp = document.getElementsByClassName('ownerOp-div');
+        ownerOp[0].style.display = "block";
+    }
+}
+
 
 // Figure out a different counter approach. (one that isn't global)
 
@@ -50,25 +74,17 @@ activeJobs.push(existingJob);
 
 
 
-const clearDisplay = () => {
-    let salaryDiv = document.getElementsByClassName('salaried-div');
-    const ownerOp = document.getElementsByClassName('ownerOp-div');
-    salaryDiv[0].style.display = "none";
-    ownerOp[0].style.display = "none";
-}
+// db.read.jobsByStatus(console.log(doc.data()), 1)
 
-const showTables = (job) => {
-    if(job.isSalary === true){
-        let salaryDiv = document.getElementsByClassName('salaried-div');
-        salaryDiv[0].style.display = "block";
-    }
-    else if (job.isSalary === false){
-        const ownerOp = document.getElementsByClassName('ownerOp-div');
-        ownerOp[0].style.display = "block";
-    }
-}
 
-//Change this
+
+
+
+
+
+
+
+// Change this
 // Populate the dropdown and give each dropdown an ID that will correspond to their empID
 const populateDropdown = (activeJobs) =>{
     //Sorts active jobs array by driver name

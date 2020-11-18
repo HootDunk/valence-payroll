@@ -32,7 +32,6 @@
       .catch(function(error) {
           console.error("Error adding document: ", error);
       });
-  
     }
   
     return {
@@ -44,13 +43,13 @@
   const read = (() => {
     // gets active job documents as a snapshot(listens for changes)
     // myFunction is placeholder for whichever UI function we are using in the other .js files  
-    const getActiveJobs = ((myFunction) => {
-      db.collection("jobs").where("jobStatus", "==", 0)
+    const jobsByStatus = ((myFunction, jobStatus) => {
+      db.collection("jobs").where("jobStatus", "==", jobStatus)
         .onSnapshot(Snapshot => {
           myFunction(Snapshot.docs);
         })
-  
     });
+
   
     // get all drivers
     const getAllDrivers = ((myFunction) => {
@@ -58,26 +57,14 @@
         myFunction(Snapshot.docs)
       })
     });
-
-    // get user
-    const userRoleRedirect = (userId) => {
-      db.collecction('users').where('role', '==', userId)
-        .onSnapshot(Snapshot => {
-          console.log(Snapshot.docs.role)
-        })
-    }
   
   
     return{
-      getActiveJobs,
+      jobsByStatus,
       getAllDrivers,
-  
+
     }
   })();
-  
-  
-  // let list = read.getActiveJobs;
-  // console.log(list)
   
   
   // Update
@@ -90,11 +77,10 @@
       .then(
         console.log("document successfully updated!")
       )
-      .catch(err => {
+      .catch(error => {
         console.log("Error updating document: ", error);
       });
     })
-  
   
   
     return {
