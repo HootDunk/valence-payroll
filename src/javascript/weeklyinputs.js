@@ -1,11 +1,11 @@
-
 // database
 const db = require('../database');
-
 // listens to the authentication state and handles changes
 db.AuthStateListener();
 
-
+const modalSubmitBtn = document.getElementById('submitJobEdit');
+const modalDeleteBtn = document.getElementById('deleteJob');
+const jobForm = document.getElementById('editJobForm');
 
 const logger = (data) => {
   data.forEach(doc => {
@@ -14,10 +14,7 @@ const logger = (data) => {
   })
 }
 
-
-
-
-// creates driver object from the job document
+// creates driver object from the job document, used to populate and sort array for the dropdown
 class Driver {
   constructor(doc){
       this.id = doc.data().driverID;
@@ -27,11 +24,19 @@ class Driver {
   }
 }
 
-// const logger1 = () => {
-//   data.forEach((doc) => {
-//     console.log(doc.data())
-//   })
-// }
+
+// JobAttributes class to create objects to pass to the UpdateJobsByID database function
+class JobAttributes {
+  constructor(jobForm){
+    this.client = jobForm['client'].value;
+    this.loadRate = jobForm['rate'].value;
+    this.origin = jobForm['origin'].value;
+    this.destination = jobForm['destination'].value;
+    this.miles = jobForm['routeLength'].value;
+    this.deadline = jobForm['deadline'].value;
+  }
+}
+
 // may want to break this function up
 const drivers = [];
 const populateDropdown = (data) => {
@@ -60,7 +65,6 @@ const populateDropdown = (data) => {
           html += option;
       })
       dropdown.innerHTML = html;
-    
       
       document.querySelectorAll('.driver-option').forEach(option => {
         option.addEventListener('click', event => {
@@ -112,43 +116,56 @@ const renderRows = (data) => {
 }
 
 
-const jobForm = document.getElementById('editJobForm');
+
+// everytime edit button is pressed, we set the form values to the corresponding job
 
 const setJobFormValues = (doc) => {
+  // give buttons a data-id that matches the job
+  modalSubmitBtn.dataset.id = doc.id;
+  modalDeleteBtn.dataset.id = doc.id;
+
   jobForm['client'].value = doc.data().client;
   jobForm['rate'].value = doc.data().loadRate;
   jobForm['origin'].value = doc.data().origin;
   jobForm['destination'].value = doc.data().destination;
   jobForm['routeLength'].value = doc.data().miles;
   jobForm['deadline'].value = doc.data().deadline;
-  // console.log(doc.data().client)
+
   $('#editJobModal').modal()
 }
 
 
-
+/** Table button event listeners **/
 // Event listeners for edit buttons call a modal with a form to edit the job
 document.querySelector('table tbody').addEventListener('click', (event) => {
   // get ID from button, call update.method(id)/delete.method(id) 
   if(event.target.className === "btn btn-outline-warning btn-md"){
-      console.log(event.target.dataset.id)
-      let jobID = event.target.dataset.id;
-      // setJobFormValues()
+      
+      const jobID = event.target.dataset.id;
       // call function to get job info and function to set modal form values
       db.read.getJobByID(setJobFormValues, jobID)
-      // confirming creates an object and sends to db
-
-
-      // closing does nothing
-      // deleting deletes the job
-
-      
-      //db.update.editJob(obj, id)
-      // db.deleteData.deleteJob(event.target.dataset.id)
-
   }
-
+  //add button to toggle jobstatus here (add button on html as well)
+  
 });
+
+
+/** Modal button event listeners **/
+// Clicking submit, calls the db update function and updates the job
+modalSubmitBtn.addEventListener('click', (event) => {
+  const jobID = event.target.dataset.id;
+  const jobInstance = new JobAttributes(jobForm);
+
+  db.update.editJobByID(jobInstance, jobID);
+});
+
+// Clicking delete removes the job entirely
+modalDeleteBtn.addEventListener('click', (event) => {
+  db.deleteData.deleteJob(event.target.dataset.id)
+});
+
+
+
 
 
 // on this page we populate the dropdown based on jobs with a status of 1
@@ -157,17 +174,19 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
 
 // render dropdown. create list of driver names and driver ids
 // give each dropdown the data-id of driverID
-// set to false so it isn't a snapshot listener
+// set to true so so it is a snapshot listener(changes will show)
 db.read.jobsByStatus(populateDropdown, 1, false)
 
 
 
 // clicking a driver retrieves all of the jobs with a status of a one and a matching driverID
+    // completed, in evenet listener above
+
 // these jobs and the fuel and adjustments forms are displayed
+    // 
 
 
-// moe can edit the jobs and input the fields
-// doing so creates the week collection and sets the jobStatus to 2
+// doing so creates the week collection and sets the jobStatus to 2 or 3 (depending on front-end idea)
 // meaning the driver wont have jobs with this status anymore
 
 

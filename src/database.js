@@ -137,11 +137,18 @@
     })
 
     // not finished
-    const editJob = ((job, id) => {
+    const editJobByID = ((obj, id) => {
       db.collection('jobs').doc(id).update({
-
+        client: obj.client,
+        deadline: obj.deadline,
+        destination: obj.destination,
+        loadRate: obj.loadRate,
+        miles: obj.miles,
+        origin: obj.origin,
       })
-      .then()
+      .then(
+        console.log("document successfully updated!")
+      )
       .catch(error =>{
         console.log("Error updating document: ", error);
       });
@@ -149,7 +156,7 @@
   
     return {
       sendToPayroll,
-      editJob,
+      editJobByID,
     }
   })();
   
