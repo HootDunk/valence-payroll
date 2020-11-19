@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Hello World!</title>
     <link rel="stylesheet" type="text/css" href="../assets/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/overview.css">
+    <link rel="stylesheet" href="../css/weeklyinputs.css">
 
   </head>
-  
+  <!-- Need to add breakpoints still -->
   <body>
     <header>
       <nav class="navbar navbar-expand-lg navbar-light">
@@ -58,28 +58,185 @@
       </div>
     </form>
   </div>
-  <div class="container-fluid">
-    <table class="table" id="activeJobsTable">
-        <thead class="thead-light">
-          <tr>
 
-            <th scope="col">Client</th>
-            <th scope="col">Rate</th>
-            <th scope="col">Origin</th>
-            <th scope="col">Destination</th>
-            <th scope="col">Miles</th>
-            <th scope="col">Deadline</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-
-        </tbody>
+  <div id="completedJobs">
+    <div class="container border">
+      <h1>Completed Jobs</h1>
+      <table class="table mb-4" id="activeJobsTable">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Client</th>
+              <th scope="col">Rate</th>
+              <th scope="col">Origin</th>
+              <th scope="col">Destination</th>
+              <th scope="col">Miles</th>
+              <th scope="col">Deadline</th>
+              <th scope="col"></th>
+              <!-- <th scope="col"></th>  -->
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+  
+          </tbody>
       </table>
-
-
+    </div>
   </div>
+
+  <div id="fuelRecords">
+    <div class="container border mt-5">
+      <div class="row">
+        <div class="col-6">
+          <h1>Fuel Records</h1>
+          <form id="fuelForm">
+            <div class="row form-group">
+              <div class="col">
+                <label for="city">City:</label>
+                <input type="text" class="form-control" id="city" required>
+              </div>
+              <div class="col">
+                <label for="state">State:</label>
+                <input type="text" class="form-control"  id="state" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label for="gallons">Gallons:</label>
+                <input type="number" class="form-control" id="gallons"  required>
+              </div>
+              <div class="col">
+                <label for="amount">Amount:</label>
+                <input type="number" class="form-control"  id="amount" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
+          </form>
+        </div>
+        
+        <div class="col-6">
+          <table class="table mt-2">
+            <thead class="thead-light">
+              <tr>
+    
+                <th scope="col">City</th>
+                <th scope="col">State</th>
+                <th scope="col">Gallons</th>
+                <th scope="col">Amount</th>
+  
+                <th scope="col"></th>
+                <!-- <th scope="col"></th>  -->
+              </tr>
+            </thead>
+            <tbody id="fuelTable">
+    
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+    
+  
+  
+  
+    <div class="container border mt-5">
+      <h1 class="d-block">Adjustments</h1>
+      <div class="row">
+        <div class="col-6">
+          
+          <form>
+            <h3>Reimbursments</h3>
+            <div class="row form-group">
+              <div class="col">
+                <label for="client">Detention/Layover:</label>
+                <input type="number" class="form-control" id="detention"  required>
+              </div>
+              <div class="col">
+                <label for="client">Extras:</label>
+                <input type="number" class="form-control"  id="extras" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
+          </form>
+  
+        </div>
+        <div class="col-6">
+          <table class="table mt-3">
+            <thead class="thead-light">
+              <tr>
+                <th class="text-info" scope="col" colspan="2">Reimbursments</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="2">Detention/Layover</td>
+                <td></td>
+              </tr>
+                <td colspan="2">Extras</td>
+                <td></td>
+              </tr>
+              <!-- <tr>
+                <td class="text-info" colspan="2"><b>Total</b></td>
+                <td></td>
+              </tr> -->
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          
+          <form>
+            <h3>Deductions</h3>
+            <div class="row form-group">
+              <div class="col">
+                <label for="client">Insurance:</label>
+                <input type="number" class="form-control" id="detention"  required>
+              </div>
+              <div class="col">
+                <label for="client">Reserve:</label>
+                <input type="number" class="form-control"  id="extras" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
+          </form>
+  
+        </div>
+        <div class="col-6">
+          <table class="table mt-3">
+            <thead class="thead-light">
+              <tr>
+                <th class="text-info" scope="col" colspan="2">Deductions</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="2">Insurance</td>
+                <td></td>
+              </tr>
+                <td colspan="2">Reserve</td>
+                <td></td>
+              </tr>
+              <!-- <tr>
+                <td class="text-info" colspan="2"><b>Total</b></td>
+                <td></td>
+              </tr> -->
+            </tbody>
+          </table>
+          
+        </div>
+      </div>
+    </div>
+
+  
+
+
+
+
+
   <div class="modal fade" id="editJobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">

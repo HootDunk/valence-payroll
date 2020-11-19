@@ -2,16 +2,27 @@
 const db = require('../database');
 // listens to the authentication state and handles changes
 db.AuthStateListener();
+// need to add the logout function
 
 const modalSubmitBtn = document.getElementById('submitJobEdit');
 const modalDeleteBtn = document.getElementById('deleteJob');
 const jobForm = document.getElementById('editJobForm');
+const tableBody = document.querySelector('#tableBody');
+const fuelForm = document.getElementById('fuelForm');
+const fuelTB = document.getElementById('fuelTable');
 
+// development function for testing/validating the data being recieved is the data that I want
 const logger = (data) => {
   data.forEach(doc => {
     console.log(doc.data())
 
   })
+}
+
+const getWeek = () => {
+  let now = new Date();
+  let onejan = new Date(now.getFullYear(), 0, 1);
+  return Math.ceil( (((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7 );
 }
 
 // creates driver object from the job document, used to populate and sort array for the dropdown
@@ -38,15 +49,16 @@ class JobAttributes {
 }
 
 // may want to break this function up
-const drivers = [];
+
 const populateDropdown = (data) => {
+  const drivers = [];
   const driverIDs = [];
   if(data.length){
       data.forEach((doc) => {
           // checks if the current driver has been included or not
           // can be multiple jobs per driver but we only need his info once
           if(!driverIDs.includes(doc.data().driverID)){
-            // create driver object to re-use data
+            // create driver object
             const driver = new Driver(doc)
             // add object to list
             drivers.push(driver)
@@ -66,24 +78,32 @@ const populateDropdown = (data) => {
       })
       dropdown.innerHTML = html;
       
+      //here is where the function for handling the display will go
       document.querySelectorAll('.driver-option').forEach(option => {
         option.addEventListener('click', event => {
-          // console.log(event.target.dataset.id)
+          //renders each drivers jobs on click
           let driverID = event.target.dataset.id;
           db.read.getDriverJobs(renderRows, 1, driverID)
+
+          //need conditionals here, maybe. could add driver type in the above html and use it to handle the conditional here
+          db.read.getDriverFuelbyStatus(renderFuelRows, driverID, 1);
           
-          // call the function to get jobs based on driver ID and job
-          // status, display those jobs in a table
-          // then render the other forms
         })
       })
-
-  }else {
+  }
+  else {
+    
       console.log('no drivers found')
+      let driverOption = document.querySelector('.driver-option');
+      if(driverOption){
+        // deletes last remaining driver option
+        driverOption.remove();
+      }
   }
 }
 
-const tableBody = document.querySelector('#tableBody')
+
+
 const renderRows = (data) => {
     if(data.length){
         let html = "";
@@ -106,13 +126,47 @@ const renderRows = (data) => {
             html += tr;
         })
         tableBody.innerHTML = html;
-    }else {
+    }
+    else {
         console.log('no data')
         // deletes the last remaining row without need to refresh the page
         if (tableBody.rows.length == 1){
             tableBody.deleteRow(0);
         }
+
     }
+}
+
+const renderFuelRows = (data) => {
+  if(data.length){
+    let html = "";
+    data.forEach((doc) => {
+        const obj = doc.data(); // maybe create an id var to make it slightly more intuitive
+        // submit and delete will have the job id
+        // click event will lead to firebase handling
+        const tr = `
+            <tr>
+              <td>${obj.city}</td>
+              <td>${obj.state}</td>
+              <td>${obj.gallons}</td>
+              <td>$${obj.amount}</td>
+
+              <td><button data-id=${doc.id} class="btn btn-outline-danger btn-md">Delete</button></td>
+            </tr>
+        `;
+        
+        html += tr;
+    })
+    fuelTB.innerHTML = html;
+}
+else {
+    console.log('no data')
+    // deletes the last remaining row without need to refresh the page
+    if (fuelTB.rows.length == 1){
+      fuelTB.deleteRow(0);
+    }
+
+}
 }
 
 
@@ -145,10 +199,18 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
       // call function to get job info and function to set modal form values
       db.read.getJobByID(setJobFormValues, jobID)
   }
+  else if(event.target.className === "btn btn-outline-danger btn-md"){
+    console.log(event.target.dataset.id)
+  }
   //add button to toggle jobstatus here (add button on html as well)
   
 });
 
+// Event listener for delete button on the fuel table
+fuelTB.addEventListener('click', (event) => {
+  // console.log(event.target.dataset.id)
+  db.deleteData.deleteFuelEntry(event.target.dataset.id)
+})
 
 /** Modal button event listeners **/
 // Clicking submit, calls the db update function and updates the job
@@ -164,6 +226,23 @@ modalDeleteBtn.addEventListener('click', (event) => {
   db.deleteData.deleteJob(event.target.dataset.id)
 });
 
+//create a new fuel record on from submit. pass in 4 data fields + driverID and year and date
+fuelForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  // gets reference to entire dropdown element
+  const driverSelect = document.getElementById('driver');
+  // get selected drivers id
+  const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const weekNum = getWeek();
+  db.create.fuelEntry(fuelForm, currentDriverId, year, month, day, weekNum);
+
+
+})
+
 
 
 
@@ -175,7 +254,7 @@ modalDeleteBtn.addEventListener('click', (event) => {
 // render dropdown. create list of driver names and driver ids
 // give each dropdown the data-id of driverID
 // set to true so so it is a snapshot listener(changes will show)
-db.read.jobsByStatus(populateDropdown, 1, false)
+db.read.jobsByStatus(populateDropdown, 1, true)
 
 
 
@@ -186,14 +265,13 @@ db.read.jobsByStatus(populateDropdown, 1, false)
     // 
 
 
-// doing so creates the week collection and sets the jobStatus to 2 or 3 (depending on front-end idea)
+// doing so creates the week collection and sets the jobStatus to 2 or 3 (depending on front-end idea, though changes would need to be made for this)
 // meaning the driver wont have jobs with this status anymore
 
 
 // this collection will have a field like 'processed: false'
 // unprocessed jobs will show up in the process payroll tab
 // submitting them will set processed to true
-
 
 
 // need to add event listener for the submit button and delete button on the modal

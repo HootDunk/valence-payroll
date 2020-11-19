@@ -32,9 +32,32 @@
           console.error("Error adding document: ", error);
       });
     }
+
+    const fuelEntry = (fuelForm, driverID, year, month, day, weekNum) => {
+      db.collection('fuel').add({
+        driverID: driverID,
+        city: fuelForm['city'].value,
+        state: fuelForm['state'].value,
+        gallons: fuelForm['gallons'].value,
+        amount: fuelForm['amount'].value,
+        fuelStatus: 1,
+        month: month,
+        year: year,
+        day: day,
+        weekNum: weekNum,
+        date: `${year}-${month}-${day}`,
+      })
+      .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch(function(error) {
+          console.error("Error adding document: ", error);
+      });
+    }
   
     return {
       newJob,
+      fuelEntry,
     }
   })();
   
@@ -63,6 +86,25 @@
       }
 
     });
+
+  const getDriverFuelbyStatus = ((myFunction, driverID, fuelStatus) => {
+        db.collection("fuel")
+          .where("fuelStatus", "==", fuelStatus)
+          .where("driverID", "==", driverID)
+          .onSnapshot(Snapshot => {
+            myFunction(Snapshot.docs);
+          })
+      
+      //add listener param to include a version w/o snapshot and add if statement aboove
+      // else {
+      //   db.collection('fuel')
+      //     .where("jobStatus", "==", jobStatus)
+      //     .get()
+      //     .then(Snapshot => {
+      //       myFunction(Snapshot.docs)
+      //     })
+      // }
+  });
 
   
     // get all drivers
@@ -116,7 +158,8 @@
       jobsByStatus,
       getAllDrivers,
       getDriverJobs,
-      getJobByID
+      getJobByID,
+      getDriverFuelbyStatus,
     }
   })();
   
@@ -136,7 +179,7 @@
       });
     })
 
-    // not finished
+    
     const editJobByID = ((obj, id) => {
       db.collection('jobs').doc(id).update({
         client: obj.client,
@@ -170,9 +213,18 @@
         console.log("Error removing document ", err)
       })
     });
+
+    const deleteFuelEntry = ((id) => {
+      db.collection('fuel').doc(id).delete()
+      .then(console.log('Document Successfully Deleted'))
+      .catch(err => {
+        console.log("Error removing document ", err)
+      })
+    });
     
     return {
       deleteJob,
+      deleteFuelEntry,
     }
   })();
   
