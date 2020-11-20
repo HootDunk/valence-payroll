@@ -28,6 +28,6 @@ form{
   display: none;
 } */
 
-/* #fuelRecords {
+.toggle-hide.owner-operator {
   display: none;
-} */
+}

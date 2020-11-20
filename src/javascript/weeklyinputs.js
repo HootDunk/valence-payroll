@@ -10,6 +10,9 @@ const jobForm = document.getElementById('editJobForm');
 const tableBody = document.querySelector('#tableBody');
 const fuelForm = document.getElementById('fuelForm');
 const fuelTB = document.getElementById('fuelTable');
+const toggleHide = document.querySelectorAll('.toggle-hide');
+const toggleHideOwnerOp = document.querySelectorAll('.toggle-hide.owner-operator');
+const toggleHideSalary = document.querySelectorAll('.toggle-hide.salary');
 
 // development function for testing/validating the data being recieved is the data that I want
 const logger = (data) => {
@@ -31,7 +34,7 @@ class Driver {
       this.id = doc.data().driverID;
       this.fname = doc.data().driverFname;
       this.lname  = doc.data().driverLname;
-      this.driverType = doc.data().type;
+      this.type = doc.data().driverType;
   }
 }
 
@@ -55,7 +58,7 @@ const populateDropdown = (data) => {
   const driverIDs = [];
   if(data.length){
       data.forEach((doc) => {
-          // checks if the current driver has been included or not
+          // checks if the current driver is in the driverIDs list (to make sure we don't have duplicates)
           // can be multiple jobs per driver but we only need his info once
           if(!driverIDs.includes(doc.data().driverID)){
             // create driver object
@@ -72,7 +75,7 @@ const populateDropdown = (data) => {
       const dropdown = document.getElementById('driver');
       drivers.forEach((driver) => {
           const option = `
-              <option class="driver-option" data-id=${driver.id}>${driver.lname}, ${driver.fname}</option>
+              <option class="driver-option" data-type="${driver.type}" data-id=${driver.id}>${driver.lname}, ${driver.fname} (${driver.type})</option>
           `;
           html += option;
       })
@@ -81,13 +84,27 @@ const populateDropdown = (data) => {
       //here is where the function for handling the display will go
       document.querySelectorAll('.driver-option').forEach(option => {
         option.addEventListener('click', event => {
-          //renders each drivers jobs on click
+          // Hide display elements
+          toggleHide.forEach(element => {
+            element.style.display = "none";
+          })
+          // show elements of .toggle-display.owner-operator.salary
+          // showUniversal()
+          // get variables to conditionally display data
           let driverID = event.target.dataset.id;
+          let driverType = event.target.dataset.type;
           db.read.getDriverJobs(renderRows, 1, driverID)
-
-          //need conditionals here, maybe. could add driver type in the above html and use it to handle the conditional here
-          db.read.getDriverFuelbyStatus(renderFuelRows, driverID, 1);
-          
+          if (driverType == "owner-operator"){
+            toggleHideOwnerOp.forEach(element => {
+              element.style.display = "revert";
+            })
+            db.read.getDriverFuelbyStatus(renderFuelRows, driverID, 1);
+          }
+          else if (driverType == "salary"){
+            toggleHideSalary.forEach(element => {
+              element.style.display = "revert";
+            })
+          }
         })
       })
   }
@@ -160,7 +177,7 @@ const renderFuelRows = (data) => {
     fuelTB.innerHTML = html;
 }
 else {
-    console.log('no data')
+    console.log('no fuel entries')
     // deletes the last remaining row without need to refresh the page
     if (fuelTB.rows.length == 1){
       fuelTB.deleteRow(0);
@@ -199,9 +216,7 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
       // call function to get job info and function to set modal form values
       db.read.getJobByID(setJobFormValues, jobID)
   }
-  else if(event.target.className === "btn btn-outline-danger btn-md"){
-    console.log(event.target.dataset.id)
-  }
+
   //add button to toggle jobstatus here (add button on html as well)
   
 });
@@ -210,6 +225,8 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
 fuelTB.addEventListener('click', (event) => {
   // console.log(event.target.dataset.id)
   db.deleteData.deleteFuelEntry(event.target.dataset.id)
+  // Uncomment once page is finished
+  // fuelForm.reset();
 })
 
 /** Modal button event listeners **/
@@ -245,6 +262,11 @@ fuelForm.addEventListener('submit', (event) => {
 
 
 
+
+
+
+
+// Create the change listener for the Adjustment tables
 
 
 // on this page we populate the dropdown based on jobs with a status of 1
