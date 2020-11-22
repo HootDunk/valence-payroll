@@ -8,6 +8,39 @@
       });
   }
   
+
+  // module for writing client side dates
+  const dateInfo = (() => {
+    const getWeekNum = () => {
+      let now = new Date();
+      let onejan = new Date(now.getFullYear(), 0, 1);
+      return Math.ceil( (((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7 );
+    }
+    const getYear = () => {
+      const d = new Date();
+      return d.getFullYear();
+    }
+    const getMonth = () => {
+      const d = new Date();
+      return d.getMonth() + 1;
+    }
+    const getDay = () => {
+      const d = new Date();
+      return d.getDate();
+    }
+    const getDate = () => {
+      return `${getYear()}-${getMonth()}-${getDay()}`
+    }
+
+    return {
+      getWeekNum,
+      getYear,
+      getMonth,
+      getDate,
+    }
+  })();
+
+
   // Create
   const create = (() => {
     const newJob = (obj) => {
@@ -54,10 +87,95 @@
           console.error("Error adding document: ", error);
       });
     }
+    // function is kind of big because I did the conditionals here.. hindsight would have put them in the other js file to keep database functions as close to 
+    // reading in data as possible.
+    const newAdjustments = (setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverID) => { 
+      console.log('testingtestingtesting')
+      console.log(currentDriverType) 
+      if(currentDriverType == "owner-operator"){
+        db.collection('adjustments').add({
+          driverID: currentDriverID,
+          driverType: currentDriverType,
+          reimbursements: {
+            detention: parseInt(adjustmentsForm['detention'].value),
+            extras: parseInt(adjustmentsForm['extras'].value),
+          },
+          deductions: {
+            insurance: parseInt(adjustmentsForm['insurance'].value),
+            reserve: parseInt(adjustmentsForm['reserve-ownerOp'].value),
+          },
+          month: dateInfo.getMonth(),
+          year: dateInfo.getYear(),
+          weekNum: dateInfo.getWeekNum(),
+          date: dateInfo.getDate(),
+          adjustmentStatus: 1,
+        })
+        .then(function(docRef) {
+          // call function to show changes
+          console.log("Document written with ID: ", docRef.id);
+          docRef.get().then(function(doc) {
+            if (doc.exists) {
+                setAdjustmentValues(doc);
+                adjustmentsForm.reset();
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("document does not exist");
+            }
+          }).catch(function(error) {
+              console.log("Error getting document:", error);
+          })
+        })
+        .catch(function(error) {
+            console.error("Error adding document: ", error);
+        })
+      }
+      else if (currentDriverType == "salary"){
+        db.collection('adjustments').add({
+          driverID: currentDriverID,
+          driverType: currentDriverType,
+          reimbursements: {
+            toll: parseInt(adjustmentsForm['toll'].value),
+            scale: parseInt(adjustmentsForm['scale'].value),
+            extras: parseInt(adjustmentsForm['extras'].value),
+          },
+          deductions: {
+            insurance: parseInt(adjustmentsForm['insurance'].value),
+            accidental: parseInt(adjustmentsForm['accidental'].value),
+            cashAdvance: parseInt(adjustmentsForm['cashAdvance'].value),
+            escrow: parseInt(adjustmentsForm['escrow'].value),
+            reserve: parseInt(adjustmentsForm['reserve-salary'].value),
+          },
+          month: dateInfo.getMonth(),
+          year: dateInfo.getYear(),
+          weekNum: dateInfo.getWeekNum(),
+          date: dateInfo.getDate(),
+          adjustmentStatus: 1,
+        })
+        .then(function(docRef) {
+          // call function to show changes
+          console.log("Document written with ID: ", docRef.id);
+          docRef.get().then(function(doc) {
+            if (doc.exists) {
+                setAdjustmentValues(doc);
+                adjustmentsForm.reset();
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("document does not exist");
+            }
+          }).catch(function(error) {
+              console.log("Error getting document:", error);
+          })
+        })
+        .catch(function(error) {
+            console.error("Error adding document: ", error);
+        })
+      }
+    }
   
     return {
       newJob,
       fuelEntry,
+      newAdjustments,
     }
   })();
   
@@ -65,7 +183,7 @@
   const read = (() => {
     // gets active job documents as a snapshot(listens for changes)
     // myFunction is placeholder for whichever UI function we are using in the other .js files 
-    // could add 3rd param that dicates whether its an onSnapshotListener or just a simple call
+    // 3rd param dictates whether its an onSnapshotListener or just a simple call
     const jobsByStatus = ((myFunction, jobStatus, listener) => {
       if(listener){
         
@@ -94,16 +212,6 @@
           .onSnapshot(Snapshot => {
             myFunction(Snapshot.docs);
           })
-      
-      //add listener param to include a version w/o snapshot and add if statement aboove
-      // else {
-      //   db.collection('fuel')
-      //     .where("jobStatus", "==", jobStatus)
-      //     .get()
-      //     .then(Snapshot => {
-      //       myFunction(Snapshot.docs)
-      //     })
-      // }
   });
 
   
@@ -122,36 +230,55 @@
         .onSnapshot(Snapshot => {
           myFunction(Snapshot.docs);
         })
-      //   .get()
-      //   .then(Snapshot => {
-      //     myFunction(Snapshot.docs)
-      // })
     });
-
+    
+    // poorly named, should be get job by driver id
     const getJobByID = ((myFunction, driverID) => {
-
       var docRef = db.collection("jobs").doc(driverID);
 
       docRef.get().then(doc => {
         if (doc.exists) {
           myFunction(doc)
       } else {
-          // doc.data() will be undefined in this case
           console.log("No such document!");
       }
       }).catch(function(error) {
           console.log("Error getting document:", error);
       })
-      // db.collection('jobs')
-      //   .where("driverID", "==", driverID)
-      //   .get()
-      //   .then(doc => {
-      //     myFunction(doc)
-      //   })
-      //   .catch(error => {
-      //     console.log(error)
-      // })
     });
+
+
+    
+    const getAdjustmentByID = ((myFunction, adjustmentStatus, driverID) => {
+      // review docs about this type of query and need to do forEach
+      db.collection("adjustments")
+      .where("adjustmentStatus", "==", adjustmentStatus)
+      .where("driverID", "==", driverID)
+      .get()
+      .then(function(snapshot) {
+          snapshot.forEach(function(doc) {
+            myFunction(doc)
+          })
+      }).catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
+    });
+
+    const adjustmentsTest = (() => {
+      db.collection("adjustments")
+      .where("driverType", "==", "salary")
+      .get()
+      .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+              // doc.data() is never undefined for query doc snapshots
+              console.log(doc.id, " => ", doc.data());
+          });
+      })
+      .catch(function(error) {
+          console.log("Error getting documents: ", error);
+      });
+
+    })
   
   
     return{
@@ -160,13 +287,15 @@
       getDriverJobs,
       getJobByID,
       getDriverFuelbyStatus,
+      getAdjustmentByID,
+      adjustmentsTest,
     }
   })();
   
   
   // Update
   const update = (() => {
-  
+
     const sendToPayroll = ((id) => {
       db.collection('jobs').doc(id).update({
         jobStatus: 1,
@@ -227,7 +356,6 @@
       deleteFuelEntry,
     }
   })();
-  
   
   
   // call to logout

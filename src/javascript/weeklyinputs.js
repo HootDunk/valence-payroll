@@ -13,6 +13,12 @@ const fuelTB = document.getElementById('fuelTable');
 const toggleHide = document.querySelectorAll('.toggle-hide');
 const toggleHideOwnerOp = document.querySelectorAll('.toggle-hide.owner-operator');
 const toggleHideSalary = document.querySelectorAll('.toggle-hide.salary');
+const adjustmentsForm = document.getElementById('adjustmentsForm');
+const adjustmentsTB = document.querySelectorAll('#adjustmentsTB tbody .datafield')
+const formControlSalary = document.querySelectorAll('.form-control.salary');
+const formControlOwnerOperator = document.querySelectorAll('.form-control.owner-operator');
+
+
 
 // development function for testing/validating the data being recieved is the data that I want
 const logger = (data) => {
@@ -38,7 +44,6 @@ class Driver {
   }
 }
 
-
 // JobAttributes class to create objects to pass to the UpdateJobsByID database function
 class JobAttributes {
   constructor(jobForm){
@@ -51,8 +56,7 @@ class JobAttributes {
   }
 }
 
-// may want to break this function up
-
+// may want to break this function up, could definitely break it up
 const populateDropdown = (data) => {
   const drivers = [];
   const driverIDs = [];
@@ -61,11 +65,8 @@ const populateDropdown = (data) => {
           // checks if the current driver is in the driverIDs list (to make sure we don't have duplicates)
           // can be multiple jobs per driver but we only need his info once
           if(!driverIDs.includes(doc.data().driverID)){
-            // create driver object
             const driver = new Driver(doc)
-            // add object to list
-            drivers.push(driver)
-            //add driverID to the list so it isn't duplicated
+            drivers.push(driver)  
             driverIDs.push(doc.data().driverID)
           }
       })
@@ -88,28 +89,34 @@ const populateDropdown = (data) => {
           toggleHide.forEach(element => {
             element.style.display = "none";
           })
-          // show elements of .toggle-display.owner-operator.salary
-          // showUniversal()
-          // get variables to conditionally display data
-          let driverID = event.target.dataset.id;
-          let driverType = event.target.dataset.type;
+          const driverID = event.target.dataset.id;
+          const driverType = event.target.dataset.type;
+
+          setRequiredStatus('reset')
+          clearAdjustmentsSection()
           db.read.getDriverJobs(renderRows, 1, driverID)
+          db.read.getAdjustmentByID(setAdjustmentValues, 1, driverID)
+
           if (driverType == "owner-operator"){
+            // show the owner op from fields
             toggleHideOwnerOp.forEach(element => {
               element.style.display = "revert";
-            })
+            });
+            setRequiredStatus("owner-operator");
             db.read.getDriverFuelbyStatus(renderFuelRows, driverID, 1);
+            //getadjustments()
           }
           else if (driverType == "salary"){
+            // show the salary from fields
             toggleHideSalary.forEach(element => {
               element.style.display = "revert";
             })
+            setRequiredStatus("salary");
           }
         })
       })
   }
   else {
-    
       console.log('no drivers found')
       let driverOption = document.querySelector('.driver-option');
       if(driverOption){
@@ -118,8 +125,6 @@ const populateDropdown = (data) => {
       }
   }
 }
-
-
 
 const renderRows = (data) => {
     if(data.length){
@@ -182,14 +187,10 @@ else {
     if (fuelTB.rows.length == 1){
       fuelTB.deleteRow(0);
     }
-
 }
 }
-
-
 
 // everytime edit button is pressed, we set the form values to the corresponding job
-
 const setJobFormValues = (doc) => {
   // give buttons a data-id that matches the job
   modalSubmitBtn.dataset.id = doc.id;
@@ -221,13 +222,6 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
   
 });
 
-// Event listener for delete button on the fuel table
-fuelTB.addEventListener('click', (event) => {
-  // console.log(event.target.dataset.id)
-  db.deleteData.deleteFuelEntry(event.target.dataset.id)
-  // Uncomment once page is finished
-  // fuelForm.reset();
-})
 
 /** Modal button event listeners **/
 // Clicking submit, calls the db update function and updates the job
@@ -256,45 +250,84 @@ fuelForm.addEventListener('submit', (event) => {
   const day = d.getDate();
   const weekNum = getWeek();
   db.create.fuelEntry(fuelForm, currentDriverId, year, month, day, weekNum);
+})
 
-
+// Event listener for delete button on the fuel table
+fuelTB.addEventListener('click', (event) => {
+  db.deleteData.deleteFuelEntry(event.target.dataset.id)
+  // Uncomment once page is finished
+  fuelForm.reset();
 })
 
 
+adjustmentsForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const driverSelect = document.getElementById('driver');
+  const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+  const currentDriverID = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+  // console.log(adjustmentsTB)
+  db.create.newAdjustments(setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverID)
+  
+})
 
 
+// need to give the edit button the data-id of the document
+const setAdjustmentValues = (doc) => {
+  if (doc.data().driverType == 'owner-operator'){
+    adjustmentsTB[2].innerHTML = doc.data().reimbursements.detention;
+    adjustmentsTB[3].innerHTML = doc.data().reimbursements.extras;
+    adjustmentsTB[4].innerHTML = doc.data().deductions.insurance;
+    adjustmentsTB[8].innerHTML = doc.data().deductions.reserve;
+  }
+  else if (doc.data().driverType == "salary"){
+    adjustmentsTB[0].innerHTML = doc.data().reimbursements.toll;
+    adjustmentsTB[1].innerHTML = doc.data().reimbursements.scale;
+    adjustmentsTB[3].innerHTML = doc.data().reimbursements.extras;
+    adjustmentsTB[4].innerHTML = doc.data().deductions.insurance;
+    adjustmentsTB[5].innerHTML = doc.data().deductions.accidental;
+    adjustmentsTB[6].innerHTML = doc.data().deductions.cashAdvance;
+    adjustmentsTB[7].innerHTML = doc.data().deductions.escrow;
+    adjustmentsTB[8].innerHTML = doc.data().deductions.reserve;
+  }
+}
 
+const clearAdjustmentsSection = () => {
+  adjustmentsTB.forEach((element) => {
+    element.innerHTML = "";
+  })
+  
+}
 
+const setRequiredStatus = (type) => {
+  if(type == "salary"){
+    formControlOwnerOperator.forEach((input) => {
+      input.required = false;
+    })
+  }
+  else if(type == "owner-operator"){
+    formControlSalary.forEach((input) => {
+      input.required = false;
+    })
+  }
+  else if (type == "reset"){
+    formControlOwnerOperator.forEach((input) => {
+      input.required = true;
+    })
+    formControlSalary.forEach((input) => {
+      input.required = true;
+    })
+  }
+}
 
-// Create the change listener for the Adjustment tables
-
-
-// on this page we populate the dropdown based on jobs with a status of 1
-// these are jobs that have been confirmed by dispatchers but they haven't
-// been confirmed by moe
-
-// render dropdown. create list of driver names and driver ids
-// give each dropdown the data-id of driverID
-// set to true so so it is a snapshot listener(changes will show)
 db.read.jobsByStatus(populateDropdown, 1, true)
 
+// db.read.adjustmentsTest();
 
 
-// clicking a driver retrieves all of the jobs with a status of a one and a matching driverID
-    // completed, in evenet listener above
+// fix the fuel records event listener so that it gets called from the delete button and not the table itself
+// write function to read and display adjustment data if it's already been created
+// edit button should also only show if data exists. opposite is true for submit button\
 
-// these jobs and the fuel and adjustments forms are displayed
-    // 
-
-
-// doing so creates the week collection and sets the jobStatus to 2 or 3 (depending on front-end idea, though changes would need to be made for this)
-// meaning the driver wont have jobs with this status anymore
-
-
-// this collection will have a field like 'processed: false'
-// unprocessed jobs will show up in the process payroll tab
-// submitting them will set processed to true
-
-
-// need to add event listener for the submit button and delete button on the modal
-// then continue to fuel and 
+// last thing will be to add the complete/total submit button which will update the status of each document. not sure
+// if I've totally figured that part out yet or not. yeah I have, each unique document has it's id stored on some part of the page already.
+// just need to grab those references. first start by just printing each one to the console and make sure they are what you think they are.
