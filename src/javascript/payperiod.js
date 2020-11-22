@@ -24,7 +24,6 @@ const showTables = (job) => {
     }
 }
 
-
 // Figure out a different counter approach. (one that isn't global)
 
 let count = 0;
@@ -76,14 +75,6 @@ activeJobs.push(existingJob);
 
 // db.read.jobsByStatus(console.log(doc.data()), 1)
 
-
-
-
-
-
-
-
-
 // Change this
 // Populate the dropdown and give each dropdown an ID that will correspond to their empID
 const populateDropdown = (activeJobs) =>{
@@ -123,3 +114,9 @@ const clearDriverInfo = () => {
         }
     })
 }
+
+
+// load in dropdown data and give each one a data-id of the job id
+// use job id to process requests for each driver
+// render function should check driverType field
+// then display the data

@@ -24,6 +24,10 @@ form{
   margin-top: 20px;
 }
 
+#toPayrollBtn {
+  display: none;
+}
+
 /* #completedJobs {
   display: none;
 } */

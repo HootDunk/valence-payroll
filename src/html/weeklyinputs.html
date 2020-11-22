@@ -203,7 +203,7 @@
                 </div>
               </div>
               <button type="submit" class="btn btn-primary mt-2" id="submitAdjustments">Submit Adjustments</button>
-              <button type="submit" class="btn btn-warning mt-2" id="editAdjustments">Edit Adjustments</button>
+              <button type="button" class="btn btn-warning mt-2" id="editAdjustments">Edit Adjustments</button>
           </form>
         </div>
 
@@ -267,6 +267,9 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="container d-flex justify-content-center">
+    <button id="toPayrollBtn" type="button" class="btn btn-success btn-lg mt-4 mb-4">Send to Payroll</button>
   </div>
     
 
@@ -337,6 +340,114 @@
           </div>
 
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="adjModalOwnerOp" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header pb-0 pt-0">
+          <h1 class="modal-title" id="exampleModalLongTitle">Adjustments</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body p-0">
+          <form id="adjModalFormOP">
+            <h3 class="mt-0">Reimbursements</h3>
+            <div class="row form-group">
+              <div class="col">
+                <label for="detention">Detention/Layover:</label>
+                <input type="text" class="form-control" id="detention"  required>
+              </div>
+              <div class="col">
+                <label for="extras">Extras:</label>
+                <input type="number" class="form-control"  id="extras" required>
+              </div>
+            </div>
+            <h3>Deductions</h3>
+            <div class="row form-group">
+              <div class="col">
+                <label for="insurance">Insurance:</label>
+                <input type="text" class="form-control" id="insurance"  required>
+              </div>
+              <div class="col">
+                <label for="reserve">Reserve:</label>
+                <input type="number" class="form-control"  id="reserve" required>
+              </div>
+            </div>
+            <button id="updateAdjOwnerOp" type="submit" class="btn btn-success">Update</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </form>
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="adjModalSalary" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header pb-0 pt-0">
+          <h1 class="modal-title" id="exampleModalLongTitle">Adjustments</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body p-0">
+          <form id="adjModalFormSalary">
+            <h3 class="mt-0">Reimbursements</h3>
+            <div class="row form-group">
+              <div class="col">
+                <label for="toll">Toll:</label>
+                <input type="text" class="form-control" id="toll" required>
+              </div>
+              <div class="col">
+                <label for="scale">Scale:</label>
+                <input type="number" class="form-control"  id="scale" required>
+              </div>
+              <div class="col">
+                <label for="extras">Extras:</label>
+                <input type="number" class="form-control"  id="extras" required>
+              </div>
+            </div>
+            <h3>Deductions</h3>
+            <div class="row form-group">
+              <div class="col">
+                <label for="insurance">Insurance:</label>
+                <input type="text" class="form-control" id="insurance" required>
+              </div>
+              <div class="col">
+                <label for="accidental">Accidental:</label>
+                <input type="number" class="form-control"  id="accidental" required>
+              </div>
+              <div class="col">
+                <label for="cashAdvance">Cash Advance:</label>
+                <input type="number" class="form-control"  id="cashAdvance" required>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col">
+                <label for="escrow">Escrow:</label>
+                <input type="text" class="form-control" id="escrow"  required>
+              </div>
+              <div class="col">
+                <label for="reserve">Reserve:</label>
+                <input type="number" class="form-control"  id="reserve" required>
+              </div>
+            </div>
+            <button id="updateAdjSalary" type="submit" class="btn btn-success">Update</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>

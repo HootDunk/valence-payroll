@@ -17,8 +17,11 @@ const adjustmentsForm = document.getElementById('adjustmentsForm');
 const adjustmentsTB = document.querySelectorAll('#adjustmentsTB tbody .datafield')
 const formControlSalary = document.querySelectorAll('.form-control.salary');
 const formControlOwnerOperator = document.querySelectorAll('.form-control.owner-operator');
-
-
+const adjModalFormSalary = document.getElementById('adjModalFormSalary');
+const adjModalFormOwnerOp = document.getElementById('adjModalFormOP');
+const toPayrollBtn = document.getElementById('toPayrollBtn');
+// const updateAdjOwnerOp = document.getElementById('updateAdjOwnerOp');
+// const updateAdjSalary = document.getElementById('salary');
 
 // development function for testing/validating the data being recieved is the data that I want
 const logger = (data) => {
@@ -94,9 +97,11 @@ const populateDropdown = (data) => {
 
           setRequiredStatus('reset')
           clearAdjustmentsSection()
+          adjustmentsForm['submitAdjustments'].style.display = "revert";
+          
+
           db.read.getDriverJobs(renderRows, 1, driverID)
           db.read.getAdjustmentByID(setAdjustmentValues, 1, driverID)
-
           if (driverType == "owner-operator"){
             // show the owner op from fields
             toggleHideOwnerOp.forEach(element => {
@@ -104,7 +109,7 @@ const populateDropdown = (data) => {
             });
             setRequiredStatus("owner-operator");
             db.read.getDriverFuelbyStatus(renderFuelRows, driverID, 1);
-            //getadjustments()
+            
           }
           else if (driverType == "salary"){
             // show the salary from fields
@@ -208,7 +213,7 @@ const setJobFormValues = (doc) => {
 
 
 /** Table button event listeners **/
-// Event listeners for edit buttons call a modal with a form to edit the job
+// edit completed jobs eventlistener (edit button)
 document.querySelector('table tbody').addEventListener('click', (event) => {
   // get ID from button, call update.method(id)/delete.method(id) 
   if(event.target.className === "btn btn-outline-warning btn-md"){
@@ -217,8 +222,6 @@ document.querySelector('table tbody').addEventListener('click', (event) => {
       // call function to get job info and function to set modal form values
       db.read.getJobByID(setJobFormValues, jobID)
   }
-
-  //add button to toggle jobstatus here (add button on html as well)
   
 });
 
@@ -244,6 +247,8 @@ fuelForm.addEventListener('submit', (event) => {
   const driverSelect = document.getElementById('driver');
   // get selected drivers id
   const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+
+  // REFACTOR
   const d = new Date();
   const year = d.getFullYear();
   const month = d.getMonth() + 1;
@@ -259,19 +264,16 @@ fuelTB.addEventListener('click', (event) => {
   fuelForm.reset();
 })
 
-
+//submit button event listener
 adjustmentsForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const driverSelect = document.getElementById('driver');
   const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
   const currentDriverID = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
-  // console.log(adjustmentsTB)
   db.create.newAdjustments(setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverID)
-  
 })
 
-
-// need to give the edit button the data-id of the document
+// need to give the edit button the data-id of the document and hide the submit adjustments button
 const setAdjustmentValues = (doc) => {
   if (doc.data().driverType == 'owner-operator'){
     adjustmentsTB[2].innerHTML = doc.data().reimbursements.detention;
@@ -289,15 +291,57 @@ const setAdjustmentValues = (doc) => {
     adjustmentsTB[7].innerHTML = doc.data().deductions.escrow;
     adjustmentsTB[8].innerHTML = doc.data().deductions.reserve;
   }
+  adjustmentsForm['submitAdjustments'].style.display = "none";  //hide submit button
+  adjustmentsForm['editAdjustments'].dataset.id = doc.id; // give edit button the document id
+  adjustmentsForm['editAdjustments'].dataset.type = doc.data().driverType;
 }
 
+//edit adjustments event listener
+adjustmentsForm['editAdjustments'].addEventListener('click', (event) => {
+  if(event.target.dataset.type == "salary"){
+    adjModalFormSalary['toll'].value = adjustmentsTB[0].innerHTML;
+    adjModalFormSalary['scale'].value = adjustmentsTB[1].innerHTML;
+    adjModalFormSalary['extras'].value = adjustmentsTB[3].innerHTML;
+    adjModalFormSalary['insurance'].value = adjustmentsTB[4].innerHTML;
+    adjModalFormSalary['accidental'].value = adjustmentsTB[5].innerHTML;
+    adjModalFormSalary['cashAdvance'].value = adjustmentsTB[6].innerHTML;
+    adjModalFormSalary['escrow'].value = adjustmentsTB[7].innerHTML;
+    adjModalFormSalary['reserve'].value = adjustmentsTB[8].innerHTML;
+    $("#adjModalSalary").modal()
+  }
+  else if (event.target.dataset.type == "owner-operator"){
+    adjModalFormOwnerOp['detention'].value = adjustmentsTB[2].innerHTML;
+    adjModalFormOwnerOp['extras'].value = adjustmentsTB[3].innerHTML;
+    adjModalFormOwnerOp['insurance'].value = adjustmentsTB[4].innerHTML;
+    adjModalFormOwnerOp['reserve'].value = adjustmentsTB[8].innerHTML;
+    $("#adjModalOwnerOp").modal()
+  }
+})
+
+// proper use of modal and form for error catching
+adjModalFormOwnerOp.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const adjID = adjustmentsForm['editAdjustments'].dataset.id;
+  db.update.editAdjustmentsOwnerOp(adjModalFormOwnerOp, adjID)
+  $("#adjModalOwnerOp").modal("hide");
+})
+
+adjModalFormSalary.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const adjID = adjustmentsForm['editAdjustments'].dataset.id
+  db.update.editAdjustmentsSalary(adjModalFormSalary, adjID)
+  $("#adjModalSalary").modal("hide");
+})
+
+
+// removes text in the adjustments table
 const clearAdjustmentsSection = () => {
   adjustmentsTB.forEach((element) => {
     element.innerHTML = "";
   })
-  
 }
 
+// removes required status of the hidden elements or re-sets status to true for all inputs
 const setRequiredStatus = (type) => {
   if(type == "salary"){
     formControlOwnerOperator.forEach((input) => {
@@ -319,14 +363,21 @@ const setRequiredStatus = (type) => {
   }
 }
 
+//function to display the payrollbtn  (maybe have it display a modal saying it was successful and then right after 
+// the modal gets close the page gets reloaded)
+
+
+
+
 db.read.jobsByStatus(populateDropdown, 1, true)
 
-// db.read.adjustmentsTest();
+
 
 
 // fix the fuel records event listener so that it gets called from the delete button and not the table itself
-// write function to read and display adjustment data if it's already been created
-// edit button should also only show if data exists. opposite is true for submit button\
+// fix the jobs modal so that the buttons are in the form and the update button is type="submit" with a form event listener
+
+
 
 // last thing will be to add the complete/total submit button which will update the status of each document. not sure
 // if I've totally figured that part out yet or not. yeah I have, each unique document has it's id stored on some part of the page already.

@@ -55,25 +55,6 @@ loginForm.addEventListener("submit", (e) => {
       displayError(error);
     })
   }).catch(function(error) {
-    // reference to our modal used for displaying errors to the user
-    // const modalTitle = document.querySelector('.modal-header');
-    // const modalBody = document.querySelector('.modal-body');
-    // var errorCode = error.code;
-    // var errorMessage = error.message;
-    // Handle Errors here.
-    // if(errorCode == 'auth/user-not-found'){
-    //   modalTitle.textContent = "Email address not recognized";
-    //   modalBody.textContent = "Re-type your email address and try again"
-    // }
-    // else if (errorCode == 'auth/wrong-password'){
-    //   modalTitle.textContent = "Password is incorrect";
-    //   modalBody.textContent = "Re-type your password and try again"
-    // }
-    // else {
-    //   modalTitle.textContent = errorCode;
-    //   modalBody.textContent = errorMessage;
-    // }
-    // $('#signInModal').modal()
     displayError(error);
   });
 });

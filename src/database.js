@@ -249,19 +249,32 @@
 
 
     
+    // const getAdjustmentByID = ((myFunction, adjustmentStatus, driverID) => {
+    //   // review docs about this type of query and need to do forEach
+    //   db.collection("adjustments")
+    //   .where("adjustmentStatus", "==", adjustmentStatus)
+    //   .where("driverID", "==", driverID)
+    //   .get()
+    //   .then(function(snapshot) {
+    //       snapshot.forEach(function(doc) {
+    //         myFunction(doc)
+    //       })
+    //   }).catch(function(error) {
+    //       console.log("Error getting documents: ", error);
+    //   });
+    // });
+
+
     const getAdjustmentByID = ((myFunction, adjustmentStatus, driverID) => {
       // review docs about this type of query and need to do forEach
       db.collection("adjustments")
       .where("adjustmentStatus", "==", adjustmentStatus)
       .where("driverID", "==", driverID)
-      .get()
-      .then(function(snapshot) {
-          snapshot.forEach(function(doc) {
-            myFunction(doc)
-          })
-      }).catch(function(error) {
-          console.log("Error getting documents: ", error);
-      });
+      .onSnapshot((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          myFunction(doc)
+        })
+      })
     });
 
     const adjustmentsTest = (() => {
@@ -325,10 +338,56 @@
         console.log("Error updating document: ", error);
       });
     })
+
+    const editAdjustmentsOwnerOp = ((form, id) => {
+      db.collection('adjustments').doc(id).update({
+        reimbursements: {
+          detention: parseInt(form['detention'].value),
+          extras: parseInt(form['extras'].value),
+        },
+        deductions: {
+          insurance: parseInt(form['insurance'].value),
+          reserve: parseInt(form['reserve'].value),
+        },
+      })
+      .then(
+        console.log("document successfully updated!")
+        
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
+    const editAdjustmentsSalary = ((form, id) => {
+      db.collection('adjustments').doc(id).update({
+        reimbursements: {
+          extras: parseInt(form['extras'].value),
+          scale: parseInt(form['scale'].value),
+          toll: parseInt(form['toll'].value),
+        },
+        deductions: {
+          accidental: parseInt(form['accidental'].value),
+          cashAdvance: parseInt(form['cashAdvance'].value),
+          escrow: parseInt(form['escrow'].value),
+          insurance: parseInt(form['insurance'].value),
+          reserve: parseInt(form['reserve'].value),
+        },
+      })
+      .then(
+        console.log("document successfully updated!")
+        
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
   
     return {
       sendToPayroll,
       editJobByID,
+      editAdjustmentsOwnerOp,
+      editAdjustmentsSalary,
     }
   })();
   
