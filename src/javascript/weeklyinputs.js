@@ -20,22 +20,7 @@ const formControlOwnerOperator = document.querySelectorAll('.form-control.owner-
 const adjModalFormSalary = document.getElementById('adjModalFormSalary');
 const adjModalFormOwnerOp = document.getElementById('adjModalFormOP');
 const toPayrollBtn = document.getElementById('toPayrollBtn');
-// const updateAdjOwnerOp = document.getElementById('updateAdjOwnerOp');
-// const updateAdjSalary = document.getElementById('salary');
 
-// development function for testing/validating the data being recieved is the data that I want
-const logger = (data) => {
-  data.forEach(doc => {
-    console.log(doc.data())
-
-  })
-}
-
-const getWeek = () => {
-  let now = new Date();
-  let onejan = new Date(now.getFullYear(), 0, 1);
-  return Math.ceil( (((now.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7 );
-}
 
 // creates driver object from the job document, used to populate and sort array for the dropdown
 class Driver {
@@ -88,20 +73,22 @@ const populateDropdown = (data) => {
       //here is where the function for handling the display will go
       document.querySelectorAll('.driver-option').forEach(option => {
         option.addEventListener('click', event => {
-          // Hide display elements
+          // Hide all elements
           toggleHide.forEach(element => {
             element.style.display = "none";
           })
           const driverID = event.target.dataset.id;
           const driverType = event.target.dataset.type;
 
-          setRequiredStatus('reset')
-          clearAdjustmentsSection()
-          adjustmentsForm['submitAdjustments'].style.display = "revert";
+          setRequiredStatus('reset') // sets all form inputs to required
+          clearAdjustmentsSection() // text in adjustments table is removed
+          adjustmentsForm['submitAdjustments'].style.display = "revert"; // Unhides the submit button
           
 
           db.read.getDriverJobs(renderRows, 1, driverID)
           db.read.getAdjustmentByID(setAdjustmentValues, 1, driverID)
+          
+          // display elements that match the driver type
           if (driverType == "owner-operator"){
             // show the owner op from fields
             toggleHideOwnerOp.forEach(element => {
@@ -109,7 +96,6 @@ const populateDropdown = (data) => {
             });
             setRequiredStatus("owner-operator");
             db.read.getDriverFuelbyStatus(renderFuelRows, driverID, 1);
-            
           }
           else if (driverType == "salary"){
             // show the salary from fields
@@ -147,7 +133,7 @@ const renderRows = (data) => {
                     <td>${job.miles}</td>
                     <td>${job.deadline}</td>
 
-                    <td><button data-id=${doc.id} class="btn btn-outline-warning btn-md">Edit</button></td>
+                    <td><button id="jobEdit" data-id=${doc.id} class="btn btn-outline-warning btn-md">Edit</button></td>
                 </tr>
             `;
             html += tr;
@@ -178,7 +164,7 @@ const renderFuelRows = (data) => {
               <td>${obj.gallons}</td>
               <td>$${obj.amount}</td>
 
-              <td><button data-id=${doc.id} class="btn btn-outline-danger btn-md">Delete</button></td>
+              <td><button id="FuelDeleteBtn" data-id=${doc.id} class="btn btn-outline-danger btn-md">Delete</button></td>
             </tr>
         `;
         
@@ -195,7 +181,22 @@ else {
 }
 }
 
-// everytime edit button is pressed, we set the form values to the corresponding job
+
+
+/** EDIT Completed Jobs  **/
+
+//listen for edit button click
+document.querySelector('table tbody').addEventListener('click', (event) => {
+  // get ID from button, call update.method(id)/delete.method(id)
+  if(event.target.className === "btn btn-outline-warning btn-md"){
+      const jobID = event.target.dataset.id;
+      // get job data and set corresponding form values
+      db.read.getJobByID(setJobFormValues, jobID)
+  }
+  
+});
+
+// Sets Job Form values and opens the modal
 const setJobFormValues = (doc) => {
   // give buttons a data-id that matches the job
   modalSubmitBtn.dataset.id = doc.id;
@@ -212,27 +213,14 @@ const setJobFormValues = (doc) => {
 }
 
 
-/** Table button event listeners **/
-// edit completed jobs eventlistener (edit button)
-document.querySelector('table tbody').addEventListener('click', (event) => {
-  // get ID from button, call update.method(id)/delete.method(id) 
-  if(event.target.className === "btn btn-outline-warning btn-md"){
-      
-      const jobID = event.target.dataset.id;
-      // call function to get job info and function to set modal form values
-      db.read.getJobByID(setJobFormValues, jobID)
-  }
-  
-});
+/** Edit Jobs Modal buttons **/
 
-
-/** Modal button event listeners **/
-// Clicking submit, calls the db update function and updates the job
-modalSubmitBtn.addEventListener('click', (event) => {
-  const jobID = event.target.dataset.id;
+jobForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const jobID = jobForm['submitJobEdit'].dataset.id;
   const jobInstance = new JobAttributes(jobForm);
-
   db.update.editJobByID(jobInstance, jobID);
+  $("#editJobModal").modal("hide");
 });
 
 // Clicking delete removes the job entirely
@@ -240,31 +228,30 @@ modalDeleteBtn.addEventListener('click', (event) => {
   db.deleteData.deleteJob(event.target.dataset.id)
 });
 
-//create a new fuel record on from submit. pass in 4 data fields + driverID and year and date
+
+/** Fuel Records **/
+
+// Create a new fuel record on from submit. pass in 4 data fields + driverID and year and date
 fuelForm.addEventListener('submit', (event) => {
   event.preventDefault();
   // gets reference to entire dropdown element
   const driverSelect = document.getElementById('driver');
-  // get selected drivers id
   const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
-
-  // REFACTOR
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
-  const weekNum = getWeek();
-  db.create.fuelEntry(fuelForm, currentDriverId, year, month, day, weekNum);
-})
-
-// Event listener for delete button on the fuel table
-fuelTB.addEventListener('click', (event) => {
-  db.deleteData.deleteFuelEntry(event.target.dataset.id)
-  // Uncomment once page is finished
+  db.create.fuelEntry(fuelForm, currentDriverId);
   fuelForm.reset();
 })
 
-//submit button event listener
+// Delete Fuel button
+fuelTB.addEventListener('click', (event) => {
+  if(event.target.className === "btn btn-outline-danger btn-md")
+    db.deleteData.deleteFuelEntry(event.target.dataset.id)
+    
+})
+
+
+/** Adjustments Section **/
+
+// Creating adjustments document on submit
 adjustmentsForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const driverSelect = document.getElementById('driver');
@@ -273,7 +260,8 @@ adjustmentsForm.addEventListener('submit', (event) => {
   db.create.newAdjustments(setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverID)
 })
 
-// need to give the edit button the data-id of the document and hide the submit adjustments button
+// Setting adjustment table values to match the record
+// change the display of the adjustments buttons and the send to payroll button
 const setAdjustmentValues = (doc) => {
   if (doc.data().driverType == 'owner-operator'){
     adjustmentsTB[2].innerHTML = doc.data().reimbursements.detention;
@@ -292,11 +280,16 @@ const setAdjustmentValues = (doc) => {
     adjustmentsTB[8].innerHTML = doc.data().deductions.reserve;
   }
   adjustmentsForm['submitAdjustments'].style.display = "none";  //hide submit button
+  adjustmentsForm['editAdjustments'].style.display = "revert";  // unhide the edit button
+  toPayrollBtn.style.display = "revert"; // unhide the send to payroll button
+
   adjustmentsForm['editAdjustments'].dataset.id = doc.id; // give edit button the document id
   adjustmentsForm['editAdjustments'].dataset.type = doc.data().driverType;
+
+  
 }
 
-//edit adjustments event listener
+// Opens the adjustments Model with corresponding table values
 adjustmentsForm['editAdjustments'].addEventListener('click', (event) => {
   if(event.target.dataset.type == "salary"){
     adjModalFormSalary['toll'].value = adjustmentsTB[0].innerHTML;
@@ -318,14 +311,14 @@ adjustmentsForm['editAdjustments'].addEventListener('click', (event) => {
   }
 })
 
-// proper use of modal and form for error catching
+// Udate and close Adjustments modal (Owner Op)when update button is pressed
 adjModalFormOwnerOp.addEventListener('submit', (event) => {
   event.preventDefault();
   const adjID = adjustmentsForm['editAdjustments'].dataset.id;
   db.update.editAdjustmentsOwnerOp(adjModalFormOwnerOp, adjID)
   $("#adjModalOwnerOp").modal("hide");
 })
-
+// Udate and close Adjustments modal (Salary)when update button is pressed
 adjModalFormSalary.addEventListener('submit', (event) => {
   event.preventDefault();
   const adjID = adjustmentsForm['editAdjustments'].dataset.id
@@ -334,6 +327,8 @@ adjModalFormSalary.addEventListener('submit', (event) => {
 })
 
 
+
+/** Display Helper functions **/
 // removes text in the adjustments table
 const clearAdjustmentsSection = () => {
   adjustmentsTB.forEach((element) => {
@@ -341,7 +336,8 @@ const clearAdjustmentsSection = () => {
   })
 }
 
-// removes required status of the hidden elements or re-sets status to true for all inputs
+// Removes required status of the hidden elements or re-sets status to true for all inputs
+// prevents error on form submit by 'turning off' the required attribute for the form inputs that are hidden
 const setRequiredStatus = (type) => {
   if(type == "salary"){
     formControlOwnerOperator.forEach((input) => {
@@ -363,22 +359,50 @@ const setRequiredStatus = (type) => {
   }
 }
 
-//function to display the payrollbtn  (maybe have it display a modal saying it was successful and then right after 
-// the modal gets close the page gets reloaded)
+/** Send to Payroll functions **/
+
+const updateJobsStatus = () => {
+  const jobRowBtns = document.querySelectorAll("#jobEdit") // collection of edit job buttons
+  jobRowBtns.forEach(button => {
+    // update each job entry passing its data id and a status of 2
+    db.update.setJobStatus(button.dataset.id, 2)
+  })
+
+}
+
+const updateAllFuelStatus = () => {
+    const fuelRowBtns = document.querySelectorAll("#FuelDeleteBtn");
+    fuelRowBtns.forEach(button => {
+      db.update.setFuelStatus(button.dataset.id, 2)
+    })
+}
 
 
+
+// 
+toPayrollBtn.addEventListener("click", () => {
+  const driverSelect = document.getElementById('driver');
+  const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+  // const currentDriverID = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+  const adjustmentsID = adjustmentsForm['editAdjustments'].dataset.id;
+
+  updateJobsStatus()
+  if(currentDriverType == "owner-operator"){
+    updateAllFuelStatus()
+  }
+  db.update.setAdjustmentsStatus(adjustmentsID, 2)
+  clearAdjustmentsSection();
+  toggleHide.forEach(element => {
+    element.style.display = "none";
+  })
+})
 
 
 db.read.jobsByStatus(populateDropdown, 1, true)
 
 
 
+// consider adding a display function that pops up and shows which entries have successfully been changed in real time ( kind of like the console output but in a modal)
+// then when you click to close the modal, the functions to reset the UI are called.
 
-// fix the fuel records event listener so that it gets called from the delete button and not the table itself
-// fix the jobs modal so that the buttons are in the form and the update button is type="submit" with a form event listener
-
-
-
-// last thing will be to add the complete/total submit button which will update the status of each document. not sure
-// if I've totally figured that part out yet or not. yeah I have, each unique document has it's id stored on some part of the page already.
-// just need to grab those references. first start by just printing each one to the console and make sure they are what you think they are.
+// could also come up with a way to revert all changes is theres an error in any of the database calls. might be tricky. look into later if you have time.

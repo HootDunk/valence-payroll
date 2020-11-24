@@ -21,8 +21,7 @@
             <div class="navbar-nav">
               <a class="nav-link" href="dashboard.html">Home</a>
               <a class="nav-link" href="dispatch.html">Dispatcher Terminal</a>
-              <a class="nav-link" href="payperiod.html">Current Pay Period</a>
-              <a class="nav-link active" href="weeklyinputs.html">Test</a>
+              <a class="nav-link active" href="weeklyinputs.html">Current Pay Period</a>
               <a class="nav-link" href="#">View Records</a>
               <a class="nav-link" href="#">User Guide</a>
               <!-- <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
@@ -31,20 +30,12 @@
         </nav>
   </header>
   <ul class="nav nav-tabs">
-    <!-- <li class="nav-item">
-      <a class="nav-link active" href="#">Overview</a>
+
+    <li class="nav-item">
+      <a class="nav-link active" href="weeklyinputs.html">Review & Add Weekly Inputs</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#">
-        Review & Confirm
-        <span class="badge badge badge-pill badge-primary">4</span>
-      </a>
-    </li> -->
-    <li class="nav-item">
-      <a class="nav-link active" href="#">Review & Add Weekly Inputs</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#">Process Payroll</a>
+      <a class="nav-link" href="payperiod.html">Process Payroll</a>
     </li>
   </ul>
 
@@ -101,11 +92,11 @@
             <div class="row form-group">
               <div class="col">
                 <label for="gallons">Gallons:</label>
-                <input type="number" class="form-control" id="gallons"  required>
+                <input type="number" class="form-control" id="gallons"  step=".01" required>
               </div>
               <div class="col">
                 <label for="amount">Amount:</label>
-                <input type="number" class="form-control"  id="amount" required>
+                <input type="number" class="form-control"  id="amount" step=".01" required>
               </div>
             </div>
             <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
@@ -147,22 +138,22 @@
             <div class="row form-group">
               <div class="col toggle-hide owner-operator">
                 <label for="detention">Detention/Layover:</label>
-                <input type="number" class="form-control owner-operator" id="detention"  required>
+                <input type="number" class="form-control owner-operator" id="detention"  step=".01" required>
               </div>
 
               <div class="col toggle-hide salary">
                 <label for="toll">Toll:</label>
-                <input type="number" class="form-control salary" id="toll"  required>
+                <input type="number" class="form-control salary" id="toll"  step=".01" required>
               </div>
 
               <div class="col toggle-hide salary">
                 <label for="scale">Scale:</label>
-                <input type="number" class="form-control salary" id="scale"  required>
+                <input type="number" class="form-control salary" id="scale" step=".01" required>
               </div>
               
               <div class="col">
                 <label for="extras">Extras:</label>
-                <input type="number" class="form-control"  id="extras" required>
+                <input type="number" class="form-control"  id="extras" step=".01" required>
               </div>
             </div>
 
@@ -172,38 +163,38 @@
               <div class="row form-group">
                 <div class="col">
                   <label for="insurance">Insurance:</label>
-                  <input type="number" class="form-control" id="insurance"  required>
+                  <input type="number" class="form-control" id="insurance" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide owner-operator">
                   <label for="reserve-ownerOp">Reserve:</label>
-                  <input type="number" class="form-control owner-operator"  id="reserve-ownerOp" required>
+                  <input type="number" class="form-control owner-operator"  id="reserve-ownerOp" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide salary">
                   <label for="accidental">Accidental:</label>
-                  <input type="number" class="form-control salary" id="accidental"  required>
+                  <input type="number" class="form-control salary" id="accidental" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide salary">
                   <label for="cashAdvance">Cash Advance:</label>
-                  <input type="number" class="form-control salary" id="cashAdvance"  required>
+                  <input type="number" class="form-control salary" id="cashAdvance" step=".01" required>
                 </div>
 
               </div>
               <div class="row form-group">
                 <div class="col toggle-hide salary">
                   <label for="escrow">Escrow:</label>
-                  <input type="number" class="form-control salary"  id="escrow" required>
+                  <input type="number" class="form-control salary"  id="escrow" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide salary">
                   <label for="reserve-salary">Reserve:</label>
-                  <input type="number" class="form-control salary"  id="reserve-salary" required>
+                  <input type="number" class="form-control salary"  id="reserve-salary" step=".01" required>
                 </div>
               </div>
               <button type="submit" class="btn btn-primary mt-2" id="submitAdjustments">Submit Adjustments</button>
-              <button type="button" class="btn btn-warning mt-2" id="editAdjustments">Edit Adjustments</button>
+              <button type="button" class="btn btn-warning mt-2 toggle-hide" id="editAdjustments">Edit Adjustments</button>
           </form>
         </div>
 
@@ -269,16 +260,9 @@
     </div>
   </div>
   <div class="container d-flex justify-content-center">
-    <button id="toPayrollBtn" type="button" class="btn btn-success btn-lg mt-4 mb-4">Send to Payroll</button>
+    <button id="toPayrollBtn" type="button" class="btn btn-success btn-lg mt-4 mb-4 toggle-hide">Send to Payroll</button>
   </div>
     
-
-  
-
-
-
-
-
   <div class="modal fade" id="editJobModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -293,11 +277,11 @@
             <div class="row form-group">
               <div class="col">
                 <label for="client">Client:</label>
-                <input type="text" class="form-control" id="client"  required>
+                <input type="text" class="form-control" id="client" required>
               </div>
               <div class="col">
                 <label for="client">Rate:</label>
-                <input type="number" class="form-control"  id="rate" required>
+                <input type="number" class="form-control"  id="rate" step=".01" required>
               </div>
             </div>
 
@@ -317,33 +301,29 @@
             <div class="row form-group">
               <div class="col">
                 <label for="client">Route length:</label>
-                <input type="number" class="form-control"  id="routeLength" required>
+                <input type="number" class="form-control"  id="routeLength" step=".01" required>
               </div>
               <div class="col">
                 <label for="client">Delivery Deadline:</label>
                 <input type="date" class="form-control" id="deadline" required>
               </div>
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-6"><button id="deleteJob" type="button" class="btn btn-danger" data-dismiss="modal">Delete Job</button></div>
-              <div class="col-3">
-                <button id="submitJobEdit" type="button" class="btn btn-success" data-dismiss="modal">Update</button>
-              </div>
-              <div class="col-2">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-6"><button id="deleteJob" type="button" class="btn btn-danger" data-dismiss="modal">Delete Job</button></div>
+                <div class="col-3">
+                  <button id="submitJobEdit" type="submit" class="btn btn-success">Update</button>
+                </div>
+                <div class="col-2">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
               </div>
             </div>
-          </div>
-
+          </form>
         </div>
       </div>
     </div>
   </div>
-
 
   <div class="modal fade" id="adjModalOwnerOp" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -362,22 +342,22 @@
             <div class="row form-group">
               <div class="col">
                 <label for="detention">Detention/Layover:</label>
-                <input type="text" class="form-control" id="detention"  required>
+                <input type="text" class="form-control" id="detention" step=".01" required>
               </div>
               <div class="col">
                 <label for="extras">Extras:</label>
-                <input type="number" class="form-control"  id="extras" required>
+                <input type="number" class="form-control"  id="extras" step=".01" required>
               </div>
             </div>
             <h3>Deductions</h3>
             <div class="row form-group">
               <div class="col">
                 <label for="insurance">Insurance:</label>
-                <input type="text" class="form-control" id="insurance"  required>
+                <input type="text" class="form-control" id="insurance" step=".01" required>
               </div>
               <div class="col">
                 <label for="reserve">Reserve:</label>
-                <input type="number" class="form-control"  id="reserve" required>
+                <input type="number" class="form-control"  id="reserve" step=".01" required>
               </div>
             </div>
             <button id="updateAdjOwnerOp" type="submit" class="btn btn-success">Update</button>
@@ -407,40 +387,40 @@
             <div class="row form-group">
               <div class="col">
                 <label for="toll">Toll:</label>
-                <input type="text" class="form-control" id="toll" required>
+                <input type="text" class="form-control" id="toll" step=".01" required>
               </div>
               <div class="col">
                 <label for="scale">Scale:</label>
-                <input type="number" class="form-control"  id="scale" required>
+                <input type="number" class="form-control"  id="scale" step=".01" required>
               </div>
               <div class="col">
                 <label for="extras">Extras:</label>
-                <input type="number" class="form-control"  id="extras" required>
+                <input type="number" class="form-control"  id="extras" step=".01" required>
               </div>
             </div>
             <h3>Deductions</h3>
             <div class="row form-group">
               <div class="col">
                 <label for="insurance">Insurance:</label>
-                <input type="text" class="form-control" id="insurance" required>
+                <input type="text" class="form-control" id="insurance" step=".01" required>
               </div>
               <div class="col">
                 <label for="accidental">Accidental:</label>
-                <input type="number" class="form-control"  id="accidental" required>
+                <input type="number" class="form-control"  id="accidental" step=".01" required>
               </div>
               <div class="col">
                 <label for="cashAdvance">Cash Advance:</label>
-                <input type="number" class="form-control"  id="cashAdvance" required>
+                <input type="number" class="form-control"  id="cashAdvance" step=".01" required>
               </div>
             </div>
             <div class="row form-group">
               <div class="col">
                 <label for="escrow">Escrow:</label>
-                <input type="text" class="form-control" id="escrow"  required>
+                <input type="text" class="form-control" id="escrow"  step=".01" required>
               </div>
               <div class="col">
                 <label for="reserve">Reserve:</label>
-                <input type="number" class="form-control"  id="reserve" required>
+                <input type="number" class="form-control"  id="reserve" step=".01" required>
               </div>
             </div>
             <button id="updateAdjSalary" type="submit" class="btn btn-success">Update</button>

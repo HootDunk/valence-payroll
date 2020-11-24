@@ -24,14 +24,14 @@ form{
   margin-top: 20px;
 }
 
-#toPayrollBtn {
+/* #toPayrollBtn {
   display: none;
-}
+} */
 
 /* #completedJobs {
   display: none;
 } */
 
-.toggle-hide.owner-operator {
+.toggle-hide {
   display: none;
 }

@@ -8,8 +8,7 @@
       });
   }
   
-
-  // module for writing client side dates
+  // Module for writing client side dates
   const dateInfo = (() => {
     const getWeekNum = () => {
       let now = new Date();
@@ -40,7 +39,6 @@
     }
   })();
 
-
   // Create
   const create = (() => {
     const newJob = (obj) => {
@@ -66,19 +64,20 @@
       });
     }
 
-    const fuelEntry = (fuelForm, driverID, year, month, day, weekNum) => {
+
+
+    const fuelEntry = (fuelForm, driverID) => {
       db.collection('fuel').add({
         driverID: driverID,
         city: fuelForm['city'].value,
         state: fuelForm['state'].value,
-        gallons: fuelForm['gallons'].value,
-        amount: fuelForm['amount'].value,
+        gallons: Number(fuelForm['gallons'].value),
+        amount: Number(fuelForm['amount'].value),
         fuelStatus: 1,
-        month: month,
-        year: year,
-        day: day,
-        weekNum: weekNum,
-        date: `${year}-${month}-${day}`,
+        month: dateInfo.getMonth(),
+        year: dateInfo.getYear(),
+        weekNum: dateInfo.getWeekNum(),
+        date: dateInfo.getDate(),
       })
       .then(function(docRef) {
         console.log("Document written with ID: ", docRef.id);
@@ -97,12 +96,12 @@
           driverID: currentDriverID,
           driverType: currentDriverType,
           reimbursements: {
-            detention: parseInt(adjustmentsForm['detention'].value),
-            extras: parseInt(adjustmentsForm['extras'].value),
+            detention: Number(adjustmentsForm['detention'].value),
+            extras: Number(adjustmentsForm['extras'].value),
           },
           deductions: {
-            insurance: parseInt(adjustmentsForm['insurance'].value),
-            reserve: parseInt(adjustmentsForm['reserve-ownerOp'].value),
+            insurance: Number(adjustmentsForm['insurance'].value),
+            reserve: Number(adjustmentsForm['reserve-ownerOp'].value),
           },
           month: dateInfo.getMonth(),
           year: dateInfo.getYear(),
@@ -134,16 +133,16 @@
           driverID: currentDriverID,
           driverType: currentDriverType,
           reimbursements: {
-            toll: parseInt(adjustmentsForm['toll'].value),
-            scale: parseInt(adjustmentsForm['scale'].value),
-            extras: parseInt(adjustmentsForm['extras'].value),
+            toll: Number(adjustmentsForm['toll'].value),
+            scale: Number(adjustmentsForm['scale'].value),
+            extras: Number(adjustmentsForm['extras'].value),
           },
           deductions: {
-            insurance: parseInt(adjustmentsForm['insurance'].value),
-            accidental: parseInt(adjustmentsForm['accidental'].value),
-            cashAdvance: parseInt(adjustmentsForm['cashAdvance'].value),
-            escrow: parseInt(adjustmentsForm['escrow'].value),
-            reserve: parseInt(adjustmentsForm['reserve-salary'].value),
+            insurance: Number(adjustmentsForm['insurance'].value),
+            accidental: Number(adjustmentsForm['accidental'].value),
+            cashAdvance: Number(adjustmentsForm['cashAdvance'].value),
+            escrow: Number(adjustmentsForm['escrow'].value),
+            reserve: Number(adjustmentsForm['reserve-salary'].value),
           },
           month: dateInfo.getMonth(),
           year: dateInfo.getYear(),
@@ -171,22 +170,37 @@
         })
       }
     }
+
+    const newPayrollEntrySalary = (myFunction, jobsArray, adjustments, driverID, driverType) => {
+      db.collection("payroll-entries").add({
+        driverID: driverID,
+        driverType: driverType,
+        jobs: jobsArray,
+        adjustment: adjustments,
+      })
+      .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+        myFunction();
+      })
+      .catch(function(error) {
+          console.error("Error adding document: ", error);
+      });
+    }
   
     return {
       newJob,
       fuelEntry,
       newAdjustments,
+      newPayrollEntrySalary,
     }
   })();
   
   // Read data
   const read = (() => {
     // gets active job documents as a snapshot(listens for changes)
-    // myFunction is placeholder for whichever UI function we are using in the other .js files 
-    // 3rd param dictates whether its an onSnapshotListener or just a simple call
+    // 3rd param dictates whether its an onSnapshotListener or just a onetime call
     const jobsByStatus = ((myFunction, jobStatus, listener) => {
       if(listener){
-        
         db.collection("jobs")
           .where("jobStatus", "==", jobStatus)
           .onSnapshot(Snapshot => {
@@ -194,7 +208,6 @@
           })
       }
       else {
-        
         db.collection('jobs')
           .where("jobStatus", "==", jobStatus)
           .get()
@@ -202,7 +215,6 @@
             myFunction(Snapshot.docs)
           })
       }
-
     });
 
   const getDriverFuelbyStatus = ((myFunction, driverID, fuelStatus) => {
@@ -248,22 +260,6 @@
     });
 
 
-    
-    // const getAdjustmentByID = ((myFunction, adjustmentStatus, driverID) => {
-    //   // review docs about this type of query and need to do forEach
-    //   db.collection("adjustments")
-    //   .where("adjustmentStatus", "==", adjustmentStatus)
-    //   .where("driverID", "==", driverID)
-    //   .get()
-    //   .then(function(snapshot) {
-    //       snapshot.forEach(function(doc) {
-    //         myFunction(doc)
-    //       })
-    //   }).catch(function(error) {
-    //       console.log("Error getting documents: ", error);
-    //   });
-    // });
-
 
     const getAdjustmentByID = ((myFunction, adjustmentStatus, driverID) => {
       // review docs about this type of query and need to do forEach
@@ -308,7 +304,43 @@
   
   // Update
   const update = (() => {
+    
+    const setJobStatus = ((id, statusNum) => {
+      db.collection('jobs').doc(id).update({
+        jobStatus: statusNum,
+      })
+      .then(
+        console.log("document successfully updated!")
+      )
+      .catch(error => {
+        console.log("Error updating document: ", error);
+      });
+    });
 
+    const setFuelStatus = ((id, statusNum) => {
+      db.collection('fuel').doc(id).update({
+        fuelStatus: statusNum,
+      })
+      .then(
+        console.log("document successfully updated!")
+      )
+      .catch(error => {
+        console.log("Error updating document: ", error);
+      });
+    })
+
+    const setAdjustmentsStatus = ((id, statusNum) => {
+      db.collection('adjustments').doc(id).update({
+        adjustmentStatus: statusNum,
+      })
+      .then(
+        console.log("document successfully updated!")
+      )
+      .catch(error => {
+        console.log("Error updating document: ", error);
+      });
+    })
+    // why would I hard code a 1 there?? refactor later
     const sendToPayroll = ((id) => {
       db.collection('jobs').doc(id).update({
         jobStatus: 1,
@@ -342,12 +374,12 @@
     const editAdjustmentsOwnerOp = ((form, id) => {
       db.collection('adjustments').doc(id).update({
         reimbursements: {
-          detention: parseInt(form['detention'].value),
-          extras: parseInt(form['extras'].value),
+          detention: Number(form['detention'].value),
+          extras: Number(form['extras'].value),
         },
         deductions: {
-          insurance: parseInt(form['insurance'].value),
-          reserve: parseInt(form['reserve'].value),
+          insurance: Number(form['insurance'].value),
+          reserve: Number(form['reserve'].value),
         },
       })
       .then(
@@ -362,16 +394,16 @@
     const editAdjustmentsSalary = ((form, id) => {
       db.collection('adjustments').doc(id).update({
         reimbursements: {
-          extras: parseInt(form['extras'].value),
-          scale: parseInt(form['scale'].value),
-          toll: parseInt(form['toll'].value),
+          extras: Number(form['extras'].value),
+          scale: Number(form['scale'].value),
+          toll: Number(form['toll'].value),
         },
         deductions: {
-          accidental: parseInt(form['accidental'].value),
-          cashAdvance: parseInt(form['cashAdvance'].value),
-          escrow: parseInt(form['escrow'].value),
-          insurance: parseInt(form['insurance'].value),
-          reserve: parseInt(form['reserve'].value),
+          accidental: Number(form['accidental'].value),
+          cashAdvance: Number(form['cashAdvance'].value),
+          escrow: Number(form['escrow'].value),
+          insurance: Number(form['insurance'].value),
+          reserve: Number(form['reserve'].value),
         },
       })
       .then(
@@ -384,6 +416,9 @@
     })
   
     return {
+      setJobStatus,
+      setFuelStatus,
+      setAdjustmentsStatus,
       sendToPayroll,
       editJobByID,
       editAdjustmentsOwnerOp,

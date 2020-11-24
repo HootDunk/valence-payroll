@@ -1,26 +1,23 @@
 
 const db = require('../database');
 // listens to the authentication state and handles changes
-// db.AuthStateListener();
+db.AuthStateListener();
 
 let activeJobs = [];
-
+const salaryDiv = document.querySelector('.salaried-div');
+const ownerOp = document.querySelector('.ownerOp-div');
 
 const clearDisplay = () => {
-    let salaryDiv = document.getElementsByClassName('salaried-div');
-    const ownerOp = document.getElementsByClassName('ownerOp-div');
-    salaryDiv[0].style.display = "none";
-    ownerOp[0].style.display = "none";
+    salaryDiv.style.display = "none";
+    ownerOp.style.display = "none";
 }
 
 const showTables = (job) => {
     if(job.isSalary === true){
-        let salaryDiv = document.getElementsByClassName('salaried-div');
-        salaryDiv[0].style.display = "block";
+        salaryDiv.style.display = "block";
     }
     else if (job.isSalary === false){
-        const ownerOp = document.getElementsByClassName('ownerOp-div');
-        ownerOp[0].style.display = "block";
+        ownerOp.style.display = "block";
     }
 }
 
