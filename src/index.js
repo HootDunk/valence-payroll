@@ -20,8 +20,8 @@ const createWindow = () => {
     show: false,
   });
 
-  // Hides the default menu panel that appears
-  mainWindow.setMenu(null);
+  // Hides the default menu panel that appears. be sure to uncomment before deployment
+  // mainWindow.setMenu(null);
 
 
 

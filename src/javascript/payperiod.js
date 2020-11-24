@@ -1,29 +1,25 @@
 
 const db = require('../database');
 // listens to the authentication state and handles changes
-// db.AuthStateListener();
+db.AuthStateListener();
 
 let activeJobs = [];
-
+const salaryDiv = document.querySelector('.salaried-div');
+const ownerOp = document.querySelector('.ownerOp-div');
 
 const clearDisplay = () => {
-    let salaryDiv = document.getElementsByClassName('salaried-div');
-    const ownerOp = document.getElementsByClassName('ownerOp-div');
-    salaryDiv[0].style.display = "none";
-    ownerOp[0].style.display = "none";
+    salaryDiv.style.display = "none";
+    ownerOp.style.display = "none";
 }
 
 const showTables = (job) => {
     if(job.isSalary === true){
-        let salaryDiv = document.getElementsByClassName('salaried-div');
-        salaryDiv[0].style.display = "block";
+        salaryDiv.style.display = "block";
     }
     else if (job.isSalary === false){
-        const ownerOp = document.getElementsByClassName('ownerOp-div');
-        ownerOp[0].style.display = "block";
+        ownerOp.style.display = "block";
     }
 }
-
 
 // Figure out a different counter approach. (one that isn't global)
 
@@ -76,14 +72,6 @@ activeJobs.push(existingJob);
 
 // db.read.jobsByStatus(console.log(doc.data()), 1)
 
-
-
-
-
-
-
-
-
 // Change this
 // Populate the dropdown and give each dropdown an ID that will correspond to their empID
 const populateDropdown = (activeJobs) =>{
@@ -123,3 +111,9 @@ const clearDriverInfo = () => {
         }
     })
 }
+
+
+// load in dropdown data and give each one a data-id of the job id
+// use job id to process requests for each driver
+// render function should check driverType field
+// then display the data

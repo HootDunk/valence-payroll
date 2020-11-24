@@ -149,9 +149,11 @@ const jobObject = () => {
     return newJob;
 }
 
-// getJobsStatus takes in renderRows function and 0 (indicates the job status)
-db.read.jobsByStatus(renderRows, 0)
+
 db.read.getAllDrivers(populateDropdown)
+// getJobsStatus takes in renderRows function and 0 (indicates the job status)
+db.read.jobsByStatus(renderRows, 0, true)
+
 
 
 // page is kinda sorta done

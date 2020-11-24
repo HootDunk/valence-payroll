@@ -45,3 +45,7 @@ ul {
     list-style-type: none;
     padding-left: 0 !important;
 }
+
+.nav.nav-tabs {
+    margin-top: 20px;
+  }
