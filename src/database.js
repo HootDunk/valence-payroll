@@ -49,11 +49,11 @@
         driverFname: obj.driverFname,
         driverID: obj.driverID,
         driverLname: obj.driverLname,
-        driverRate: obj.driverRate,
+        driverRate: Number(obj.driverRate),
         driverType: obj.driverType,
         jobStatus: obj.jobStatus,
-        loadRate: obj.loadRate,
-        miles: obj.miles,
+        loadRate: Number(obj.loadRate),
+        miles: Number(obj.miles),
         origin: obj.origin,
       })
       .then(function(docRef) {
@@ -260,7 +260,6 @@
     });
 
 
-
     const getAdjustmentByID = ((myFunction, adjustmentStatus, driverID) => {
       // review docs about this type of query and need to do forEach
       db.collection("adjustments")
@@ -273,21 +272,45 @@
       })
     });
 
-    const adjustmentsTest = (() => {
-      db.collection("adjustments")
-      .where("driverType", "==", "salary")
-      .get()
-      .then(function(querySnapshot) {
-          querySnapshot.forEach(function(doc) {
-              // doc.data() is never undefined for query doc snapshots
-              console.log(doc.id, " => ", doc.data());
-          });
-      })
-      .catch(function(error) {
-          console.log("Error getting documents: ", error);
-      });
+    // learning promises and async would speed this up a lot
+    function getSalaryPayrollInfo(myFunction, myFunction1, status, driverID) {
+      getDriverJobs(myFunction, status, driverID)
+      getAdjustmentByID(myFunction1, status, driverID)
+    }
 
-    })
+    function getOwnerOpPayrollInfo(myFunction, myFunction1, myFunction2, status, driverID){
+      getDriverJobs(myFunction, status, driverID);
+      getDriverFuelbyStatus(myFunction1, driverID, 2);
+      getAdjustmentByID(myFunction2, 2, driverID)
+      
+
+    }
+
+
+
+
+
+    // async function getDriverDoc(myFunction, id)  {
+    //   var docRef = db.collection("drivers").doc(id);
+    //   let doc = await docRef.get();
+    //   myFunction(doc)
+    // }
+
+    const getDriverDoc = ((myFunction, id) => {
+      var docRef = db.collection("drivers").doc(id);
+      docRef.get().then(function(doc) {
+        if (doc.exists) {
+          myFunction(doc)
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch(function(error) {
+        console.log("Error getting document:", error);
+      })
+    });
+    
+
   
   
     return{
@@ -297,7 +320,9 @@
       getJobByID,
       getDriverFuelbyStatus,
       getAdjustmentByID,
-      adjustmentsTest,
+      getSalaryPayrollInfo,
+      getDriverDoc,
+      getOwnerOpPayrollInfo,
     }
   })();
   
@@ -414,6 +439,8 @@
         console.log("Error updating document: ", error);
       });
     })
+
+
   
     return {
       setJobStatus,
@@ -444,6 +471,7 @@
         console.log("Error removing document ", err)
       })
     });
+
     
     return {
       deleteJob,
