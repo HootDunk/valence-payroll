@@ -1,0 +1,46 @@
+header {
+  /* text-align: center; */
+
+  box-shadow: 0px 10px 10px rgba(0,0,0,0.4);
+  position: relative;
+}
+
+#valence-logo{
+  height: 100%;
+  max-height: 60px;
+  width: auto;
+  padding-bottom: 10px;
+}
+
+
+
+.row.bottom-row{
+  justify-content: center;
+  /* padding-top: 20px; */
+}
+
+/* .navbar.navbar-expand-sm.navbar-light.bg-light{
+  background-color: grey;
+} */
+.navbar{
+  background: #5D6D7E;
+}
+
+.list-group-item {
+  padding: 0.5rem 0.75rem !important;
+  max-height: 65px !important;
+  
+  
+}
+
+.input-card {
+  cursor: pointer;
+  box-shadow: 0px 10px 10px rgba(0,0,0,0.4);
+}
+
+.input-card:hover {
+  color: #0275d8;
+}
+
+
+
