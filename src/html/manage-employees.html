@@ -24,7 +24,7 @@
               <a class="nav-link" href="weeklyinputs.html">Current Pay Period</a>
               <a class="nav-link active" href="manage-employees.html">Manage Employees</a>
               <a class="nav-link" href="#">View Records</a>
-              <a class="nav-link" href="#">User Guide</a>
+              <a class="nav-link" href="user-guide.html">User Guide</a>
               <!-- <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
             </div>
           </div>
@@ -90,6 +90,7 @@
       </div>
 
       <div class="modal-body">
+
         <form id="editDriverForm">
           <div class="row form-group">
             <div class="col">
@@ -107,6 +108,23 @@
                 </label>
               </div>
             </div>
+
+              <div class="col">
+                <label for="client">Status:</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="statusRadio" id="statusRadio1" value="active" checked>
+                  <label class="form-check-label" for="statusRadio1">
+                    Active
+                  </label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="statusRadio" id="statusRadio2" value="inactive">
+                  <label class="form-check-label" for="statusRadio2">
+                    Inactive
+                  </label>
+                </div>
+              </div>
+
             <div class="col">
               <label id="rate-label" for="rate">Rate:</label>
               <input type="number" class="form-control"  id="rate" step=".01" required>
@@ -123,25 +141,6 @@
               <input type="text" class="form-control"  id="email" step=".01" required>
             </div>
           </div>
-
-          <div class="row form-group">
-            <div class="col">
-              <label for="client">Status:</label>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="statusRadio" id="statusRadio1" value="active" checked>
-                <label class="form-check-label" for="statusRadio1">
-                  Active
-                </label>
-              </div>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" name="statusRadio" id="statusRadio2" value="inactive">
-                <label class="form-check-label" for="statusRadio2">
-                  Inactive
-                </label>
-              </div>
-            </div>
-          </div>
-
 
           <div class="container-fluid">
             <div class="row">
@@ -162,8 +161,6 @@
     </div>
   </div>
 </div>
-
-
 
 
 <div class="modal fade" id="newDriverModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -243,6 +240,67 @@
   </div>
 </div>
 
+
+
+
+
+
+
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">New Driver</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form id="editUserForm">
+          <div class="row form-group">
+            <div class="col">
+              <label for="userType">User Type:</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="userTypeRadio" id="dispatcherRadio" value="dipatcher">
+                <label class="form-check-label" for="userTypeRadio">
+                  salary
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="userTypeRadio" id="adminRadio" value="admin">
+                <label class="form-check-label" for="userTypeRadio">
+                  admin
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="userTypeRadio" id="noneRadio" value="none">
+                <label class="form-check-label" for="userTypeRadio">
+                  none (disallows sign in priviledges)
+                </label>
+              </div>
+            </div>
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-6">
+                <!-- <button id="modalDeleteDriver" type="button" class="btn btn-danger" data-dismiss="modal">Delete Driver</button> -->
+              </div>
+              <div class="col-3">
+                <button id="newUserConfirm" type="submit" class="btn btn-success">Confirm</button>
+              </div>
+              <div class="col-2">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
   
 
 <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>

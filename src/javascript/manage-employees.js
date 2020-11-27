@@ -93,24 +93,23 @@ const displayUsers = ((data) => {
       users.push(doc);
     })
     users.sort((a, b) => a.data().lname.localeCompare(b.data().lname))
-
+    let html = "";
     users.forEach(user => {
-      // could break up this text to add the conditional and add the html after instead of having two whole separate ones
       const card = `
       <div class="card card-custom mx-2 mb-3" style="width: 15rem;">
-      <div class="card-header text-white bg-dark h5">
+      <div class="card-header text-white bg-secondary h5">
         ${user.data().fname} ${user.data().lname}
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Type: ${user.data().role}</li>
-        <li class="list-group-item">Status: ${user.data().email}</li>
+        <li class="list-group-item">Role: ${user.data().role}</li>
+        <li class="list-group-item overflow-auto">Email:<br> ${user.data().email}</li>
       </ul>
       <button data-id="${user.id}" type="button" class="btn btn-light">Edit</button>
       </div>
       `;
       html += card;
     })
-    userCardDiv = html;
+    userCardDiv.innerHTML = html;
   }
   else {
     console.log("No users found")
@@ -141,8 +140,9 @@ addDriverCard.addEventListener("click", () => {
 newDriverForm.addEventListener("submit", (event) => {
   event.preventDefault();
   db.create.newDriver(newDriverForm);
-  $('#newDriverModal').modal("hide");
+  
 })
 
 
-db.read.getAllDrivers(displayDrivers)
+db.read.getAllDrivers(displayDrivers);
+db.read.getAllUsers(displayUsers);

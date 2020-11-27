@@ -253,6 +253,14 @@
       })
     });
 
+
+    // Get all system users
+    const getAllUsers = ((myFunction) => {
+      db.collection('users').onSnapshot(Snapshot => {
+        myFunction(Snapshot.docs)
+      })
+    });
+
     // get jobs by driver id and status
     const getDriverJobs = ((myFunction, jobStatus, driverID) => {
       db.collection('jobs')
@@ -302,7 +310,6 @@
       getDriverFuelbyStatus(myFunction1, driverID, 2);
       getAdjustmentByID(myFunction2, 2, driverID);
       
-
     }
 
 
@@ -342,6 +349,7 @@
       getSalaryPayrollInfo,
       getDriverDoc,
       getOwnerOpPayrollInfo,
+      getAllUsers,
     }
   })();
   
