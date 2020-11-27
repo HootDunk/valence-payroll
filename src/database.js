@@ -186,12 +186,31 @@
           console.error("Error adding document: ", error);
       });
     }
+
+    const newDriver = (form) => {
+      db.collection("drivers").add({
+        address: newDriverForm['address'].value,
+        email: newDriverForm['email'].value,
+        fname: newDriverForm['fname'].value,
+        lname: newDriverForm['lname'].value,
+        rate: newDriverForm['rate'].value,
+        status: "active",
+        type: $('input[name="driverTypeRadio"]:checked').val(),
+      })
+      .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch(function(error) {
+          console.error("Error adding document: ", error);
+      });
+    }
   
     return {
       newJob,
       fuelEntry,
       newAdjustments,
       newPayrollEntrySalary,
+      newDriver,
     }
   })();
   
@@ -229,7 +248,7 @@
   
     // get all drivers
     const getAllDrivers = ((myFunction) => {
-      db.collection('drivers').get().then(Snapshot => {
+      db.collection('drivers').onSnapshot(Snapshot => {
         myFunction(Snapshot.docs)
       })
     });
@@ -281,7 +300,7 @@
     function getOwnerOpPayrollInfo(myFunction, myFunction1, myFunction2, status, driverID){
       getDriverJobs(myFunction, status, driverID);
       getDriverFuelbyStatus(myFunction1, driverID, 2);
-      getAdjustmentByID(myFunction2, 2, driverID)
+      getAdjustmentByID(myFunction2, 2, driverID);
       
 
     }
@@ -440,6 +459,34 @@
       });
     })
 
+    const editDriver = ((form, id) => {
+      db.collection('drivers').doc(id).update({
+        address: form['address'].value,
+        email: form['email'].value,
+        rate: Number(form['rate'].value),
+        type: $('input[name="driverTypeRadio"]:checked').val(),
+        status: $('input[name="statusRadio"]:checked').val(),
+      })
+      .then(
+        console.log("document successfully updated!")
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
+    const setDriverStatus = ((status, id) => {
+      db.collection('drivers').doc(id).update({
+        status: status,
+      })
+      .then(
+        console.log("document successfully updated!")
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
 
   
     return {
@@ -450,6 +497,8 @@
       editJobByID,
       editAdjustmentsOwnerOp,
       editAdjustmentsSalary,
+      editDriver,
+      setDriverStatus,
     }
   })();
   
