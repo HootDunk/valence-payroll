@@ -36,10 +36,12 @@ header {
 .input-card {
   cursor: pointer;
   box-shadow: 0px 10px 10px rgba(0,0,0,0.4);
+  transition: transform .2s;
 }
 
 .input-card:hover {
-  color: #0275d8;
+  transform: scale(1.02);
+  /* color: white; */
 }
 
 

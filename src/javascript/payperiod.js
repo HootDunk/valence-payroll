@@ -1,3 +1,6 @@
+const fs = window.require('fs');
+
+const {dialog} = require('electron').remote;
 
 const db = require('../database');
 // listens to the authentication state and handles changes
@@ -290,6 +293,28 @@ const populateDropdown = (data) => {
     }
 }
 
+// saves a text document... not perfect but something.
+document.getElementById("file-reader-test").addEventListener("click", () => {
+    
+    let content = "Some text to save into the file";
+    filename = dialog.showSaveDialog({}
+        ).then(result => {
+          filename = result.filePath;
+          if (filename === undefined) {
+            alert('the user clicked the btn but didn\'t created a file');
+            return;
+          }
+          fs.writeFile(filename, content, (err) => {
+            if (err) {
+              alert('an error ocurred with file creation ' + err.message);
+              return
+            }
+            alert('WE CREATED YOUR FILE SUCCESSFULLY');
+          })
+        }).catch(err => {
+          alert(err)
+        })
 
+});
 
 db.read.jobsByStatus(populateDropdown, 2, true)
