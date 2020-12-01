@@ -24,7 +24,7 @@ class Job {
         this.driverRate = obj.driverRate;
         this.driverType = obj.driverType;
         this.client = formElement['client'].value;
-        this.deadline = formElement['deadline'].value;
+        this.deadline = new Date(formElement['deadline'].value);
         this.destination = formElement['destination'].value;
         this.loadRate = formElement['rate'].value;
         this.jobStatus = 0;
@@ -54,7 +54,7 @@ const renderRows = (data) => {
                     <td>${job.origin}</td>
                     <td>${job.destination}</td>
                     <td>${job.miles}</td>
-                    <td>${job.deadline}</td>
+                    <td>${(job.deadline.toDate().toLocaleDateString('en-US'))}</td>
                     <td><button data-id=${doc.id} class="btn btn-outline-success btn-sm">Submit</button></td>
                     <td><button data-id=${doc.id} class="btn btn-outline-danger btn-sm">Delete</button></td>
                 </tr>
@@ -151,8 +151,3 @@ db.read.getAllDrivers(populateDropdown)
 db.read.jobsByStatus(renderRows, 0, true)
 
 
-
-// page is kinda sorta done
-// a couple of things that still need work
-// find some sort of logical order for rendering shit to the table
-// also add client side error catching (re-use function from login page)

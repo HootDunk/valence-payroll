@@ -38,9 +38,6 @@ const setDriverFormValues = (doc) => {
     $('#editDriverModal').modal()
 }
 
-
-
-
 // add conditionals to change pay rate text based on driver type (as well as displayed value (as percent or dollars))
 // also give inactive drivers a header with bg-secondary
 const displayDrivers = ((data) => {
