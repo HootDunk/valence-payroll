@@ -37,12 +37,15 @@ header {
   cursor: pointer;
   box-shadow: 0px 10px 10px rgba(0,0,0,0.4);
   transition: transform .2s;
+  background-color: #3996e2 !important;
 }
 
 .input-card:hover {
-  transform: scale(1.02);
-  /* color: white; */
+  /* transform: scale(1.04); */
+  color: white;
 }
 
-
+/* .bi-person-plus-fill.align-self-center.mt-3 {
+  color: black !important;
+} */
 
