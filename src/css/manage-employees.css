@@ -35,7 +35,7 @@ header {
 
 .input-card {
   cursor: pointer;
-  box-shadow: 0px 10px 10px rgba(0,0,0,0.4);
+  box-shadow: 5px 5px 5px rgba(0,0,0,0.4);
   transition: transform .2s;
   background-color: #3996e2 !important;
 }

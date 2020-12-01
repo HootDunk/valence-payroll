@@ -30,21 +30,34 @@
     const getDate = () => {
       return `${getYear()}-${getMonth()}-${getDay()}`
     }
+    // const getYearFromDate = (dateString) => {
+    //   let parts = dateString.split('-');
+    //   return parts[0]
+    // }
+    // const getMonthFromDate = (dateString) => {
+    //   let parts = 
+    // }
+    const createDateArray = (dateString) => {
+      let parts = dateString.split('-');
+      return parts;
+    }
 
     return {
       getWeekNum,
       getYear,
       getMonth,
       getDate,
+      createDateArray,
     }
   })();
 
   // Create
   const create = (() => {
     const newJob = (obj) => {
+      let parts = dateInfo.createDateArray(obj.deadline);
       db.collection('jobs').add({
         client: obj.client,
-        deadline: obj.deadline,
+        deadline: new Date(parts[0], parts[1]-1, parts[2]),
         destination: obj.destination,
         driverFname: obj.driverFname,
         driverID: obj.driverID,
@@ -67,6 +80,7 @@
 
 
     const fuelEntry = (fuelForm, driverID) => {
+      let parts = dateInfo.createDateArray(dateInfo.getDate());
       db.collection('fuel').add({
         driverID: driverID,
         city: fuelForm['city'].value,
@@ -77,7 +91,7 @@
         month: dateInfo.getMonth(),
         year: dateInfo.getYear(),
         weekNum: dateInfo.getWeekNum(),
-        date: dateInfo.getDate(),
+        date: new Date(parts[0], parts[1]-1, parts[2]),
       })
       .then(function(docRef) {
         console.log("Document written with ID: ", docRef.id);
@@ -89,7 +103,7 @@
     // function is kind of big because I did the conditionals here.. hindsight would have put them in the other js file to keep database functions as close to 
     // reading in data as possible.
     const newAdjustments = (setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverID) => { 
-      console.log('testingtestingtesting')
+      let parts = dateInfo.createDateArray(dateInfo.getDate());
       console.log(currentDriverType) 
       if(currentDriverType == "owner-operator"){
         db.collection('adjustments').add({
@@ -106,7 +120,7 @@
           month: dateInfo.getMonth(),
           year: dateInfo.getYear(),
           weekNum: dateInfo.getWeekNum(),
-          date: dateInfo.getDate(),
+          date: new Date(parts[0], parts[1]-1, parts[2]),//untested
           adjustmentStatus: 1,
         })
         .then(function(docRef) {
@@ -147,7 +161,7 @@
           month: dateInfo.getMonth(),
           year: dateInfo.getYear(),
           weekNum: dateInfo.getWeekNum(),
-          date: dateInfo.getDate(),
+          date: new Date(), // untested
           adjustmentStatus: 1,
         })
         .then(function(docRef) {

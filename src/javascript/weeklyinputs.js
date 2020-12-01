@@ -131,7 +131,7 @@ const renderRows = (data) => {
                     <td>${job.origin}</td>
                     <td>${job.destination}</td>
                     <td>${job.miles}</td>
-                    <td>${job.deadline}</td>
+                    <td>${job.deadline.toDate().toLocaleDateString('en-US')}</td>
 
                     <td><button id="jobEdit" data-id=${doc.id} class="btn btn-outline-warning btn-md">Edit</button></td>
                 </tr>

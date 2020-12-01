@@ -1,5 +1,5 @@
 const db = require('../database');
-
+const creatJobForm = document.getElementById('create-job-form');
 // listens to the authentication state and handles changes
 db.AuthStateListener();
 
@@ -24,7 +24,7 @@ class Job {
         this.driverRate = obj.driverRate;
         this.driverType = obj.driverType;
         this.client = formElement['client'].value;
-        this.deadline = new Date(formElement['deadline'].value);
+        this.deadline = formElement['deadline'].value;
         this.destination = formElement['destination'].value;
         this.loadRate = formElement['rate'].value;
         this.jobStatus = 0;
@@ -102,7 +102,7 @@ const populateDropdown = (data) => {
         const dropdown = document.getElementById('driver');
         drivers.forEach((driver) => {
             const option = `
-                <option data-id=${driver.id}>${driver.lname}, ${driver.fname}</option>
+                <option data-id=${driver.id}>${driver.lname}, ${driver.fname}  (${driver.driverType})</option>
             `;
             html += option;
         })
@@ -116,7 +116,7 @@ const populateDropdown = (data) => {
 
 document.querySelector('#create-job-form').addEventListener('submit', (e) => {
     e.preventDefault() //add conditionals. only prevent defaul if everything has an input
-
+    console.log(creatJobForm['deadline'].value)
     if(dropdownFlag == true){
          db.create.newJob(jobObject())
          document.getElementById('create-job-form').reset();
@@ -129,7 +129,7 @@ const jobObject = () => {
     const driverSelect = document.getElementById('driver');
     // get selected drivers id
     const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
-    
+    console.log(creatJobForm['deadline'].value)
     // get driver object
     let driverObj = "";
     drivers.forEach((driver) => {
