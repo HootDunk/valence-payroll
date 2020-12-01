@@ -1,9 +1,8 @@
 // const { app, BrowserWindow } = require('electron');
 // const path = require('path');
 
-const { remote } = require('electron');
-const path = require('path');
-
+const resetPasswordBtn = document.getElementById('forgot-PW-Btn');
+const resetPasswordModal = document.getElementById('reset-password-modal');
 
 const displayError = (error) => {
   const modalTitle = document.querySelector('.modal-header');
@@ -59,3 +58,6 @@ loginForm.addEventListener("submit", (e) => {
   });
 });
 
+resetPasswordBtn.addEventListener("click", () => {
+  $('#reset-password-modal').modal()
+})

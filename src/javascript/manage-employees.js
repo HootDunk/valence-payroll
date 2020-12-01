@@ -102,7 +102,7 @@ const displayDrivers = ((data) => {
           <li class="list-group-item overflow-auto"><b>Address</b>:</br> ${driver.data().address}</li>
           <li class="list-group-item overflow-auto"><b>Email</b>:</br> ${driver.data().email}</li>
         </ul>
-        <button data-id="${driver.id}" type="button" class="btn btn-light"><b>Edit</b></button>
+        <button data-id="${driver.id}" type="button" class="btn btn-light editDriver"><b>Edit</b></button>
         </div>
         `;
         html += card;
@@ -110,7 +110,7 @@ const displayDrivers = ((data) => {
     driverCardDiv.innerHTML = html;
 
     // Pull up modal and set data
-    document.querySelectorAll(".btn.btn-light").forEach(btn => {
+    document.querySelectorAll(".btn.btn-light.editDriver").forEach(btn => {
       btn.addEventListener("click", event => {
         // call modal
         const driverID = event.currentTarget.dataset.id;
