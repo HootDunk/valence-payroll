@@ -53,6 +53,7 @@
 
   // Create
   const create = (() => {
+
     const newJob = (obj) => {
       let parts = dateInfo.createDateArray(obj.deadline);
       db.collection('jobs').add({
@@ -76,6 +77,47 @@
           console.error("Error adding document: ", error);
       });
     }
+
+    async function getRegistrationCodes() {
+      let adminRef = db.collection('admin').doc("dPOd2cPd0JLWhHo3ciSV")
+      try {
+        let adminDoc = await adminRef.get();
+        return adminDoc.data();
+      }
+      catch (err){
+        displayError(err)
+      }
+    }
+    // pick one and comment out the other!!
+    async function newUser(userID, userRole, form){
+      try{
+        db.collection('users').doc(userID).set({
+          fname: "d",
+          lname: "d",
+          role: userRole,
+          status: "active",
+          email: "email",
+        })
+      }
+      catch(err){
+        console.error("Error adding document: ", error);
+      }
+    }
+    const newUser = ((userID, userRole, form) => {
+      db.collection('users').doc(userID).set({
+        fname: "d",
+        lname: "d",
+        role: userRole,
+        status: "active",
+        email: "email",
+      })
+      .then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+      })
+      .catch(function(error) {
+          console.error("Error adding document: ", error);
+      });
+    })
 
 
 
@@ -221,6 +263,7 @@
   
     return {
       newJob,
+      newUser,
       fuelEntry,
       newAdjustments,
       newPayrollEntrySalary,

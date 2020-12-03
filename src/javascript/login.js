@@ -1,8 +1,17 @@
 // const { app, BrowserWindow } = require('electron');
 // const path = require('path');
-
+const database = require('../database');
 const resetPasswordBtn = document.getElementById('forgot-PW-Btn');
 const resetPasswordModal = document.getElementById('reset-password-modal');
+const resetPasswordForm = document.getElementById("reset-password-form");
+
+const registerUserBtn = document.getElementById('register-btn');
+const registerUserForm = document.getElementById('register-user-form');
+const userCreateBtn = document.getElementById("user-create-btn");
+let dispatchCode;
+let adminCode;
+let passwordCheck = false;
+let codeCheck = false;
 
 const displayError = (error) => {
   const modalTitle = document.querySelector('.modal-header');
@@ -16,6 +25,9 @@ const displayError = (error) => {
   else if (errorCode == 'auth/wrong-password'){
     modalTitle.textContent = "Password is incorrect";
     modalBody.textContent = "Re-type your password and try again"
+  }
+  else if (typeof error == "string"){
+    modalBody.textContent = error;
   }
   else {
     modalTitle.textContent = errorCode;
@@ -58,6 +70,126 @@ loginForm.addEventListener("submit", (e) => {
   });
 });
 
+// Open the reset password Modal On Click
 resetPasswordBtn.addEventListener("click", () => {
   $('#reset-password-modal').modal()
 })
+
+// Send Email on Form Submit ('send')
+resetPasswordForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  let emailAddress = resetPasswordForm['email'].value;
+  // firebase function to handle emails
+  auth.sendPasswordResetEmail(emailAddress).then(function() {
+    $('#reset-password-modal').modal('hide')
+    displayError("Email Sent!")
+  }).catch(function(error) {
+    // An error happened.
+    $('#reset-password-modal').modal('hide')
+    displayError(error) // check these alerts. may have to close modal and open error modal
+  });
+})
+
+// on key press, check user password and ensure fields match
+const checkPassword = () => {
+  if (document.getElementById('password').value ==
+    document.getElementById('confirm-password').value) {
+    document.getElementById('message').style.color = 'green';
+    document.getElementById('message').innerHTML = 'matching';
+    passwordCheck = true;
+    
+  } else {
+    document.getElementById('message').style.color = 'red';
+    document.getElementById('message').innerHTML = 'not matching';
+    passwordCheck = false;
+  }
+  if(document.getElementById('password').value == ""){
+    passwordCheck = false;
+  }
+}
+
+registerUserForm.addEventListener("keyup", () => {
+  if(passwordCheck && codeCheck){
+    userCreateBtn.disabled = false;
+  }
+  else{
+    userCreateBtn.disabled = true;
+  }
+})
+
+
+
+async function getRegistrationCodes() {
+  let adminRef = db.collection('admin').doc("dPOd2cPd0JLWhHo3ciSV")
+  try {
+    let adminDoc = await adminRef.get();
+    return adminDoc.data();
+  }
+  catch (err){
+    displayError(err)
+  }
+}
+
+
+// Open the register modal on click
+registerUserBtn.addEventListener("click", () => {
+  getRegistrationCodes().then(result => {
+    dispatchCode = result.DispatcherRegistrationID;
+    adminCode = result.AdminRegistrationID;
+    $("#register-user-modal").modal();
+  })
+})
+
+
+// blur to initially check it
+registerUserForm['registration-code'].addEventListener("blur", () => {
+  if (adminCode == registerUserForm['registration-code'].value || dispatchCode == registerUserForm['registration-code'].value)  {
+    document.getElementById('message1').style.color = 'green';
+    document.getElementById('message1').innerHTML = 'Code Recognized';
+    codeCheck = true;
+  }
+  else{
+    document.getElementById('message1').style.color = 'Red';
+    document.getElementById('message1').innerHTML = 'Code Not Recognized';
+  }
+})
+// key up will set it to green if theres a match but wont do anything else
+registerUserForm['registration-code'].addEventListener("keyup", () => {
+  if (adminCode == registerUserForm['registration-code'].value || dispatchCode == registerUserForm['registration-code'].value)  {
+    document.getElementById('message1').style.color = 'green';
+    document.getElementById('message1').innerHTML = 'Code Recognized';
+    codeCheck = true;
+  }
+  else{
+    codeCheck = false;
+  }
+
+})
+
+// Finish creating user document
+registerUserForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const email = registerUserForm['email'].value;
+  const password = registerUserForm['password'].value;
+  auth.createUserWithEmailAndPassword(email, password)
+  .then((user) => {
+    let userID = auth.currentUser.uid;
+    console.log(userID)// use to create document with the proper role. and then redirect to login
+    if(adminCode == registerUserForm['registration-code'].value) {
+      // db.function(userID, "admin")
+      database.create.newUser()
+      console.log("adminCode")
+    }
+    else if(dispatchCode == registerUserForm['registration-code'].value) {
+      // db.function(userID, "dispatch")
+      console.log("dispatcherCode")
+    }
+  })
+  .catch((error) => {
+    $("#register-user-modal").modal('hide');
+    displayError(error);
+  });
+
+})
+
+

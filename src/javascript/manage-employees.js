@@ -15,8 +15,6 @@ const setDriverFormValues = (doc) => {
     // give buttons a data-id that matches the job
     let rateLabel = document.getElementById("rate-label");
     updateDriverBtn.dataset.id = doc.id;
-    // console.log(modalDriverForm['driverTypeRadio'][0])
-    // console.log(modalDriverForm['driverTypeRadio'][1])
 
     if (doc.data().type == "salary"){
       modalDriverForm['salaryRadio'].checked = true;
@@ -118,14 +116,15 @@ const displayDrivers = ((data) => {
         db.read.getDriverDoc(setDriverFormValues, driverID)
       })
     })
-    const addDriverCard = document.querySelector("#add-driver-card");
-    addDriverCard.addEventListener("click", () => {
-      $('#newDriverModal').modal()
-    })
   }
   else{
     console.log("No drivers found")
   }
+  // at bottom as we want the event listener to work if there are drivers or not
+  const addDriverCard = document.querySelector("#add-driver-card");
+  addDriverCard.addEventListener("click", () => {
+    $('#newDriverModal').modal()
+  })
 })
 
 // NEED TO ADD FIREBASE FUNCTION AND TEST. THEN FIGURE OUT EDIT/DELETE/TOGGLE STATUS BTNS
@@ -181,7 +180,8 @@ modalDriverForm.addEventListener("submit", (event) => {
 newDriverForm.addEventListener("submit", (event) => {
   event.preventDefault();
   db.create.newDriver(newDriverForm);
-  
+  $('#newDriverModal').modal("hide") // hmm, may need this to be in the db call? so
+  // the event happens in the .then()
 })
 
 

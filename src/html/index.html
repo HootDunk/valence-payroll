@@ -60,16 +60,75 @@
           </button>
         </div>
         <div class="modal-body">
-          <form>
+          <form id="reset-password-form">
             <div class="row form-group p-3">
               <div class="col">
-                <label for="address">Email:</label>
-                <input type="text" class="form-control" id="address" required>
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email" required>
               </div>
             </div>
 
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Send</button>
+              <button type="submit" class="btn btn-primary">Register</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="register-user-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Create Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="register-user-form">
+
+            <div class="row form-group">
+              <div class="col">
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email" required>
+              </div>
+              <div class="col">
+                <label for="registration-code">Registration Code:</label>
+                <input type="text" class="form-control"  id="registration-code" required>
+                <span id='message1'></span>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col">
+                <label for="fname">First Name:</label>
+                <input type="text" class="form-control" id="fname" required>
+              </div>
+              <div class="col">
+                <label for="lname">Last Name:</label>
+                <input type="text" class="form-control"  id="lname" required>
+              </div>
+            </div>
+            
+            <div class="row form-group">
+              <div class="col">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password" onkeyup='checkPassword();' required>
+              </div>
+              <div class="col">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" class="form-control"  id="confirm-password" onkeyup='checkPassword();' required>
+                <span id='message'></span>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button id="user-create-btn" type="submit" class="btn btn-primary" disabled>Create</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </form>
@@ -101,12 +160,13 @@
       const auth = firebase.auth();
     </script>
     
-    <script>
+    <!-- <script>
       require('../javascript/login.js');
-    </script>
+    </script> -->
 
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script type="text/javascript" src="../javascript/login.js"></script>
     <script type="text/javascript" src="../assets/jquery.min.js"></script>
     <script type="text/javascript" src="../assets/bootstrap.min.js"></script>
     <!-- Insert this line after script imports -->
