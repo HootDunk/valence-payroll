@@ -78,46 +78,34 @@
       });
     }
 
-    async function getRegistrationCodes() {
-      let adminRef = db.collection('admin').doc("dPOd2cPd0JLWhHo3ciSV")
-      try {
-        let adminDoc = await adminRef.get();
-        return adminDoc.data();
-      }
-      catch (err){
-        displayError(err)
-      }
-    }
-    // pick one and comment out the other!!
+  
+
+    // hmmm, not sure if this is best use case. can always do it the old way
     async function newUser(userID, userRole, form){
-      try{
-        db.collection('users').doc(userID).set({
-          fname: "d",
-          lname: "d",
-          role: userRole,
-          status: "active",
-          email: "email",
-        })
-      }
-      catch(err){
-        console.error("Error adding document: ", error);
-      }
-    }
-    const newUser = ((userID, userRole, form) => {
-      db.collection('users').doc(userID).set({
-        fname: "d",
-        lname: "d",
+      await db.collection('users').doc(userID).set({
+        fname: form['fname'].value,
+        lname: form['lname'].value,
         role: userRole,
         status: "active",
-        email: "email",
+        email: form['email'].value,
       })
-      .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-          console.error("Error adding document: ", error);
-      });
-    })
+    }
+
+    // const newUser = ((userID, userRole, form) => {
+    //   db.collection('users').doc(userID).set({
+    //     fname: "d",
+    //     lname: "d",
+    //     role: userRole,
+    //     status: "active",
+    //     email: "email",
+    //   })
+    //   .then(function(docRef) {
+    //     console.log("Document written with ID: ", docRef.id);
+    //   })
+    //   .catch(function(error) {
+    //       console.error("Error adding document: ", error);
+    //   });
+    // })
 
 
 

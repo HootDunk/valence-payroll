@@ -171,19 +171,31 @@ registerUserForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const email = registerUserForm['email'].value;
   const password = registerUserForm['password'].value;
+
+  // create user, then write user info to document
   auth.createUserWithEmailAndPassword(email, password)
   .then((user) => {
     let userID = auth.currentUser.uid;
-    console.log(userID)// use to create document with the proper role. and then redirect to login
-    if(adminCode == registerUserForm['registration-code'].value) {
-      // db.function(userID, "admin")
-      database.create.newUser()
-      console.log("adminCode")
+    let role = "";
+    if(adminCode == registerUserForm['registration-code'].value){
+      role = "admin";
     }
-    else if(dispatchCode == registerUserForm['registration-code'].value) {
-      // db.function(userID, "dispatch")
-      console.log("dispatcherCode")
+    else if (dispatchCode == registerUserForm['registration-code'].value){
+      role = "dispatcher";
     }
+    // adds user information to the user document
+    database.create.newUser(userID, role, registerUserForm)
+    .then(()=>{
+      if(role == "admin"){
+        window.location.href = 'dashboard.html';
+      }
+      else if (role == "dispatcher"){
+        window.location.href = 'dispatch.html';
+      }
+    }).catch(err =>{
+      $("#register-user-modal").modal('hide');
+      displayError(err)
+    })
   })
   .catch((error) => {
     $("#register-user-modal").modal('hide');
