@@ -6,17 +6,27 @@ const db = require('../database');
 // listens to the authentication state and handles changes
 db.AuthStateListener();
 
+Date.prototype.GetFirstDayOfWeek = function() {
+    return (new Date(this.setDate(this.getDate() - this.getDay()+ (this.getDay() == 0 ? -6:1) )));
+}
+Date.prototype.GetLastDayOfWeek = function() {
+    return (new Date(this.setDate(this.getDate() - this.getDay() +7)));
+}
+var today = new Date();
+
+
 const salaryDiv = document.querySelector('.salaried-div');
 const ownerOp = document.querySelector('.ownerOp-div');
 const dataFieldSalary = document.querySelectorAll(".datafield.salary")
 const driverInfoSalary = document.querySelectorAll(".driverInfo.salary li")
-// const dataFieldOwnerOp = document.querySelectorAll(".datafield.ownerOp")
+const dataFieldOwnerOp = document.querySelectorAll(".datafield.ownerOp")
 const driverInfoOwnerOp = document.querySelectorAll(".driverInfo.ownerOp li");
 const fuelTableBody = document.getElementById("fuel-table-body");
 const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
 const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
 const driverSelect = document.getElementById('driver');
 const completePayrollBtn = document.getElementById("complete-payroll");
+console.log(dataFieldSalary)
 
 
 let loadTableRows;
@@ -46,10 +56,13 @@ const clearDriverInfo = (driverType) => {
     if(driverType == "salary"){
         driverInfoSalary[0].innerText = "Name: ";
         driverInfoSalary[1].innerText = "Address: ";
+        driverInfoSalary[2].innerText = `Week: `;
+        
     }
     else if (driverType == "owner-operator"){
         driverInfoOwnerOp[0].innerText = "Name: ";
         driverInfoOwnerOp[1].innerText = "Address: ";
+        driverInfoOwnerOp[2].innerText = `Week: `;
     }
 }
 
@@ -120,7 +133,6 @@ const showSalaryAdjustmentsInfo = (doc) => {
         // iterate object and sum values
         for(let key of Object.keys(deductions)){
             totalDeduct += deductions[key]
-
         }
         for(let key of Object.keys(reimbursements)){
             totalReimburse += reimbursements[key]
@@ -152,6 +164,7 @@ const showSalaryDriverInfo = ((doc) => {
         const driver = doc.data();
         driverInfoSalary[0].innerHTML += ` ${driver.fname} ${driver.lname}`;
         driverInfoSalary[1].innerHTML += ` ${driver.address}`;
+        driverInfoSalary[2].innerHTML += `${today.GetFirstDayOfWeek().toLocaleDateString('en-US')} - ${today.GetLastDayOfWeek().toLocaleDateString('en-US')}`
 
     }
     else{
@@ -164,8 +177,9 @@ const showOwnerOpDriverInfo = ((doc) => {
         const driver = doc.data();
         driverInfoOwnerOp[0].innerHTML += ` ${driver.fname} ${driver.lname}`;
         driverInfoOwnerOp[1].innerHTML += ` ${driver.address}`;
+        driverInfoOwnerOp[2].innerHTML += `${today.GetFirstDayOfWeek().toLocaleDateString('en-US')} - ${today.GetLastDayOfWeek().toLocaleDateString('en-US')}`
     }
-    else{
+    else {
         console.log('No data for this driver')
     }
 })
@@ -334,10 +348,6 @@ document.getElementById("file-reader-test").addEventListener("click", () => {
 
 
 const changeDocumentStatuses = (status) => {
-    // gets current driver ID
-    const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
-    const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
-
     if(currentDriverType == "salary"){
         // adjustmentsID
         const adjustmentsID = salaryDriverAdjTB.dataset.id;
@@ -345,7 +355,7 @@ const changeDocumentStatuses = (status) => {
         // get salary driver tr data-ids
         loadTableRows = document.querySelectorAll("#salary-load-summary tr");
         loadTableRows.forEach(row => {
-            console.log("jobID ", row.dataset.id)
+            
             db.update.setJobStatus(row.dataset.id, status)
         })
     }
@@ -378,13 +388,26 @@ sendBackBtn.addEventListener("click", () => {
     clearDisplay();
 })
 
-// So now we need the complete payroll
-// the button will trigger a lot of things. conditionally create the document based on driver type! 
-// it will create a payroll-entry document with the proper info. 
-// it will also call a special update function from the database
-// to not only set the status to 3, but also to give the document the id of the payroll-entry doc
+// increments payroll status of all entries and gives each doc the docRef.id of the payroll-entry doc.
 completePayrollBtn.addEventListener("click", () => {
-    console.log("yo")
+    // gets current driver ID
+    const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+    const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+    if(currentDriverType == "salary"){
+        console.log(dataFieldSalary)
+        loadTableRows = document.querySelectorAll("#salary-load-summary tr");
+        const adjustmentsID = salaryDriverAdjTB.dataset.id;
+        db.create.newSalaryPayrollEntry(currentDriverId, dataFieldSalary, loadTableRows, adjustmentsID);
+        
+    }
+    else if (currentDriverType == "owner-operator"){
+        console.log(ownerOpAdjTB.dataset.id)
+        const adjustmentsID = ownerOpAdjTB.dataset.id;
+        loadTableRows = document.querySelectorAll("#ownerOpLoadSummary tr");
+        fuelTableRows = document.querySelectorAll("#fuel-table-body tr");
+        db.create.newOwnerOpPayrollEntry(currentDriverId, dataFieldOwnerOp, loadTableRows, fuelTableRows, adjustmentsID);
+    }
+    clearDisplay();
 })
 
 

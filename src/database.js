@@ -30,13 +30,7 @@
     const getDate = () => {
       return `${getYear()}-${getMonth()}-${getDay()}`
     }
-    // const getYearFromDate = (dateString) => {
-    //   let parts = dateString.split('-');
-    //   return parts[0]
-    // }
-    // const getMonthFromDate = (dateString) => {
-    //   let parts = 
-    // }
+
     const createDateArray = (dateString) => {
       let parts = dateString.split('-');
       return parts;
@@ -50,6 +44,14 @@
       createDateArray,
     }
   })();
+
+  Date.prototype.GetFirstDayOfWeek = function() {
+    return (new Date(this.setDate(this.getDate() - this.getDay()+ (this.getDay() == 0 ? -6:1) )));
+  }
+  Date.prototype.GetLastDayOfWeek = function() {
+      return (new Date(this.setDate(this.getDate() - this.getDay() +7)));
+  }
+  var today = new Date();
 
   // Create
   const create = (() => {
@@ -91,22 +93,6 @@
       })
       return response;
     }
-
-    // const newUser = ((userID, userRole, form) => {
-    //   db.collection('users').doc(userID).set({
-    //     fname: "d",
-    //     lname: "d",
-    //     role: userRole,
-    //     status: "active",
-    //     email: "email",
-    //   })
-    //   .then(function(docRef) {
-    //     console.log("Document written with ID: ", docRef.id);
-    //   })
-    //   .catch(function(error) {
-    //       console.error("Error adding document: ", error);
-    //   });
-    // })
 
 
 
@@ -216,21 +202,21 @@
       }
     }
 
-    const newPayrollEntrySalary = (myFunction, jobsArray, adjustments, driverID, driverType) => {
-      db.collection("payroll-entries").add({
-        driverID: driverID,
-        driverType: driverType,
-        jobs: jobsArray,
-        adjustment: adjustments,
-      })
-      .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-        myFunction();
-      })
-      .catch(function(error) {
-          console.error("Error adding document: ", error);
-      });
-    }
+    // const newPayrollEntrySalary = (myFunction, jobsArray, adjustments, driverID, driverType) => {
+    //   db.collection("payroll-entries").add({
+    //     driverID: driverID,
+    //     driverType: driverType,
+    //     jobs: jobsArray,
+    //     adjustment: adjustments,
+    //   })
+    //   .then(function(docRef) {
+    //     console.log("Document written with ID: ", docRef.id);
+    //     myFunction();
+    //   })
+    //   .catch(function(error) {
+    //       console.error("Error adding document: ", error);
+    //   });
+    // }
 
     const newDriver = (form) => {
       db.collection("drivers").add({
@@ -249,26 +235,80 @@
           console.error("Error adding document: ", error);
       });
     }
-
-    const newOwnerOpPayrollEntry = (driverID) => {
+    // db.create.newOwnerOpPayrollEntry(currentDriverId, dataFieldOwnerOp, loadTableRows, fuelTableRows, ownerOpAdjTB.dataset.id)
+    const newOwnerOpPayrollEntry = (driverID, dataFieldOwnerOp, loadTableRows, fuelTableRows, adjustmentsID) => {
+      let parts = dateInfo.createDateArray(dateInfo.getDate());
       db.collection("payroll-entries").add({
-        driverID: "drierid",
+        driverID: driverID,
+        date: new Date(parts[0], parts[1]-1, parts[2]),
+        week: `${today.GetFirstDayOfWeek().toLocaleDateString('en-US')} - ${today.GetLastDayOfWeek().toLocaleDateString('en-US')}`,
+        totalReimburse: Number(dataFieldOwnerOp[6].innerText.slice(1)),
+        totalDeduct: Number(dataFieldOwnerOp[7].innerText.slice(1)),
+        totalFuelCost: Number(dataFieldOwnerOp[1].innerText.slice(1)),
+        grossPay: Number(dataFieldOwnerOp[5].innerText.slice(1)),
+        netPay: Number(dataFieldOwnerOp[8].innerText.slice(1)),
 
       }).then(function(docRef) {
         // call the update functions from here maybe?
         console.log("Document written with ID: ", docRef.id);
+        update.adjustmentsPayrollRef(docRef.id, adjustmentsID);
+
+        
+        loadTableRows.forEach(row => {
+          update.jobsPayrollRef(docRef.id, row.dataset.id)
+        })
+
+        
+        fuelTableRows.forEach(row => {
+            // give each fuel status a status of 1
+            // db.update.setFuelStatus(row.dataset.id, status)
+            update.fuelPayrollRef(docRef.id, row.dataset.id)
+        })
+
+      }).catch(function(error) {
+        console.error("Error adding document: ", error);
+      });
+      
+    }
+
+    const newSalaryPayrollEntry = (driverID, dataFieldSalary, loadTableRows, adjustmentsID) => {
+      let parts = dateInfo.createDateArray(dateInfo.getDate());
+      db.collection("payroll-entries").add({
+        driverID: driverID,
+        date: new Date(parts[0], parts[1]-1, parts[2]),
+        week: `${today.GetFirstDayOfWeek().toLocaleDateString('en-US')} - ${today.GetLastDayOfWeek().toLocaleDateString('en-US')}`,
+        totalReimburse: Number(dataFieldSalary[9].innerText.slice(1)),
+        totalDeduct: Number(dataFieldSalary[10].innerText.slice(1)),
+        totalMiles: Number(dataFieldSalary[12].innerText.slice(1)),
+        grossPay: Number(dataFieldSalary[8].innerText.slice(1)),
+        netPay: Number(dataFieldSalary[11].innerText.slice(1)),
+
+      }).then(function(docRef) {
+        // call the update functions from here maybe?
+        console.log("Document written with ID: ", docRef.id);
+        update.adjustmentsPayrollRef(docRef.id, adjustmentsID);
+
+        loadTableRows.forEach(row => {
+          update.jobsPayrollRef(docRef.id, row.dataset.id)
+        })
+
       }).catch(function(error) {
         console.error("Error adding document: ", error);
     });
-    }
+  }
+
+
+    
   
     return {
       newJob,
       newUser,
       fuelEntry,
       newAdjustments,
-      newPayrollEntrySalary,
+      // newPayrollEntrySalary,
       newDriver,
+      newOwnerOpPayrollEntry,
+      newSalaryPayrollEntry,
     }
   })();
   
@@ -357,7 +397,7 @@
       })
     });
 
-    // learning promises and async would speed this up a lot
+
     function getSalaryPayrollInfo(myFunction, myFunction1, status, driverID) {
       getDriverJobs(myFunction, status, driverID)
       getAdjustmentByID(myFunction1, status, driverID)
@@ -393,9 +433,6 @@
         console.log("Error getting document:", error);
       })
     });
-    
-
-  
   
     return{
       jobsByStatus,
@@ -553,6 +590,42 @@
       });
     })
 
+    const adjustmentsPayrollRef = ((payrollID, docID) => {
+      db.collection('adjustments').doc(docID).update({
+        adjustmentStatus: 3,
+        payrollID: payrollID,
+      }).then(
+        console.log("document successfully updated!")
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
+    const fuelPayrollRef = ((payrollID, docID) => {
+      db.collection('fuel').doc(docID).update({
+        fuelStatus: 3,
+        payrollID: payrollID,
+      }).then(
+        console.log("document successfully updated!")
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
+    const jobsPayrollRef = ((payrollID, docID) => {
+      db.collection('jobs').doc(docID).update({
+        jobStatus: 3,
+        payrollID: payrollID,
+      }).then(
+        console.log("document successfully updated!")
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
 
   
     return {
@@ -565,6 +638,9 @@
       editAdjustmentsSalary,
       editDriver,
       setDriverStatus,
+      adjustmentsPayrollRef,
+      fuelPayrollRef,
+      jobsPayrollRef,
     }
   })();
   
