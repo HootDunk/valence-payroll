@@ -8,6 +8,7 @@ const salaryDiv = document.querySelector('.salaried-div');
 const accordion = document.getElementById("accordionExample");
 const form = document.getElementById("search-form");
 const driverSelect = document.getElementById('driver');
+const accordianDiv = document.getElementById("accordionExample")
 const database = require('../database');
 
 
@@ -229,8 +230,6 @@ accordion.addEventListener("click", (event) => {
             </table>
           </table>
         </div>
-
-        
       </div>
     </div>
   </div>
@@ -272,6 +271,45 @@ const logger = (collection) => {
   }
 
 }
+const populateAccordian = (collection) => {
+  if(collection.length){
+
+    let html = "";
+    collection.forEach((doc, index) => {
+      let accordianCard = `
+      <div class="card">
+        <div class="card-header" id="headingTwo">
+          <ul class="collapsed list-group list-group-horizontal d-flex justify-content-center" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <li class="list-group-item p-3 bg-transparent">
+              <button class="btn btn-link collapsed p-0" type="button" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                View More
+              </button>
+            </li>
+            <li class="list-group-item p-3 bg-transparent">Josh Hootman</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Week</b>: 11/11/2011 - 11/18/2011</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Gross Pay</b>: $5355.55</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Deductions</b>: 100</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Reimbursements</b>: 100</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Net Pay</b>: $5355.55</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Fuel Costs</b>: 12.50</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Salary Driver</b>: 12.50</li>
+          </ul>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+
+        </div>
+      </div>
+      `;
+      html += accordianCard;
+    })
+    accordianDiv.innerHTML = html;
+
+    
+  }
+  else{
+    console.log("no payroll records found")
+  }
+}
 
 
 
@@ -291,7 +329,7 @@ form.addEventListener("submit", (event) => {
   if(selectedDriver == "All Drivers"){
     console.log("search database by date only")
     database.read.getRecordsByDate(logger, startDate, endDate);
-
+    database.read.getRecordsByDate(populateAccordian, startDate, endDate);
   }
   else{
     const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
