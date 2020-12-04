@@ -3,11 +3,34 @@
 // then it's time to write out what the database documents will look like and how to bind the proper records to the click events
 // accordion elements need data-type of driverType to handle those conditionals with data-id of the payrollID.  query for all matching documents with same id
 // how will query by date look? make sure you think of that as well.  should just be tied to accordion render function
-$('.collapse').collapse()
+
 const salaryDiv = document.querySelector('.salaried-div');
 const accordion = document.getElementById("accordionExample");
-
+const form = document.getElementById("search-form");
+const driverSelect = document.getElementById('driver');
 const database = require('../database');
+
+
+// creates dropdown with all active drivers
+const createDropdownHTML = (data) => {
+  const drivers = [];
+  data.forEach((doc) => {
+    drivers.push(doc)
+  })
+  drivers.sort((a, b) => a.data().fname.localeCompare(b.data().lname))
+  let html = "";
+  const dropdown = document.getElementById('driver');
+  drivers.forEach((driver) => {
+    const option = `
+        <option class="driver-option" data-type="${driver.data().type}" data-id=${driver.id}>${driver.data().lname}, ${driver.data().fname} (${driver.data().type})</option>
+    `;
+    html += option;
+  })
+  dropdown.innerHTML += html;
+}
+database.read.getAllDrivers(createDropdownHTML)
+
+
 
 const showSalaryJobInfo = (data) => {
   const dataFieldSalary = document.querySelectorAll(".datafield.salary")
@@ -80,151 +103,207 @@ const showSalaryAdjustmentsInfo = (doc) => {
   }
 }
 
-
-
+// show/hide accordian on click
 accordion.addEventListener("click", (event) => {
-  
-  console.log(event.target.className)
-  // could grab all by className and delete their innerHTML. not pretty but it would work
-  // make sure click event only happens on the button
-  if(event.target.className == "btn btn-link collapsed"){
-    // then make some sort of conditional based on an event.dataset that indicates driver type
+  console.log(event)
+  if(event.target.className == "btn btn-link collapsed" ||event.target.className == "btn btn-link collapsed p-0"){
     const currentDiv = document.querySelector(event.target.dataset.target);
+    // prevents  repeated database calls
+    if (currentDiv.innerHTML.length < 30){
+      currentDiv.innerHTML = `
+      <div id="salaried-driver-container" class="container">
+      <div class="row">
+        <div class="col-lg-3">
+          <h4 class="text-info">Weekly Cash Flow</h4>
+          <table class="table table-bordered table-sm">
 
-    currentDiv.innerHTML = `
-        <div id="salaried-driver-container" class="container">
-        <div class="row">
-          <div class="col-lg-3">
-            <h4 class="text-info">Weekly Cash Flow</h4>
-            <table class="table table-bordered table-sm">
-
-              <thead class="thead-light">
+            <thead class="thead-light">
+              <tr>
+                <th class="text-info" scope="col" colspan="2">Reimbursements</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="2">Toll</td>
+                <td class = "datafield salary toll"></td>
+              </tr>
+              <tr>
+                <td colspan="2">Scale</td>
+                <td class = "datafield salary scale"></td>
+              </tr>
+              <tr>
+                <td colspan="2">Extras</td>
+                <td class= "datafield salary extras"></td>
+              </tr>
+            </tbody>
+            
+            <thead class="thead-light">
+              <tr>
+                <th class="text-info" scope="col" colspan="2">Deductions</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="2">Insurance</td>
+                <td class = "datafield salary insurance"></td>
+              </tr>
+              <tr>
+                <td colspan="2">Accidental</td>
+                <td  class = "datafield salary accidental"></td>
+              </tr>
+              <tr>
+                <td  colspan="2">Cash Advance</td>
+                <td class = "datafield salary cashAdvance"></td>
+              </tr>
+              <tr>
+                <td colspan="2">Escrow</td>
+                <td class = "datafield salary escrow"></td>
+              </tr>
+              <tr>
+                <td colspan="2">Reserve</td>
+                <td class = "datafield salary reserve"></td>
+              </tr>
+            </tbody>
+            
+            <thead class="thead-light">
+              <tr>
+                <th class="text-info" scope="col" colspan="2">Net Pay</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
                 <tr>
-                  <th class="text-info" scope="col" colspan="2">Reimbursements</th>
-                  <th scope="col">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="2">Toll</td>
-                  <td class = "datafield salary toll"></td>
+                  <td colspan="2">Gross Pay</td>
+                  <td class = "datafield salary grossPay"></td>
                 </tr>
                 <tr>
-                  <td colspan="2">Scale</td>
-                  <td class = "datafield salary scale"></td>
+                  <td colspan="2">Reimbursements</td>
+                  <td class = "datafield salary reimbursements"></td>
                 </tr>
                 <tr>
-                  <td colspan="2">Extras</td>
-                  <td class= "datafield salary extras"></td>
-                </tr>
-              </tbody>
-              
-              <thead class="thead-light">
-                <tr>
-                  <th class="text-info" scope="col" colspan="2">Deductions</th>
-                  <th scope="col">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="2">Insurance</td>
-                  <td class = "datafield salary insurance"></td>
-                </tr>
-                <tr>
-                  <td colspan="2">Accidental</td>
-                  <td  class = "datafield salary accidental"></td>
-                </tr>
-                <tr>
-                  <td  colspan="2">Cash Advance</td>
-                  <td class = "datafield salary cashAdvance"></td>
-                </tr>
-                <tr>
-                  <td colspan="2">Escrow</td>
-                  <td class = "datafield salary escrow"></td>
-                </tr>
-                <tr>
-                  <td colspan="2">Reserve</td>
-                  <td class = "datafield salary reserve"></td>
-                </tr>
-              </tbody>
-              
-              <thead class="thead-light">
-                <tr>
-                  <th class="text-info" scope="col" colspan="2">Net Pay</th>
-                  <th scope="col">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
                   <tr>
-                    <td colspan="2">Gross Pay</td>
-                    <td class = "datafield salary grossPay"></td>
+                    <td colspan="2">Deductions</td>
+                    <td class = "datafield salary deductions"></td>
                   </tr>
-                  <tr>
-                    <td colspan="2">Reimbursements</td>
-                    <td class = "datafield salary reimbursements"></td>
-                  </tr>
-                  <tr>
-                    <tr>
-                      <td colspan="2">Deductions</td>
-                      <td class = "datafield salary deductions"></td>
-                    </tr>
-                    <td class="text-info" colspan="2"><b>Total</b></td>
-                    <td class = "datafield salary total"></td>
-                  </tr>
-              </tbody>
-
-            </table>
-          </div>
-
-
-          <div class="col col-lg-9">
-            <h4 class="text-info">Load Summary</h4>
-            <table class="table table-hover table-sm table-bordered">
-              <thead class="thead-light">
-                <tr>
-                  <th scope="col">Pickup</th>
-                  <th scope="col">Delivery</th>
-                  <th scope="col">Miles</th>
+                  <td class="text-info" colspan="2"><b>Total</b></td>
+                  <td class = "datafield salary total"></td>
                 </tr>
-              </thead>
-              <tbody id="salary-load-summary">
+            </tbody>
 
-              </tbody>
-            </table>
-            <h4 class="text-info">Pay Summary</h4>
-              <table class="table table-sm table-bordered">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col">Total Miles</th>
-                    <th scope="col">Pay Per Miles</th>
-                    <th scope="col">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class = "datafield salary totalMiles"></td>
-                    <td class="datafield salary payRate"></td>
-                    <td class="datafield salary totalPay"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </table>
-          </div>
-
-          
+          </table>
         </div>
+
+
+        <div class="col col-lg-9">
+          <h4 class="text-info">Load Summary</h4>
+          <table class="table table-hover table-sm table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Pickup</th>
+                <th scope="col">Delivery</th>
+                <th scope="col">Miles</th>
+              </tr>
+            </thead>
+            <tbody id="salary-load-summary">
+
+            </tbody>
+          </table>
+          <h4 class="text-info">Pay Summary</h4>
+            <table class="table table-sm table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Total Miles</th>
+                  <th scope="col">Pay Per Miles</th>
+                  <th scope="col">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class = "datafield salary totalMiles"></td>
+                  <td class="datafield salary payRate"></td>
+                  <td class="datafield salary totalPay"></td>
+                </tr>
+              </tbody>
+            </table>
+          </table>
+        </div>
+
+        
       </div>
     </div>
-      `;
+  </div>
+    `;
+
+    // call database function
+    }
+    
+      // call this after database function
+      if(currentDiv.className == "collapse"){
+        currentDiv.className = "collapse show";
+      }
+      else if (currentDiv.className == "collapse show"){
+        currentDiv.className = "collapse";
+      }
+
       // why isn't this getting called again? think it isn't specify which item to do! no to relate this to the particular accordion element
       // when it goes back to collapsed, you need to delete the inner html
-      database.read.getSalaryPayrollInfo(showSalaryJobInfo, showSalaryAdjustmentsInfo, 2, 'hePW490C6kZtWXkDtkE0')
+      // database.read.getSalaryPayrollInfo(showSalaryJobInfo, showSalaryAdjustmentsInfo, 2, 'hePW490C6kZtWXkDtkE0')
   }
   // 
  
 })
 
 
+const createDateArray = (dateString) => {
+  let parts = dateString.split('-');
+  return parts;
+}
+
+const logger = (collection) => {
+  if(collection.length){
+    collection.forEach(doc => {
+      console.log(doc.data())
+    })
+  }
+  else{
+    console.log("no payroll records found")
+  }
+
+}
+
+
+
+
+
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const selectedDriver = driverSelect.options[driverSelect.selectedIndex].value;
+  const startDateArr = createDateArray(form['start-date'].value);
+  const endDateArr = createDateArray(form['end-date'].value);
+  const startDate = new Date(startDateArr[0], startDateArr[1]-1, startDateArr[2]);
+  const endDate = new Date(endDateArr[0], endDateArr[1]-1, endDateArr[2]);
+  // evaluates to false.. will need to check equality when they are both strings
+  // console.log(startDate == endDate)
+  if(selectedDriver == "All Drivers"){
+    console.log("search database by date only")
+    database.read.getRecordsByDate(logger, startDate, endDate);
+
+  }
+  else{
+    const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+    const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+
+    console.log("search by driver and date")
+  }
+  
+  // console.log(startDate.toLocaleDateString())
+  // console.log(endDate.toLocaleDateString())
+  
+})
 
 
 

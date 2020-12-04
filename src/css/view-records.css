@@ -23,3 +23,20 @@ header {
 .navbar{
   background: #5D6D7E;
 }
+/* .collapsed.list-group.list-group-horizontal{
+  background-color: red;
+  border-top: 1px solid #ddd;
+  border-radius: 0;
+
+} */
+
+li.list-group-item {
+  border-top: none;
+  border-bottom: none;
+}
+
+.card {
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+} 

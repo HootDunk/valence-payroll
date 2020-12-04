@@ -26,7 +26,8 @@ const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
 const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
 const driverSelect = document.getElementById('driver');
 const completePayrollBtn = document.getElementById("complete-payroll");
-console.log(dataFieldSalary)
+console.log(driverInfoSalary)
+console.log(driverInfoOwnerOp)
 
 
 let loadTableRows;
@@ -394,22 +395,25 @@ completePayrollBtn.addEventListener("click", () => {
     const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
     const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
     if(currentDriverType == "salary"){
-        console.log(dataFieldSalary)
+        // console.log(dataFieldSalary)
         loadTableRows = document.querySelectorAll("#salary-load-summary tr");
         const adjustmentsID = salaryDriverAdjTB.dataset.id;
-        db.create.newSalaryPayrollEntry(currentDriverId, dataFieldSalary, loadTableRows, adjustmentsID);
+        const driverFullName = driverInfoSalary[0].innerText.slice(6);
+        console.log(currentDriverType)
+        db.create.newSalaryPayrollEntry(currentDriverId, dataFieldSalary, loadTableRows, adjustmentsID, driverFullName, currentDriverType);
         
     }
     else if (currentDriverType == "owner-operator"){
-        console.log(ownerOpAdjTB.dataset.id)
+        // console.log(ownerOpAdjTB.dataset.id)
         const adjustmentsID = ownerOpAdjTB.dataset.id;
         loadTableRows = document.querySelectorAll("#ownerOpLoadSummary tr");
         fuelTableRows = document.querySelectorAll("#fuel-table-body tr");
-        db.create.newOwnerOpPayrollEntry(currentDriverId, dataFieldOwnerOp, loadTableRows, fuelTableRows, adjustmentsID);
+        const driverFullName = (driverInfoOwnerOp[0].innerText.slice(6));
+        console.log(currentDriverType)
+        db.create.newOwnerOpPayrollEntry(currentDriverId, dataFieldOwnerOp, loadTableRows, fuelTableRows, adjustmentsID, driverFullName, currentDriverType);
     }
     clearDisplay();
 })
-
 
 db.read.jobsByStatus(populateDropdown, 2, true)
 
