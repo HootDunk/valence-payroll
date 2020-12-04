@@ -13,7 +13,18 @@ const driverInfoSalary = document.querySelectorAll(".driverInfo.salary li")
 // const dataFieldOwnerOp = document.querySelectorAll(".datafield.ownerOp")
 const driverInfoOwnerOp = document.querySelectorAll(".driverInfo.ownerOp li");
 const fuelTableBody = document.getElementById("fuel-table-body");
+const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
+const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
+const driverSelect = document.getElementById('driver');
+const completePayrollBtn = document.getElementById("complete-payroll");
+
+
+let loadTableRows;
+let fuelTableRows;
+
 let grossPay = 0;
+
+const sendBackBtn = document.getElementById("send-back");
 
 
 const clearDisplay = () => {
@@ -40,7 +51,6 @@ const clearDriverInfo = (driverType) => {
         driverInfoOwnerOp[0].innerText = "Name: ";
         driverInfoOwnerOp[1].innerText = "Address: ";
     }
-
 }
 
 const createDropdownHTML = (data) => {
@@ -97,7 +107,9 @@ const showSalaryJobInfo = (data) => {
 
 const showSalaryAdjustmentsInfo = (doc) => {
     // need to add data-id to table element!!
+    
     if(doc.data()){
+        salaryDriverAdjTB.setAttribute('data-id', doc.id)
         let totalReimburse = 0;
         let totalDeduct = 0;
 
@@ -193,6 +205,7 @@ const showOwnerOpLoadInfo = ((data) => {
         valanceTotalElement.innerText = `$${valenceTotal.toFixed(2)}`;
     }
     else{
+        ownerOpLoadSummary.innerHTML = ""; // should make sure past load info gets deleted.  not tested.
         console.log("No load information for this driver")
     }
 })
@@ -222,12 +235,14 @@ const showFuelInfo = ((data) => {
         $(".datafield.ownerOp.fuel").text(`$${totalAmount.toFixed(2)}`);
     }
     else{
+        fuelTableBody.innerHTML = ""; // makes sure not table data is displayed from last driver
         console.log("No fuel records found")
     }
 })
 
 const showOwnerOpAdjustmentInfo = ((doc) => {
     if(doc.data()){
+        ownerOpAdjTB.setAttribute('data-id', doc.id)
         let totalReimburse = 0;
         let totalDeduct = 0;
 
@@ -317,4 +332,61 @@ document.getElementById("file-reader-test").addEventListener("click", () => {
 
 });
 
+
+const changeDocumentStatuses = (status) => {
+    // gets current driver ID
+    const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+    const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+
+    if(currentDriverType == "salary"){
+        // adjustmentsID
+        const adjustmentsID = salaryDriverAdjTB.dataset.id;
+        db.update.setAdjustmentsStatus(adjustmentsID, status)
+        // get salary driver tr data-ids
+        loadTableRows = document.querySelectorAll("#salary-load-summary tr");
+        loadTableRows.forEach(row => {
+            console.log("jobID ", row.dataset.id)
+            db.update.setJobStatus(row.dataset.id, status)
+        })
+    }
+    else if (currentDriverType== "owner-operator"){
+        // adjustmentsID
+        const adjustmentsID = ownerOpAdjTB.dataset.id;
+        db.update.setAdjustmentsStatus(adjustmentsID, status)
+        // get all load table rows
+        loadTableRows = document.querySelectorAll("#ownerOpLoadSummary tr");
+        loadTableRows.forEach(row => {
+            // give each job a status of 1
+            db.update.setJobStatus(row.dataset.id, status)
+        })
+        
+        fuelTableRows = document.querySelectorAll("#fuel-table-body tr")
+        fuelTableRows.forEach(row => {
+            // give each fuel status a status of 1
+            db.update.setFuelStatus(row.dataset.id, status)
+        })
+    }
+
+    // ideally this should happen only after statuses are successfully updated
+    
+    // also it would be best to call some sort of success message here
+}
+
+// Send Back to Edit button
+sendBackBtn.addEventListener("click", () => {
+    changeDocumentStatuses(1)
+    clearDisplay();
+})
+
+// So now we need the complete payroll
+// the button will trigger a lot of things. conditionally create the document based on driver type! 
+// it will create a payroll-entry document with the proper info. 
+// it will also call a special update function from the database
+// to not only set the status to 3, but also to give the document the id of the payroll-entry doc
+completePayrollBtn.addEventListener("click", () => {
+    console.log("yo")
+})
+
+
 db.read.jobsByStatus(populateDropdown, 2, true)
+

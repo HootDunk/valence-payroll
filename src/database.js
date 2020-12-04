@@ -80,15 +80,16 @@
 
   
 
-    // hmmm, not sure if this is best use case. can always do it the old way
+    // hmmm, should have got more familiar with async before trying it. seems to be working at least.
     async function newUser(userID, userRole, form){
-      await db.collection('users').doc(userID).set({
+      let response = await db.collection('users').doc(userID).set({
         fname: form['fname'].value,
         lname: form['lname'].value,
         role: userRole,
         status: "active",
         email: form['email'].value,
       })
+      return response;
     }
 
     // const newUser = ((userID, userRole, form) => {
@@ -247,6 +248,18 @@
       .catch(function(error) {
           console.error("Error adding document: ", error);
       });
+    }
+
+    const newOwnerOpPayrollEntry = (driverID) => {
+      db.collection("payroll-entries").add({
+        driverID: "drierid",
+
+      }).then(function(docRef) {
+        // call the update functions from here maybe?
+        console.log("Document written with ID: ", docRef.id);
+      }).catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
     }
   
     return {

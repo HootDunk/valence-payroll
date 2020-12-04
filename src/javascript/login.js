@@ -185,7 +185,8 @@ registerUserForm.addEventListener("submit", (event) => {
     }
     // adds user information to the user document
     database.create.newUser(userID, role, registerUserForm)
-    .then(()=>{
+    .then((response)=>{
+      console.log(response)
       if(role == "admin"){
         window.location.href = 'dashboard.html';
       }

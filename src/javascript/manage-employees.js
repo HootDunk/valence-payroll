@@ -144,9 +144,10 @@ const displayUsers = ((data) => {
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><b>Role</b>: ${user.data().role}</li>
+        <li class="list-group-item"><b>Status</b>: ${user.data().status}</li>
         <li class="list-group-item overflow-auto"><b>Email</b>:<br> ${user.data().email}</li>
       </ul>
-      <button data-id="${user.id}" type="button" class="btn btn-light"><b>Edit</b></button>
+      <button data-id="${user.id}" type="button" class="btn btn-light edit-user"><b>Edit</b></button>
       </div>
       `;
       html += card;
