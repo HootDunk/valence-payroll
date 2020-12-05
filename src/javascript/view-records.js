@@ -10,6 +10,21 @@ const form = document.getElementById("search-form");
 const driverSelect = document.getElementById('driver');
 const accordianDiv = document.getElementById("accordionExample")
 const database = require('../database');
+let grossPay = 0;
+
+
+const logger = (collection) => {
+  if(collection.length){
+    collection.forEach(doc => {
+      console.log(doc.data())
+    })
+  }
+  else{
+    console.log("no payroll records found")
+  }
+
+}
+
 
 
 // creates dropdown with all active drivers
@@ -65,9 +80,11 @@ const showSalaryJobInfo = (data) => {
 }
 
 const showSalaryAdjustmentsInfo = (doc) => {
-  const dataFieldSalary = document.querySelectorAll(".datafield.salary")
   // need to add data-id to table element!!
+  
   if(doc.data()){
+      const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
+      salaryDriverAdjTB.setAttribute('data-id', doc.id)
       let totalReimburse = 0;
       let totalDeduct = 0;
 
@@ -78,12 +95,12 @@ const showSalaryAdjustmentsInfo = (doc) => {
       // iterate object and sum values
       for(let key of Object.keys(deductions)){
           totalDeduct += deductions[key]
-
       }
       for(let key of Object.keys(reimbursements)){
           totalReimburse += reimbursements[key]
       }
 
+      const dataFieldSalary = document.querySelectorAll(".datafield.salary")
       // Set the Reimbursement values
       dataFieldSalary[0].innerHTML = `$${(reimbursements.toll).toFixed(2)}`;
       dataFieldSalary[1].innerHTML = `$${(reimbursements.scale).toFixed(2)}`;
@@ -104,136 +121,383 @@ const showSalaryAdjustmentsInfo = (doc) => {
   }
 }
 
+
+
+
+const showOwnerOpLoadInfo = ((data) => {
+  if(data.length){
+      const percentElement = document.querySelector(".datafield.ownerOp.percent");
+      const grossPayElement = document.querySelector(".datafield.ownerOp.grossPay");
+      const totalDriverElement = document.querySelector(".datafield.ownerOp.totalPercent");
+      const totalRateElement = document.querySelector(".datafield.ownerOp.totalRate");
+      const valanceTotalElement= document.querySelector(".datafield.ownerOp.valenceTotal");
+      percentElement.innerText = `${100 * (data[0].data().driverRate)}%`;
+      const ownerOpLoadSummary = document.getElementById("ownerOpLoadSummary");
+      let totalRate = 0;
+      let valenceTotal = 0;
+      let html = "";
+      data.forEach((doc) =>{
+          const job = doc.data();
+          
+          const tr = `
+              <tr data-id=${doc.id}>
+                  <td> <b>Origin</b>: ${job.origin} </br> <b>Destination:</b> ${job.destination}</td>
+                  <td>$${(job.loadRate).toFixed(2)}</td>
+                  <td>$${(job.loadRate * job.driverRate).toFixed(2)}</td>
+                  <td>$${((job.loadRate) * (1 - job.driverRate)).toFixed(2)}</td>
+              </tr>
+          `;
+          html += tr;
+          grossPay += (job.loadRate * job.driverRate);
+          totalRate += job.loadRate;
+          valenceTotal += (job.loadRate * (1 - job.driverRate));
+      })
+      grossPayElement.innerText = `$${grossPay.toFixed(2)}`;
+      ownerOpLoadSummary.innerHTML = html;
+      totalRateElement.innerText = `$${totalRate.toFixed(2)}`;
+      totalDriverElement.innerText = `$${grossPay.toFixed(2)}`;
+      valanceTotalElement.innerText = `$${valenceTotal.toFixed(2)}`;
+  }
+  else{
+      ownerOpLoadSummary.innerHTML = ""; // should make sure past load info gets deleted.  not tested.
+      console.log("No load information for this driver")
+  }
+})
+
+const showFuelInfo = ((data) => {
+  if(data.length){
+     const fuelTableBody = document.getElementById("fuel-table-body");
+      let totalGallons = 0;
+      let totalAmount = 0;
+      let html = "";
+      data.forEach((doc) =>{
+          const fuelInfo = doc.data();
+          const tr = `
+              <tr data-id=${doc.id}>
+                  <td>${fuelInfo.city}, ${fuelInfo.state}</td>
+                  <td>${(fuelInfo.gallons).toFixed(2)}</td>
+                  <td>$${(fuelInfo.amount).toFixed(2)}</td>
+              </tr>
+          `;
+          html += tr;
+          totalGallons += fuelInfo.gallons;
+          totalAmount += fuelInfo.amount;
+      })
+      fuelTableBody.innerHTML = html;
+      
+      $('.datafield.ownerOp.totalGallons').text( totalGallons.toFixed(2));
+      $('.datafield.ownerOp.totalAmount').text(`$${totalAmount.toFixed(2)}`);
+      $(".datafield.ownerOp.fuel").text(`$${totalAmount.toFixed(2)}`);
+  }
+  else{
+      fuelTableBody.innerHTML = ""; // makes sure not table data is displayed from last driver
+      console.log("No fuel records found")
+  }
+})
+
+const showOwnerOpAdjustmentInfo = ((doc) => {
+  if(doc.data()){
+    
+      const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
+      ownerOpAdjTB.setAttribute('data-id', doc.id)
+      let totalReimburse = 0;
+      let totalDeduct = 0;
+
+      const adjustments = doc.data();
+      const deductions = adjustments.deductions;
+      const reimbursements = adjustments.reimbursements;
+
+      // iterate object and sum values
+      for(let key of Object.keys(deductions)){
+          totalDeduct += deductions[key]
+
+      }
+      for(let key of Object.keys(reimbursements)){
+          totalReimburse += reimbursements[key]
+      }
+      $(".datafield.ownerOp.detention").text(`$${(reimbursements.detention).toFixed(2)}`);
+      $(".datafield.ownerOp.extras").text(`$${(reimbursements.extras).toFixed(2)}`);
+      $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
+      $(".datafield.ownerOp.reserve").text(`$${(deductions.reserve).toFixed(2)}`);
+      $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
+      $(".datafield.ownerOp.reimbursements").text(`$${(totalDeduct).toFixed(2)}`);
+      $(".datafield.ownerOp.deductions").text(`$${(totalReimburse).toFixed(2)}`);
+      $(".datafield.ownerOp.total").text(`$${(grossPay + totalReimburse - totalDeduct).toFixed(2)}`);
+  }
+  else{
+      console.log("No adjustment data found")
+  }
+})
+
+
+
+
+
+
 // show/hide accordian on click
 accordion.addEventListener("click", (event) => {
   console.log(event)
-  if(event.target.className == "btn btn-link collapsed" ||event.target.className == "btn btn-link collapsed p-0"){
+  if(event.target.className == "btn btn-link collapsed p-0"){
     const currentDiv = document.querySelector(event.target.dataset.target);
+    console.log(event.target.dataset.id)
+    console.log(event.target.dataset.type)
+    const payrollID = event.target.dataset.id;
     // prevents  repeated database calls
+
     if (currentDiv.innerHTML.length < 30){
-      currentDiv.innerHTML = `
-      <div id="salaried-driver-container" class="container">
-      <div class="row">
-        <div class="col-lg-3">
-          <h4 class="text-info">Weekly Cash Flow</h4>
-          <table class="table table-bordered table-sm">
-
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Reimbursements</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Toll</td>
-                <td class = "datafield salary toll"></td>
-              </tr>
-              <tr>
-                <td colspan="2">Scale</td>
-                <td class = "datafield salary scale"></td>
-              </tr>
-              <tr>
-                <td colspan="2">Extras</td>
-                <td class= "datafield salary extras"></td>
-              </tr>
-            </tbody>
-            
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Deductions</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colspan="2">Insurance</td>
-                <td class = "datafield salary insurance"></td>
-              </tr>
-              <tr>
-                <td colspan="2">Accidental</td>
-                <td  class = "datafield salary accidental"></td>
-              </tr>
-              <tr>
-                <td  colspan="2">Cash Advance</td>
-                <td class = "datafield salary cashAdvance"></td>
-              </tr>
-              <tr>
-                <td colspan="2">Escrow</td>
-                <td class = "datafield salary escrow"></td>
-              </tr>
-              <tr>
-                <td colspan="2">Reserve</td>
-                <td class = "datafield salary reserve"></td>
-              </tr>
-            </tbody>
-            
-            <thead class="thead-light">
-              <tr>
-                <th class="text-info" scope="col" colspan="2">Net Pay</th>
-                <th scope="col">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-                <tr>
-                  <td colspan="2">Gross Pay</td>
-                  <td class = "datafield salary grossPay"></td>
-                </tr>
-                <tr>
-                  <td colspan="2">Reimbursements</td>
-                  <td class = "datafield salary reimbursements"></td>
-                </tr>
-                <tr>
-                  <tr>
-                    <td colspan="2">Deductions</td>
-                    <td class = "datafield salary deductions"></td>
-                  </tr>
-                  <td class="text-info" colspan="2"><b>Total</b></td>
-                  <td class = "datafield salary total"></td>
-                </tr>
-            </tbody>
-
-          </table>
-        </div>
-
-
-        <div class="col col-lg-9">
-          <h4 class="text-info">Load Summary</h4>
-          <table class="table table-hover table-sm table-bordered">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col">Pickup</th>
-                <th scope="col">Delivery</th>
-                <th scope="col">Miles</th>
-              </tr>
-            </thead>
-            <tbody id="salary-load-summary">
-
-            </tbody>
-          </table>
-          <h4 class="text-info">Pay Summary</h4>
-            <table class="table table-sm table-bordered">
+      if(event.target.dataset.type == "salary"){
+        currentDiv.innerHTML = `
+        <div id="salaried-driver-container" class="container">
+        <div class="row">
+          <div class="col-lg-3">
+            <h4 class="text-info">Weekly Cash Flow</h4>
+            <table id="salaryAdjustmentsTB" class="table table-bordered table-sm">
+  
               <thead class="thead-light">
                 <tr>
-                  <th scope="col">Total Miles</th>
-                  <th scope="col">Pay Per Miles</th>
-                  <th scope="col">Total</th>
+                  <th class="text-info" scope="col" colspan="2">Reimbursements</th>
+                  <th scope="col">Amount</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class = "datafield salary totalMiles"></td>
-                  <td class="datafield salary payRate"></td>
-                  <td class="datafield salary totalPay"></td>
+                  <td colspan="2">Toll</td>
+                  <td class = "datafield salary toll"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Scale</td>
+                  <td class = "datafield salary scale"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Extras</td>
+                  <td class= "datafield salary extras"></td>
                 </tr>
               </tbody>
+              
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Deductions</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Insurance</td>
+                  <td class = "datafield salary insurance"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Accidental</td>
+                  <td  class = "datafield salary accidental"></td>
+                </tr>
+                <tr>
+                  <td  colspan="2">Cash Advance</td>
+                  <td class = "datafield salary cashAdvance"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Escrow</td>
+                  <td class = "datafield salary escrow"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Reserve</td>
+                  <td class = "datafield salary reserve"></td>
+                </tr>
+              </tbody>
+              
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Net Pay</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                    <td colspan="2">Gross Pay</td>
+                    <td class = "datafield salary grossPay"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">Reimbursements</td>
+                    <td class = "datafield salary reimbursements"></td>
+                  </tr>
+                  <tr>
+                    <tr>
+                      <td colspan="2">Deductions</td>
+                      <td class = "datafield salary deductions"></td>
+                    </tr>
+                    <td class="text-info" colspan="2"><b>Total</b></td>
+                    <td class = "datafield salary total"></td>
+                  </tr>
+              </tbody>
+  
             </table>
-          </table>
+          </div>
+  
+  
+          <div class="col col-lg-9">
+            <h4 class="text-info">Load Summary</h4>
+            <table class="table table-hover table-sm table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Pickup</th>
+                  <th scope="col">Delivery</th>
+                  <th scope="col">Miles</th>
+                </tr>
+              </thead>
+              <tbody id="salary-load-summary">
+  
+              </tbody>
+            </table>
+            <h4 class="text-info">Pay Summary</h4>
+              <table class="table table-sm table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">Total Miles</th>
+                    <th scope="col">Pay Per Miles</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class = "datafield salary totalMiles"></td>
+                    <td class="datafield salary payRate"></td>
+                    <td class="datafield salary totalPay"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-    `;
+      `;
+      
+      
+      database.read.getSalaryCompletedPayrollInfo(showSalaryJobInfo, showSalaryAdjustmentsInfo, payrollID)
+      }
+      else if (event.target.dataset.type == "owner-operator"){
+        currentDiv.innerHTML = `
+        <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <h4 class="text-info">Weekly Cash Flow</h4>
+  
+            <table id="ownerOpAdjustmentsTB" class="table table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th class="text-info" scope="col" colspan="2">Reimbursements</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="2">Detention/Layover</td>
+                  <td class="datafield ownerOp detention"></td>
+                </tr>
+                <tr>
+                  <td colspan="2">Extras</td>
+                  <td class="datafield ownerOp extras"></td>
+                </tr>
+                <thead class="thead-light">
+                  <tr>
+                    <th class="text-info" scope="col" colspan="2">Deductions</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                  <tr>
+                    <td colspan="2">Fuel</td>
+                    <td class="datafield ownerOp fuel"></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">Insurance</td>
+                    <td class="datafield ownerOp insurance"></td>
+                  </tr>
+                  <tr>
+                    <td  colspan="2">Reserve</td>
+                    <td class="datafield ownerOp reserve"></td>
+                  </tr>
+                  <thead class="thead-light">
+                    <tr>
+                      <th class="text-info" scope="col" colspan="2">Net Pay</th>
+                      <th scope="col">Amount</th>
+                    </tr>
+                  </thead>
+
+                    <tr>
+                      <td colspan="2">Gross Pay</td>
+                      <td class="datafield ownerOp grossPay"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">Reimbursements</td>
+                      <td class="datafield ownerOp reimbursements"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">Deductions</td>
+                      <td class="datafield ownerOp deductions"></td>
+                    </tr>
+                    <tr>
+                      <td class="text-info" colspan="2"><b>Total</b></td>
+                      <td class="datafield ownerOp total"></td>
+                    </tr>
+              </tbody>
+            </table>
+          </div>
+  
+        <div class="col-md-9">
+          <h4 class="text-info">Load Summary</h4>
+          <table class="table table-hover table-bordered table-sm">
+            <thead class="thead-light">
+              <tr>
+                <th>Load</th>
+                <th>Rate</th>
+                <th class="datafield ownerOp percent" scope="col">90%</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody id="ownerOpLoadSummary">
+
+
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="text-info"><b>Total</b></td>
+                <td class="datafield ownerOp totalRate" >$0.00</td>
+                <td class="datafield ownerOp totalPercent">$0.00</td>
+                <td class="datafield ownerOp valenceTotal">$0.00</td>
+              </tr>
+            </tfoot>
+          </table>
+
+            <h4 class="text-info">Fuel Summary</h4>
+            <table class="table table-hover table-bordered table-sm">
+              <thead class="thead-light">
+                <tr>
+                  <th>City + State</th>
+                  <th>Gallons</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="fuel-table-body">
+
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td class="text-info"><b>Total</b></td>
+                  <td class="datafield ownerOp totalGallons">$0.00</td>
+                  <td class="datafield ownerOp totalAmount">$0.00</td>
+                </tr>
+              </tfoot>
+            </table>
+              
+
+          <!-- End of row div -->
+        </div>
+      </div>
+        `;
+        // adjustment records are being registered, it's just that the logger function doesn't work for it
+        database.read.getOwnerOpCompletedPayroll(logger, logger, logger, payrollID)
+        database.read.getOwnerOpCompletedPayroll(showOwnerOpLoadInfo, showFuelInfo, showOwnerOpAdjustmentInfo, payrollID)
+
+      }
+      
 
     // call database function
     }
@@ -245,10 +509,6 @@ accordion.addEventListener("click", (event) => {
       else if (currentDiv.className == "collapse show"){
         currentDiv.className = "collapse";
       }
-
-      // why isn't this getting called again? think it isn't specify which item to do! no to relate this to the particular accordion element
-      // when it goes back to collapsed, you need to delete the inner html
-      // database.read.getSalaryPayrollInfo(showSalaryJobInfo, showSalaryAdjustmentsInfo, 2, 'hePW490C6kZtWXkDtkE0')
   }
   // 
  
@@ -260,46 +520,42 @@ const createDateArray = (dateString) => {
   return parts;
 }
 
-const logger = (collection) => {
-  if(collection.length){
-    collection.forEach(doc => {
-      console.log(doc.data())
-    })
-  }
-  else{
-    console.log("no payroll records found")
-  }
 
-}
 const populateAccordian = (collection) => {
   if(collection.length){
-
     let html = "";
     collection.forEach((doc, index) => {
       let accordianCard = `
       <div class="card">
-        <div class="card-header" id="headingTwo">
-          <ul class="collapsed list-group list-group-horizontal d-flex justify-content-center" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        <div class="card-header" id="header${index}">
+          <ul id="underline-list" class="collapsed list-group list-group-horizontal d-flex justify-content-left" data-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
             <li class="list-group-item p-3 bg-transparent">
-              <button class="btn btn-link collapsed p-0" type="button" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              <button data-id="${doc.id}" data-type="${doc.data().driverType}" class="btn btn-link collapsed p-0" type="button" data-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
                 View More
               </button>
             </li>
-            <li class="list-group-item p-3 bg-transparent">Josh Hootman</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Week</b>: 11/11/2011 - 11/18/2011</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Gross Pay</b>: $5355.55</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Deductions</b>: 100</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Reimbursements</b>: 100</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Net Pay</b>: $5355.55</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Fuel Costs</b>: 12.50</li>
-            <li class="list-group-item p-3 bg-transparent"><b>Salary Driver</b>: 12.50</li>
+            <li class="list-group-item p-3 bg-transparent">${doc.data().driverName}</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Week</b>: ${doc.data().week}</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Gross Pay</b>: $${doc.data().grossPay}</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Deductions</b>: $${doc.data().totalDeduct}</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Reimbursements</b>: $${doc.data().totalReimburse}</li>
+            <li class="list-group-item p-3 bg-transparent"><b>Net Pay</b>: $${doc.data().netPay}</li>
+            `;
+            if(doc.data().driverType == "salary"){
+              accordianCard +=  `<li class="list-group-item p-3 bg-transparent"><b>Total Miles</b>: ${doc.data().totalMiles}mi</li>`
+            }
+            else if (doc.data().driverType == "owner-operator"){
+              accordianCard += `<li class="list-group-item p-3 bg-transparent"><b>Fuel Costs</b>: $${doc.data().totalFuelCost}</li>`
+            }
+            accordianCard += `
+            <li class="list-group-item p-3 bg-transparent"><b>Driver Type</b>: ${doc.data().driverType}</li>
           </ul>
         </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+        <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#accordionExample">
 
         </div>
       </div>
-      `;
+            `;
       html += accordianCard;
     })
     accordianDiv.innerHTML = html;
@@ -328,7 +584,7 @@ form.addEventListener("submit", (event) => {
   // console.log(startDate == endDate)
   if(selectedDriver == "All Drivers"){
     console.log("search database by date only")
-    database.read.getRecordsByDate(logger, startDate, endDate);
+    // database.read.getRecordsByDate(logger, startDate, endDate);
     database.read.getRecordsByDate(populateAccordian, startDate, endDate);
   }
   else{

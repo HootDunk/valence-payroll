@@ -220,7 +220,7 @@
           console.error("Error adding document: ", error);
       });
     }
-    
+
     const newOwnerOpPayrollEntry = (driverID, dataFieldOwnerOp, loadTableRows, fuelTableRows, adjustmentsID, driverName, driverType) => {
       let parts = dateInfo.createDateArray(dateInfo.getDate());
       db.collection("payroll-entries").add({
@@ -389,8 +389,47 @@
       getDriverJobs(myFunction, status, driverID);
       getDriverFuelbyStatus(myFunction1, driverID, 2);
       getAdjustmentByID(myFunction2, 2, driverID);
-      
     }
+
+    // untested
+    const getDriverJobsbyPayrollID = ((myFunction, payrollID) => {
+      db.collection('jobs')
+        .where("payrollID", "==", payrollID)
+        .onSnapshot(Snapshot => {
+          myFunction(Snapshot.docs);
+        })
+    });
+    // untested
+    const getFuelbyPayrollID = ((myFunction, payrollID) => {
+      db.collection("fuel")
+        .where("payrollID", "==", payrollID)
+        .onSnapshot(Snapshot => {
+          myFunction(Snapshot.docs);
+        })
+    });
+    // untested
+    const getAdjustmentbyPayrollID = ((myFunction, payrollID) => {
+      // review docs about this type of query and need to do forEach
+      db.collection("adjustments")
+      .where("payrollID", "==", payrollID)
+      .onSnapshot((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          myFunction(doc)
+        })
+      })
+    });
+    // try with a .then after getfuel also change above functions to user .get()
+    function getOwnerOpCompletedPayroll(myFunction, myFunction1, myFunction2, payrollID){
+      getDriverJobsbyPayrollID(myFunction, payrollID);
+      getFuelbyPayrollID(myFunction1, payrollID);
+      getAdjustmentbyPayrollID(myFunction2, payrollID);
+    }
+    // try with a .then
+    function getSalaryCompletedPayrollInfo(myFunction, myFunction1, payrollID) {
+      getDriverJobsbyPayrollID(myFunction, payrollID);
+      getAdjustmentbyPayrollID(myFunction1, payrollID);
+    }
+
 
     const getRecordsByDate = ((myFunction, startDate, endDate) => {
       db.collection("payroll-entries")
@@ -402,11 +441,6 @@
         })
     })
 
-    // async function getDriverDoc(myFunction, id)  {
-    //   var docRef = db.collection("drivers").doc(id);
-    //   let doc = await docRef.get();
-    //   myFunction(doc)
-    // }
 
     const getDriverDoc = ((myFunction, id) => {
       var docRef = db.collection("drivers").doc(id);
@@ -434,6 +468,8 @@
       getOwnerOpPayrollInfo,
       getAllUsers,
       getRecordsByDate,
+      getOwnerOpCompletedPayroll,
+      getSalaryCompletedPayrollInfo,
     }
   })();
   

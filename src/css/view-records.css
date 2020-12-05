@@ -30,13 +30,23 @@ header {
 
 } */
 
+/* add new breakpoint to fix width problem */
 li.list-group-item {
   border-top: none;
   border-bottom: none;
+  width: calc(100%/9)!important;
+
 }
 
 .card {
   -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-} 
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* #underline-list{
+  width: 100% !important;
+} */
