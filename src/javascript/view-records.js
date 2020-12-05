@@ -11,8 +11,8 @@ const driverSelect = document.getElementById('driver');
 const accordianDiv = document.getElementById("accordionExample")
 const database = require('../database');
 let grossPay = 0;
-
-
+let totalAmount = 0;
+let collapseID;
 const logger = (collection) => {
   if(collection.length){
     collection.forEach(doc => {
@@ -49,11 +49,11 @@ database.read.getAllDrivers(createDropdownHTML)
 
 
 const showSalaryJobInfo = (data) => {
-  const dataFieldSalary = document.querySelectorAll(".datafield.salary")
+  const dataFieldSalary = document.querySelectorAll(`.datafield.salary.${collapseID}`)
   if(data.length){
       let totalMiles = 0;
       const driverRate = data[0].data().driverRate; // get driver pay rate (using first rate for no particular reason)
-      const salaryLoadSummary = document.getElementById('salary-load-summary');
+      const salaryLoadSummary = document.getElementById(`salary-load-summary ${collapseID}`);
       let html = "";
       data.forEach((doc) =>{
           const job = doc.data();
@@ -83,7 +83,7 @@ const showSalaryAdjustmentsInfo = (doc) => {
   // need to add data-id to table element!!
   
   if(doc.data()){
-      const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
+      const salaryDriverAdjTB = document.getElementById(`salaryAdjustmentsTB ${collapseID}`);
       salaryDriverAdjTB.setAttribute('data-id', doc.id)
       let totalReimburse = 0;
       let totalDeduct = 0;
@@ -100,7 +100,7 @@ const showSalaryAdjustmentsInfo = (doc) => {
           totalReimburse += reimbursements[key]
       }
 
-      const dataFieldSalary = document.querySelectorAll(".datafield.salary")
+      const dataFieldSalary = document.querySelectorAll(`.datafield.salary.${collapseID}`)
       // Set the Reimbursement values
       dataFieldSalary[0].innerHTML = `$${(reimbursements.toll).toFixed(2)}`;
       dataFieldSalary[1].innerHTML = `$${(reimbursements.scale).toFixed(2)}`;
@@ -126,13 +126,13 @@ const showSalaryAdjustmentsInfo = (doc) => {
 
 const showOwnerOpLoadInfo = ((data) => {
   if(data.length){
-      const percentElement = document.querySelector(".datafield.ownerOp.percent");
-      const grossPayElement = document.querySelector(".datafield.ownerOp.grossPay");
-      const totalDriverElement = document.querySelector(".datafield.ownerOp.totalPercent");
-      const totalRateElement = document.querySelector(".datafield.ownerOp.totalRate");
-      const valanceTotalElement= document.querySelector(".datafield.ownerOp.valenceTotal");
+      const percentElement = document.querySelector(`.datafield.ownerOp.percent.${collapseID}`);
+      const grossPayElement = document.querySelector(`.datafield.ownerOp.grossPay.${collapseID}`);
+      const totalDriverElement = document.querySelector(`.datafield.ownerOp.totalPercent.${collapseID}`);
+      const totalRateElement = document.querySelector(`.datafield.ownerOp.totalRate.${collapseID}`);
+      const valanceTotalElement= document.querySelector(`.datafield.ownerOp.valenceTotal.${collapseID}`);
       percentElement.innerText = `${100 * (data[0].data().driverRate)}%`;
-      const ownerOpLoadSummary = document.getElementById("ownerOpLoadSummary");
+      const ownerOpLoadSummary = document.getElementById(`ownerOpLoadSummary-${collapseID}`);
       let totalRate = 0;
       let valenceTotal = 0;
       let html = "";
@@ -166,9 +166,8 @@ const showOwnerOpLoadInfo = ((data) => {
 
 const showFuelInfo = ((data) => {
   if(data.length){
-     const fuelTableBody = document.getElementById("fuel-table-body");
+     const fuelTableBody = document.getElementById(`fuel-table-body-${collapseID}`);
       let totalGallons = 0;
-      let totalAmount = 0;
       let html = "";
       data.forEach((doc) =>{
           const fuelInfo = doc.data();
@@ -185,9 +184,9 @@ const showFuelInfo = ((data) => {
       })
       fuelTableBody.innerHTML = html;
       
-      $('.datafield.ownerOp.totalGallons').text( totalGallons.toFixed(2));
-      $('.datafield.ownerOp.totalAmount').text(`$${totalAmount.toFixed(2)}`);
-      $(".datafield.ownerOp.fuel").text(`$${totalAmount.toFixed(2)}`);
+      $(`.datafield.ownerOp.totalGallons.${collapseID}`).text( totalGallons.toFixed(2));
+      $(`.datafield.ownerOp.totalAmount.${collapseID}`).text(`$${totalAmount.toFixed(2)}`);
+      $(`.datafield.ownerOp.fuel.${collapseID}`).text(`$${totalAmount.toFixed(2)}`);
   }
   else{
       fuelTableBody.innerHTML = ""; // makes sure not table data is displayed from last driver
@@ -198,7 +197,7 @@ const showFuelInfo = ((data) => {
 const showOwnerOpAdjustmentInfo = ((doc) => {
   if(doc.data()){
     
-      const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
+      const ownerOpAdjTB = document.getElementById(`ownerOpAdjustmentsTB-${collapseID}`)
       ownerOpAdjTB.setAttribute('data-id', doc.id)
       let totalReimburse = 0;
       let totalDeduct = 0;
@@ -215,14 +214,14 @@ const showOwnerOpAdjustmentInfo = ((doc) => {
       for(let key of Object.keys(reimbursements)){
           totalReimburse += reimbursements[key]
       }
-      $(".datafield.ownerOp.detention").text(`$${(reimbursements.detention).toFixed(2)}`);
-      $(".datafield.ownerOp.extras").text(`$${(reimbursements.extras).toFixed(2)}`);
-      $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
-      $(".datafield.ownerOp.reserve").text(`$${(deductions.reserve).toFixed(2)}`);
-      $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
-      $(".datafield.ownerOp.reimbursements").text(`$${(totalDeduct).toFixed(2)}`);
-      $(".datafield.ownerOp.deductions").text(`$${(totalReimburse).toFixed(2)}`);
-      $(".datafield.ownerOp.total").text(`$${(grossPay + totalReimburse - totalDeduct).toFixed(2)}`);
+      $(`.datafield.ownerOp.detention.${collapseID}`).text(`$${(reimbursements.detention).toFixed(2)}`);
+      $(`.datafield.ownerOp.extras.${collapseID}`).text(`$${(reimbursements.extras).toFixed(2)}`);
+      $(`.datafield.ownerOp.insurance.${collapseID}`).text(`$${(deductions.insurance).toFixed(2)}`);
+      $(`.datafield.ownerOp.reserve.${collapseID}`).text(`$${(deductions.reserve).toFixed(2)}`);
+      $(`.datafield.ownerOp.insurance.${collapseID}`).text(`$${(deductions.insurance).toFixed(2)}`);
+      $(`.datafield.ownerOp.reimbursements.${collapseID}`).text(`$${(totalDeduct).toFixed(2)}`);
+      $(`.datafield.ownerOp.deductions.${collapseID}`).text(`$${(totalReimburse + totalAmount).toFixed(2)}`);
+      $(`.datafield.ownerOp.total.${collapseID}`).text(`$${(grossPay + totalReimburse - totalDeduct - totalAmount).toFixed(2)}`);
   }
   else{
       console.log("No adjustment data found")
@@ -231,27 +230,30 @@ const showOwnerOpAdjustmentInfo = ((doc) => {
 
 
 
-
+// need to add event.target.dataset.target in the class of each table
 
 
 // show/hide accordian on click
 accordion.addEventListener("click", (event) => {
-  console.log(event)
+  console.log(event.target.dataset.target)
   if(event.target.className == "btn btn-link collapsed p-0"){
+
     const currentDiv = document.querySelector(event.target.dataset.target);
-    console.log(event.target.dataset.id)
-    console.log(event.target.dataset.type)
+
     const payrollID = event.target.dataset.id;
     // prevents  repeated database calls
 
     if (currentDiv.innerHTML.length < 30){
+      grossPay = 0;
+      collapseID = (event.target.dataset.target).slice(1);
+      console.log(collapseID)
       if(event.target.dataset.type == "salary"){
         currentDiv.innerHTML = `
-        <div id="salaried-driver-container" class="container">
+        <div id="salaried-driver-container ${collapseID}" class="container">
         <div class="row">
           <div class="col-lg-3">
             <h4 class="text-info">Weekly Cash Flow</h4>
-            <table id="salaryAdjustmentsTB" class="table table-bordered table-sm">
+            <table id="salaryAdjustmentsTB ${collapseID}" class="table table-bordered table-sm">
   
               <thead class="thead-light">
                 <tr>
@@ -262,15 +264,15 @@ accordion.addEventListener("click", (event) => {
               <tbody>
                 <tr>
                   <td colspan="2">Toll</td>
-                  <td class = "datafield salary toll"></td>
+                  <td class = "datafield salary toll ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td colspan="2">Scale</td>
-                  <td class = "datafield salary scale"></td>
+                  <td class = "datafield salary scale ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td colspan="2">Extras</td>
-                  <td class= "datafield salary extras"></td>
+                  <td class= "datafield salary extras ${collapseID}"></td>
                 </tr>
               </tbody>
               
@@ -283,23 +285,23 @@ accordion.addEventListener("click", (event) => {
               <tbody>
                 <tr>
                   <td colspan="2">Insurance</td>
-                  <td class = "datafield salary insurance"></td>
+                  <td class = "datafield salary insurance ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td colspan="2">Accidental</td>
-                  <td  class = "datafield salary accidental"></td>
+                  <td  class = "datafield salary accidental ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td  colspan="2">Cash Advance</td>
-                  <td class = "datafield salary cashAdvance"></td>
+                  <td class = "datafield salary cashAdvance ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td colspan="2">Escrow</td>
-                  <td class = "datafield salary escrow"></td>
+                  <td class = "datafield salary escrow ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td colspan="2">Reserve</td>
-                  <td class = "datafield salary reserve"></td>
+                  <td class = "datafield salary reserve ${collapseID}"></td>
                 </tr>
               </tbody>
               
@@ -312,19 +314,19 @@ accordion.addEventListener("click", (event) => {
               <tbody>
                   <tr>
                     <td colspan="2">Gross Pay</td>
-                    <td class = "datafield salary grossPay"></td>
+                    <td class = "datafield salary grossPay ${collapseID}"></td>
                   </tr>
                   <tr>
                     <td colspan="2">Reimbursements</td>
-                    <td class = "datafield salary reimbursements"></td>
+                    <td class = "datafield salary reimbursements ${collapseID}"></td>
                   </tr>
                   <tr>
                     <tr>
                       <td colspan="2">Deductions</td>
-                      <td class = "datafield salary deductions"></td>
+                      <td class = "datafield salary deductions ${collapseID}"></td>
                     </tr>
                     <td class="text-info" colspan="2"><b>Total</b></td>
-                    <td class = "datafield salary total"></td>
+                    <td class = "datafield salary total ${collapseID}"></td>
                   </tr>
               </tbody>
   
@@ -342,7 +344,7 @@ accordion.addEventListener("click", (event) => {
                   <th scope="col">Miles</th>
                 </tr>
               </thead>
-              <tbody id="salary-load-summary">
+              <tbody id="salary-load-summary ${collapseID}">
   
               </tbody>
             </table>
@@ -357,9 +359,9 @@ accordion.addEventListener("click", (event) => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td class = "datafield salary totalMiles"></td>
-                    <td class="datafield salary payRate"></td>
-                    <td class="datafield salary totalPay"></td>
+                    <td class = "datafield salary totalMiles ${collapseID}"></td>
+                    <td class="datafield salary payRate ${collapseID}"></td>
+                    <td class="datafield salary totalPay ${collapseID}"></td>
                   </tr>
                 </tbody>
               </table>
@@ -380,7 +382,7 @@ accordion.addEventListener("click", (event) => {
           <div class="col-md-3">
             <h4 class="text-info">Weekly Cash Flow</h4>
   
-            <table id="ownerOpAdjustmentsTB" class="table table-bordered table-sm">
+            <table id="ownerOpAdjustmentsTB-${collapseID}" class="table table-bordered table-sm">
               <thead class="thead-light">
                 <tr>
                   <th class="text-info" scope="col" colspan="2">Reimbursements</th>
@@ -390,11 +392,11 @@ accordion.addEventListener("click", (event) => {
               <tbody>
                 <tr>
                   <td colspan="2">Detention/Layover</td>
-                  <td class="datafield ownerOp detention"></td>
+                  <td class="datafield ownerOp detention ${collapseID}"></td>
                 </tr>
                 <tr>
                   <td colspan="2">Extras</td>
-                  <td class="datafield ownerOp extras"></td>
+                  <td class="datafield ownerOp extras ${collapseID}"></td>
                 </tr>
                 <thead class="thead-light">
                   <tr>
@@ -404,15 +406,15 @@ accordion.addEventListener("click", (event) => {
                 </thead>
                   <tr>
                     <td colspan="2">Fuel</td>
-                    <td class="datafield ownerOp fuel"></td>
+                    <td class="datafield ownerOp fuel ${collapseID}"></td>
                   </tr>
                   <tr>
                     <td colspan="2">Insurance</td>
-                    <td class="datafield ownerOp insurance"></td>
+                    <td class="datafield ownerOp insurance ${collapseID}"></td>
                   </tr>
                   <tr>
                     <td  colspan="2">Reserve</td>
-                    <td class="datafield ownerOp reserve"></td>
+                    <td class="datafield ownerOp reserve ${collapseID}"></td>
                   </tr>
                   <thead class="thead-light">
                     <tr>
@@ -423,19 +425,19 @@ accordion.addEventListener("click", (event) => {
 
                     <tr>
                       <td colspan="2">Gross Pay</td>
-                      <td class="datafield ownerOp grossPay"></td>
+                      <td class="datafield ownerOp grossPay ${collapseID}"></td>
                     </tr>
                     <tr>
                       <td colspan="2">Reimbursements</td>
-                      <td class="datafield ownerOp reimbursements"></td>
+                      <td class="datafield ownerOp reimbursements ${collapseID}"></td>
                     </tr>
                     <tr>
                       <td colspan="2">Deductions</td>
-                      <td class="datafield ownerOp deductions"></td>
+                      <td class="datafield ownerOp deductions ${collapseID}"></td>
                     </tr>
                     <tr>
                       <td class="text-info" colspan="2"><b>Total</b></td>
-                      <td class="datafield ownerOp total"></td>
+                      <td class="datafield ownerOp total ${collapseID}"></td>
                     </tr>
               </tbody>
             </table>
@@ -448,20 +450,20 @@ accordion.addEventListener("click", (event) => {
               <tr>
                 <th>Load</th>
                 <th>Rate</th>
-                <th class="datafield ownerOp percent" scope="col">90%</th>
+                <th class="datafield ownerOp percent ${collapseID}" scope="col">90%</th>
                 <th scope="col">Total</th>
               </tr>
             </thead>
-            <tbody id="ownerOpLoadSummary">
+            <tbody id="ownerOpLoadSummary-${collapseID}">
 
 
             </tbody>
             <tfoot>
               <tr>
                 <td class="text-info"><b>Total</b></td>
-                <td class="datafield ownerOp totalRate" >$0.00</td>
-                <td class="datafield ownerOp totalPercent">$0.00</td>
-                <td class="datafield ownerOp valenceTotal">$0.00</td>
+                <td class="datafield ownerOp totalRate ${collapseID}" >$0.00</td>
+                <td class="datafield ownerOp totalPercent ${collapseID}">$0.00</td>
+                <td class="datafield ownerOp valenceTotal ${collapseID}">$0.00</td>
               </tr>
             </tfoot>
           </table>
@@ -475,14 +477,14 @@ accordion.addEventListener("click", (event) => {
                   <th scope="col">Amount</th>
                 </tr>
               </thead>
-              <tbody id="fuel-table-body">
+              <tbody id="fuel-table-body-${collapseID}">
 
               </tbody>
               <tfoot>
                 <tr>
                   <td class="text-info"><b>Total</b></td>
-                  <td class="datafield ownerOp totalGallons">$0.00</td>
-                  <td class="datafield ownerOp totalAmount">$0.00</td>
+                  <td class="datafield ownerOp totalGallons ${collapseID}">$0.00</td>
+                  <td class="datafield ownerOp totalAmount ${collapseID}">$0.00</td>
                 </tr>
               </tfoot>
             </table>
@@ -492,6 +494,8 @@ accordion.addEventListener("click", (event) => {
         </div>
       </div>
         `;
+        
+        totalAmount = 0;
         // adjustment records are being registered, it's just that the logger function doesn't work for it
         database.read.getOwnerOpCompletedPayroll(logger, logger, logger, payrollID)
         database.read.getOwnerOpCompletedPayroll(showOwnerOpLoadInfo, showFuelInfo, showOwnerOpAdjustmentInfo, payrollID)

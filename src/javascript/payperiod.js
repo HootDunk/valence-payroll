@@ -26,15 +26,15 @@ const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
 const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
 const driverSelect = document.getElementById('driver');
 const completePayrollBtn = document.getElementById("complete-payroll");
-console.log(driverInfoSalary)
-console.log(driverInfoOwnerOp)
+console.log(dataFieldSalary)
+// console.log(driverInfoOwnerOp)
 
 
 let loadTableRows;
 let fuelTableRows;
 
 let grossPay = 0;
-
+let totalAmount = 0;
 const sendBackBtn = document.getElementById("send-back");
 
 
@@ -225,10 +225,11 @@ const showOwnerOpLoadInfo = ((data) => {
     }
 })
 
+
 const showFuelInfo = ((data) => {
     if(data.length){
         let totalGallons = 0;
-        let totalAmount = 0;
+        
         let html = "";
         data.forEach((doc) =>{
             const fuelInfo = doc.data();
@@ -265,7 +266,7 @@ const showOwnerOpAdjustmentInfo = ((doc) => {
         const deductions = adjustments.deductions;
         const reimbursements = adjustments.reimbursements;
 
-        // iterate object and sum values
+        // iterate key value object from firebase 'adjustments' doc
         for(let key of Object.keys(deductions)){
             totalDeduct += deductions[key]
 
@@ -279,8 +280,8 @@ const showOwnerOpAdjustmentInfo = ((doc) => {
         $(".datafield.ownerOp.reserve").text(`$${(deductions.reserve).toFixed(2)}`);
         $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
         $(".datafield.ownerOp.reimbursements").text(`$${(totalDeduct).toFixed(2)}`);
-        $(".datafield.ownerOp.deductions").text(`$${(totalReimburse).toFixed(2)}`);
-        $(".datafield.ownerOp.total").text(`$${(grossPay + totalReimburse - totalDeduct).toFixed(2)}`);
+        $(".datafield.ownerOp.deductions").text(`$${(totalReimburse + totalAmount).toFixed(2)}`);
+        $(".datafield.ownerOp.total").text(`$${(grossPay + totalReimburse - totalDeduct - totalAmount).toFixed(2)}`);
     }
     else{
         console.log("No adjustment data found")
@@ -296,6 +297,7 @@ const populateDropdown = (data) => {
                 const driverID = event.target.dataset.id;
                 const driverType = event.target.dataset.type;
                 grossPay = 0;
+                totalAmount = 0;
                 clearDisplay();
                 showTables(driverType);
                 clearDriverInfo(driverType);
