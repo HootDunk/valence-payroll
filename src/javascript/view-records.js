@@ -591,15 +591,13 @@ form.addEventListener("submit", (event) => {
     // database.read.getRecordsByDate(logger, startDate, endDate);
     database.read.getRecordsByDate(populateAccordian, startDate, endDate);
   }
+  // could easily add search all salary drivers and all owner operator drivers as well
   else{
     const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
     const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
-
     console.log("search by driver and date")
+    database.read.getDriverRecordsByDate(populateAccordian, currentDriverId, startDate, endDate);
   }
-  
-  // console.log(startDate.toLocaleDateString())
-  // console.log(endDate.toLocaleDateString())
   
 })
 

@@ -207,7 +207,8 @@ const setJobFormValues = (doc) => {
   jobForm['origin'].value = doc.data().origin;
   jobForm['destination'].value = doc.data().destination;
   jobForm['routeLength'].value = doc.data().miles;
-  jobForm['deadline'].value = doc.data().deadline;
+  // sets values to yyyy-mm-dd so they can be represented in the form
+  jobForm['deadline'].value = doc.data().deadline.toDate().toISOString().slice(0,10);
 
   $('#editJobModal').modal()
 }

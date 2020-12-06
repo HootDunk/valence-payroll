@@ -137,7 +137,7 @@
           month: dateInfo.getMonth(),
           year: dateInfo.getYear(),
           weekNum: dateInfo.getWeekNum(),
-          date: new Date(parts[0], parts[1]-1, parts[2]),//untested
+          date: new Date(parts[0], parts[1]-1, parts[2]),
           adjustmentStatus: 1,
         })
         .then(function(docRef) {
@@ -178,7 +178,7 @@
           month: dateInfo.getMonth(),
           year: dateInfo.getYear(),
           weekNum: dateInfo.getWeekNum(),
-          date: new Date(), // untested
+          date: new Date(),
           adjustmentStatus: 1,
         })
         .then(function(docRef) {
@@ -407,7 +407,7 @@
           myFunction(Snapshot.docs);
         })
     });
-    // untested
+    
     const getAdjustmentbyPayrollID = ((myFunction, payrollID) => {
       // review docs about this type of query and need to do forEach
       db.collection("adjustments")
@@ -435,6 +435,17 @@
       db.collection("payroll-entries")
         .where('date', '>=', startDate)
         .where('date', '<=', endDate)
+        .get()
+        .then(collection => {
+          myFunction(collection.docs)
+        })
+    })
+
+    const getDriverRecordsByDate = ((myFunction, driverID, startDate, endDate) => {
+      db.collection("payroll-entries")
+        .where('date', '>=', startDate)
+        .where('date', '<=', endDate)
+        .where('driverID', '==', driverID)
         .get()
         .then(collection => {
           myFunction(collection.docs)
@@ -470,13 +481,13 @@
       getRecordsByDate,
       getOwnerOpCompletedPayroll,
       getSalaryCompletedPayrollInfo,
+      getDriverRecordsByDate
     }
   })();
   
   
   // Update
   const update = (() => {
-    
     const setJobStatus = ((id, statusNum) => {
       db.collection('jobs').doc(id).update({
         jobStatus: statusNum,
@@ -525,11 +536,12 @@
       });
     })
 
-    
+    // fix
     const editJobByID = ((obj, id) => {
+      const parts = dateInfo.createDateArray(obj.deadline);
       db.collection('jobs').doc(id).update({
         client: obj.client,
-        deadline: obj.deadline,
+        deadline: new Date(parts[0], parts[1]-1, parts[2]),
         destination: obj.destination,
         loadRate: obj.loadRate,
         miles: obj.miles,
@@ -652,7 +664,6 @@
     })
 
 
-  
     return {
       setJobStatus,
       setFuelStatus,
