@@ -54,6 +54,7 @@ const showTables = (driverType) => {
 
 // Redo to make it specific to drive type like showtables
 const clearDriverInfo = (driverType) => {
+
     if(driverType == "salary"){
         driverInfoSalary[0].innerText = "Name: ";
         driverInfoSalary[1].innerText = "Address: ";
@@ -351,6 +352,7 @@ document.getElementById("file-reader-test").addEventListener("click", () => {
 
 
 const changeDocumentStatuses = (status) => {
+    const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
     if(currentDriverType == "salary"){
         // adjustmentsID
         const adjustmentsID = salaryDriverAdjTB.dataset.id;

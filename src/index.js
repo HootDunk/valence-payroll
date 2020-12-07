@@ -12,6 +12,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 1000,
+    icon: "src/assets/icon.ico",
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true

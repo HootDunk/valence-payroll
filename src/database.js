@@ -543,8 +543,8 @@
         client: obj.client,
         deadline: new Date(parts[0], parts[1]-1, parts[2]),
         destination: obj.destination,
-        loadRate: obj.loadRate,
-        miles: obj.miles,
+        loadRate: Number(obj.loadRate),
+        miles: Number(obj.miles),
         origin: obj.origin,
       })
       .then(

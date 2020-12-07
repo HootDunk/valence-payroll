@@ -13,6 +13,7 @@ const database = require('../database');
 let grossPay = 0;
 let totalAmount = 0;
 let collapseID;
+
 const logger = (collection) => {
   if(collection.length){
     collection.forEach(doc => {
@@ -20,7 +21,7 @@ const logger = (collection) => {
     })
   }
   else{
-    console.log("no payroll records found")
+    console.log("no records found")
   }
 
 }
@@ -141,7 +142,7 @@ const showOwnerOpLoadInfo = ((data) => {
           
           const tr = `
               <tr data-id=${doc.id}>
-                  <td> <b>Origin</b>: ${job.origin} </br> <b>Destination:</b> ${job.destination}</td>
+                  <td> <b>Origin</b>: ${job.origin} </br> <b>Destination</b>: ${job.destination}</td>
                   <td>$${(job.loadRate).toFixed(2)}</td>
                   <td>$${(job.loadRate * job.driverRate).toFixed(2)}</td>
                   <td>$${((job.loadRate) * (1 - job.driverRate)).toFixed(2)}</td>
@@ -165,8 +166,9 @@ const showOwnerOpLoadInfo = ((data) => {
 })
 
 const showFuelInfo = ((data) => {
+  const fuelTableBody = document.getElementById(`fuel-table-body-${collapseID}`);
   if(data.length){
-     const fuelTableBody = document.getElementById(`fuel-table-body-${collapseID}`);
+     
       let totalGallons = 0;
       let html = "";
       data.forEach((doc) =>{
@@ -497,7 +499,6 @@ accordion.addEventListener("click", (event) => {
         
         totalAmount = 0;
         // adjustment records are being registered, it's just that the logger function doesn't work for it
-        database.read.getOwnerOpCompletedPayroll(logger, logger, logger, payrollID)
         database.read.getOwnerOpCompletedPayroll(showOwnerOpLoadInfo, showFuelInfo, showOwnerOpAdjustmentInfo, payrollID)
 
       }
@@ -588,7 +589,7 @@ form.addEventListener("submit", (event) => {
   // console.log(startDate == endDate)
   if(selectedDriver == "All Drivers"){
     console.log("search database by date only")
-    // database.read.getRecordsByDate(logger, startDate, endDate);
+
     database.read.getRecordsByDate(populateAccordian, startDate, endDate);
   }
   // could easily add search all salary drivers and all owner operator drivers as well
