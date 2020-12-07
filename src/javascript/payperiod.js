@@ -419,5 +419,10 @@ completePayrollBtn.addEventListener("click", () => {
     clearDisplay();
 })
 
+const logoutBtn = document.querySelector('#logout');
+logoutBtn.addEventListener('click', () => {
+    db.logout();
+})
+
 db.read.jobsByStatus(populateDropdown, 2, true)
 

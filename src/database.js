@@ -7,6 +7,16 @@
         }
       });
   }
+
+   // call to logout
+   const logout = () => {
+    auth.signOut().then(function() {
+        //signout successful
+        // user will be redirected because of the auth status listener
+    }).catch(err => {
+        console.log(err)
+    })
+  }
   
   // Module for writing client side dates
   const dateInfo = (() => {
@@ -82,7 +92,7 @@
 
   
 
-    // hmmm, should have got more familiar with async before trying it. seems to be working at least.
+
     async function newUser(userID, userRole, form){
       let response = await db.collection('users').doc(userID).set({
         fname: form['fname'].value,
@@ -294,6 +304,7 @@
     }
   })();
   
+
   // Read data
   const read = (() => {
     // gets active job documents as a snapshot(listens for changes)
@@ -332,6 +343,14 @@
         myFunction(Snapshot.docs)
       })
     });
+
+    const getAllActiveDrivers =((myFunction) => {
+      db.collection('drivers')
+        .where("status", "==", "active")
+        .onSnapshot(Snapshot => {
+          myFunction(Snapshot.docs)
+        })
+    })
 
 
     // Get all system users
@@ -466,6 +485,20 @@
         console.log("Error getting document:", error);
       })
     });
+
+    const getUserDoc = ((myFunction, id) => {
+      var docRef = db.collection("users").doc(id);
+      docRef.get().then(function(doc) {
+        if (doc.exists) {
+          myFunction(doc)
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch(function(error) {
+        console.log("Error getting document:", error);
+      })
+    });
   
     return{
       jobsByStatus,
@@ -481,7 +514,9 @@
       getRecordsByDate,
       getOwnerOpCompletedPayroll,
       getSalaryCompletedPayrollInfo,
-      getDriverRecordsByDate
+      getDriverRecordsByDate,
+      getAllActiveDrivers,
+      getUserDoc
     }
   })();
   
@@ -615,6 +650,21 @@
       });
     })
 
+
+    const editUser = ((form, id) => {
+      db.collection('users').doc(id).update({
+        role: form['userTypeRadio'].value,
+        status: form['userStatus'].value,
+      })
+      .then(
+        console.log("document successfully updated!")
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
+
     const setDriverStatus = ((status, id) => {
       db.collection('drivers').doc(id).update({
         status: status,
@@ -677,6 +727,7 @@
       adjustmentsPayrollRef,
       fuelPayrollRef,
       jobsPayrollRef,
+      editUser,
     }
   })();
   
@@ -706,16 +757,7 @@
     }
   })();
   
-  
-  // call to logout
-  const logout = () => {
-    auth.signOut().then(function() {
-        //signout successful
-        // user will be redirected because of the auth status listener
-    }).catch(err => {
-        console.log(err)
-    })
-  }
+ 
 
 module.exports = {
     read: read,

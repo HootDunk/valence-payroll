@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Manage Employees</title>
     <link rel="stylesheet" type="text/css" href="../assets/bootstrap.min.css">
     <link rel="stylesheet" href="../css/manage-employees.css">
 
@@ -11,24 +11,28 @@
   <body>
     <header>
       <nav class="navbar navbar-expand-lg navbar-light">
-          <a class="navbar-brand" href="dashboard.html">
-              <img id="valence-logo" src="../assets/valence-logo.png"  alt="valence-logo"/>
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-              <a class="nav-link" href="dashboard.html">Home</a>
-              <a class="nav-link" href="dispatch.html">Dispatcher Terminal</a>
-              <a class="nav-link" href="weeklyinputs.html">Current Pay Period</a>
-              <a class="nav-link active" href="manage-employees.html">Manage Employees</a>
-              <a class="nav-link" href="view-records.html">View Records</a>
-              <a class="nav-link" href="user-guide.html">User Guide</a>
-              <!-- <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
-            </div>
+        <a class="navbar-brand" href="dashboard.html">
+            <img id="valence-logo" src="../assets/valence-logo.png"  alt="valence-logo"/>
+        </a>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="dashboard.html">Home</a>
+            <a class="nav-link" href="dispatch.html">Dispatcher Terminal</a>
+            <a class="nav-link" href="weeklyinputs.html">Current Pay Period</a>
+            <a class="nav-link active" href="manage-employees.html">Manage Employees</a>
+            <a class="nav-link" href="view-records.html">View Records</a>
+            <a class="nav-link" href="user-guide.html">User Guide</a>
+            <!-- <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
           </div>
-        </nav>
+
+        </div>
+
+        <button id="logout" type="button" class="btn btn-dark">Log Out</button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </nav>
   </header>
   
 
@@ -179,7 +183,7 @@
             </div>
             <div class="col">
               <label for="lname">Last Name:</label>
-              <input type="text" class="form-control"  id="lname" step=".01" required>
+              <input type="text" class="form-control"  id="lname"  required>
             </div>
           </div>
 
@@ -200,7 +204,7 @@
                 <!-- <button id="modalDeleteDriver" type="button" class="btn btn-danger" data-dismiss="modal">Delete Driver</button> -->
               </div>
               <div class="col-3">
-                <button id="newDriverConfirm" type="submit" class="btn btn-success">Confirm</button>
+                <button id="newDriverConfirm" type="submit" class="btn btn-success">Update</button>
               </div>
               <div class="col-2">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -225,7 +229,7 @@
     <div class="modal-content">
       
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">New Driver</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Edit User</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -233,36 +237,49 @@
 
       <div class="modal-body">
         <form id="editUserForm">
+
           <div class="row form-group">
-            <div class="col">
+
+            <div class="col ml-5">
               <label for="userType">User Type:</label>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="userTypeRadio" id="dispatcherRadio" value="dipatcher">
+                <input class="form-check-input" type="radio" name="userTypeRadio" id="dispatcherRadio" value="dispatcher" required>
                 <label class="form-check-label" for="userTypeRadio">
-                  salary
+                  Dispatcher
                 </label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="userTypeRadio" id="adminRadio" value="admin">
                 <label class="form-check-label" for="userTypeRadio">
-                  admin
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="userTypeRadio" id="noneRadio" value="none">
-                <label class="form-check-label" for="userTypeRadio">
-                  none (disallows sign in priviledges)
+                  Admin
                 </label>
               </div>
             </div>
 
+            <div class="col">
+              <label for="userType">User Type:</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="userStatus" id="userActive" value="active" required>
+                <label class="form-check-label" for="userStatus">
+                  Active
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="userStatus" id="userInactive" value="inactive">
+                <label class="form-check-label" for="userStatus">
+                  Inactive
+                </label>
+              </div>
+            </div>
+
+          </div>
           <div class="container-fluid">
             <div class="row">
               <div class="col-6">
                 <!-- <button id="modalDeleteDriver" type="button" class="btn btn-danger" data-dismiss="modal">Delete Driver</button> -->
               </div>
               <div class="col-3">
-                <button id="newUserConfirm" type="submit" class="btn btn-success">Confirm</button>
+                <button id="editUserConfirm" type="submit" class="btn btn-success">Confirm</button>
               </div>
               <div class="col-2">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

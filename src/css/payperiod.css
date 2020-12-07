@@ -4,6 +4,7 @@ header {
     box-shadow: 0px 10px 10px rgba(0,0,0,0.4);
     position: relative;
     margin-bottom: 15px;
+    font-weight: bolder;
 }
 
 #valence-logo{

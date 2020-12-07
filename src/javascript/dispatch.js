@@ -141,12 +141,11 @@ const jobObject = () => {
     const form = document.getElementById('create-job-form');
     // create job object 
     const newJob = new Job(driverObj, form);
-    console.log(newJob.deadline)
     return newJob;
 }
 
 
-db.read.getAllDrivers(populateDropdown)
+db.read.getAllActiveDrivers(populateDropdown)
 // getJobsStatus takes in renderRows function and 0 (indicates the job status)
 db.read.jobsByStatus(renderRows, 0, true)
 

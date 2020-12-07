@@ -14,6 +14,8 @@ let grossPay = 0;
 let totalAmount = 0;
 let collapseID;
 
+database.AuthStateListener();
+
 const logger = (collection) => {
   if(collection.length){
     collection.forEach(doc => {
@@ -603,7 +605,10 @@ form.addEventListener("submit", (event) => {
 })
 
 
-
+const logoutBtn = document.querySelector('#logout');
+logoutBtn.addEventListener('click', () => {
+    database.logout();
+})
 
 
 // const collapseGroup = document.querySelectorAll(".collapse");

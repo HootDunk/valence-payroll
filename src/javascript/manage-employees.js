@@ -1,3 +1,4 @@
+const database = require('../database');
 const db = require('../database');
 // listens to the authentication state and handles changes
 db.AuthStateListener();
@@ -5,7 +6,9 @@ db.AuthStateListener();
 const driverCardDiv = document.querySelector("#driver-card-div");
 const userCardDiv = document.querySelector("#user-card-div");
 const modalDriverForm = document.querySelector("#editDriverForm");
+const modalUserForm = document.querySelector("#editUserForm");
 const updateDriverBtn = document.querySelector("#modalUpdateDriver");
+const updateUserBtn = document.querySelector("#editUserConfirm")
 // const deleteDriverBtn = document.querySelector("#modalDeleteDriver");
 const addUserCard = document.querySelector("#add-user-card");
 const newDriverForm = document.querySelector("#newDriverForm");
@@ -34,6 +37,19 @@ const setDriverFormValues = (doc) => {
     modalDriverForm['address'].value = doc.data().address;
     modalDriverForm['email'].value = doc.data().email;
     $('#editDriverModal').modal()
+}
+
+const setUserFormValues = (doc) => {
+  // set the data-id of the update button (in the modal) the selected users id 
+  updateUserBtn.dataset.id = doc.id;
+
+  if(doc.data().role == "admin") modalUserForm['adminRadio'].checked = true;
+  else if (doc.data().role == "dispatcher") modalUserForm['dispatcherRadio'].checked = true;
+
+  if(doc.data().status == "active") modalUserForm['userActive'].checked = true;
+  else if (doc.data().status == "inactive") modalUserForm['userInactive'].checked = true;
+  
+  $('#editUserModal').modal()
 }
 
 // add conditionals to change pay rate text based on driver type (as well as displayed value (as percent or dollars))
@@ -127,7 +143,7 @@ const displayDrivers = ((data) => {
   })
 })
 
-// NEED TO ADD FIREBASE FUNCTION AND TEST. THEN FIGURE OUT EDIT/DELETE/TOGGLE STATUS BTNS
+
 const displayUsers = ((data) => {
   if(data.length){
     const users = [];
@@ -135,11 +151,19 @@ const displayUsers = ((data) => {
       users.push(doc);
     })
     users.sort((a, b) => a.data().lname.localeCompare(b.data().lname))
+    users.sort((a, b) => a.data().status.localeCompare(b.data().status))
     let html = "";
     users.forEach(user => {
+      let background = "";
+      if (user.data().status == "active"){
+        background = "bg-dark";
+      }
+      else if (user.data().status == "inactive"){
+        background = "bg-secondary";
+      }
       const card = `
       <div class="card card-custom mx-2 mb-3" style="width: 15rem;">
-      <div class="card-header text-white bg-dark h5">
+      <div class="card-header text-white ${background} h5">
         ${user.data().fname} ${user.data().lname}
       </div>
       <ul class="list-group list-group-flush">
@@ -147,12 +171,23 @@ const displayUsers = ((data) => {
         <li class="list-group-item"><b>Status</b>: ${user.data().status}</li>
         <li class="list-group-item overflow-auto"><b>Email</b>:<br> ${user.data().email}</li>
       </ul>
-      <button data-id="${user.id}" type="button" class="btn btn-light edit-user"><b>Edit</b></button>
+      <button data-id="${user.id}" type="button" class="btn btn-light editUser"><b>Edit</b></button>
       </div>
       `;
       html += card;
     })
     userCardDiv.innerHTML = html;
+
+        // Pulls up modal and inputs form data
+        document.querySelectorAll(".btn.btn-light.editUser").forEach(btn => {
+          btn.addEventListener("click", event => {
+            // call modal
+            const userID = event.currentTarget.dataset.id;
+            console.log(userID)
+            db.read.getUserDoc(setUserFormValues, userID)
+
+          })
+        })
   }
   else {
     console.log("No users found")
@@ -168,14 +203,13 @@ modalDriverForm.addEventListener("submit", (event) => {
   $("#editDriverModal").modal("hide");
 })
 
+modalUserForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const userID = updateUserBtn.dataset.id;
+  database.update.editUser(modalUserForm, userID)
+  $("#editUserModal").modal("hide");
+})
 
-// 'delete driver' ie change status
-// deleteDriverBtn.addEventListener("click", (event) => {
-//   db.update.setDriverStatus("inactive", deleteDriverBtn.dataset.id)
-// })
-// addUserCard.addEventListener("click", () => {
-  
-// })
 
 
 newDriverForm.addEventListener("submit", (event) => {
@@ -183,6 +217,11 @@ newDriverForm.addEventListener("submit", (event) => {
   db.create.newDriver(newDriverForm);
   $('#newDriverModal').modal("hide") // hmm, may need this to be in the db call? so
   // the event happens in the .then()
+})
+
+const logoutBtn = document.querySelector('#logout');
+logoutBtn.addEventListener('click', () => {
+    db.logout();
 })
 
 
