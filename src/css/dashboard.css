@@ -14,9 +14,9 @@ header {
     padding-bottom: 10px;
 }
 .jumbotron.jumbotron-fluid{
-    text-align:center;
-    padding-top: 70px;
-    padding-bottom: 70px;
+    text-align: center;
+    /* padding-top: 80px;
+    padding-bottom: 80px; */
 }
 
 .row{

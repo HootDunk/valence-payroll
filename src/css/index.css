@@ -20,6 +20,7 @@ body {
   left: 50%;
   width: 400px;
   padding: 40px;
+  padding-top: 20px;
   padding-bottom: 0px;
   transform: translate(-50%, -50%);
   background: rgba(0,0,0,.5);
@@ -73,26 +74,33 @@ body {
 .login-box form #submit {
   position: relative;
   display: inline-block;
-  padding: 9px 18px;
-  color: black;
+  /* padding: 9px 18px; */
+  color: white;
+  border: solid .01px white;
 
-  border: none;
-  outline: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bolder;
   text-decoration: none;
-  text-transform: uppercase;
   overflow: hidden;
   transition: .5s;
   letter-spacing: 2px;
   cursor: pointer;
+
+}
+
+#valence-icon {
+  width: 175px;
 }
 
 #submit:hover {
-  box-shadow: 0 0 5px #fff,
-              0 0 25px#fff,
-              0 0 70px #fff;
+  color: black !important;
+  background: white;
+  box-shadow: 0 0 5px #226ec5,
+              0 0 25px#226ec5,
+              0 0 70px #226ec5,
+              0 0 100px #226ec5;
+  
 
 }
 
@@ -106,6 +114,3 @@ body {
   padding: 10px;
 }
 
-/* #user-create-btn {
-
-} */

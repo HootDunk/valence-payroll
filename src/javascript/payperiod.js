@@ -26,7 +26,8 @@ const salaryDriverAdjTB = document.getElementById('salaryAdjustmentsTB');
 const ownerOpAdjTB = document.getElementById('ownerOpAdjustmentsTB')
 const driverSelect = document.getElementById('driver');
 const completePayrollBtn = document.getElementById("complete-payroll");
-console.log(dataFieldSalary)
+const payrollBtns = document.getElementById("payrollButtons");
+// console.log(dataFieldSalary)
 // console.log(driverInfoOwnerOp)
 
 
@@ -41,9 +42,11 @@ const sendBackBtn = document.getElementById("send-back");
 const clearDisplay = () => {
     salaryDiv.style.display = "none";
     ownerOp.style.display = "none";
+    payrollBtns.style.display= "none";
 }
 
 const showTables = (driverType) => {
+    payrollBtns.style.display = "revert";
     if(driverType === "salary"){
         salaryDiv.style.display = "revert";
     }
@@ -318,11 +321,11 @@ const populateDropdown = (data) => {
 
     } else {
         console.log('no drivers found')
-        // const driverOption = document.querySelector('.driver-option');
-        // if(driverOption){
-        //   // deletes last remaining driver option
-        //   driverOption.remove();
-        // }
+        let driverOption = document.querySelector('.driver-option');
+        if(driverOption){
+          // deletes last remaining driver option
+          driverOption.remove();
+        }
     }
 }
 
@@ -347,7 +350,6 @@ document.getElementById("file-reader-test").addEventListener("click", () => {
         }).catch(err => {
           alert(err)
         })
-
 });
 
 

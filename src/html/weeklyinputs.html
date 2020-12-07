@@ -95,11 +95,11 @@
             <div class="row form-group">
               <div class="col">
                 <label for="gallons">Gallons:</label>
-                <input type="number" class="form-control" id="gallons"  step=".01" required>
+                <input type="number" class="form-control" id="gallons" min="1" max="500" step=".01" required>
               </div>
               <div class="col">
                 <label for="amount">Amount:</label>
-                <input type="number" class="form-control"  id="amount" step=".01" required>
+                <input type="number" class="form-control"  min="1" max="2500" id="amount" step=".01" required>
               </div>
             </div>
             <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
@@ -141,22 +141,22 @@
             <div class="row form-group">
               <div class="col toggle-hide owner-operator">
                 <label for="detention">Detention/Layover:</label>
-                <input type="number" class="form-control owner-operator" id="detention"  step=".01" required>
+                <input type="number" class="form-control owner-operator" id="detention" min="0" step=".01" required>
               </div>
 
               <div class="col toggle-hide salary">
                 <label for="toll">Toll:</label>
-                <input type="number" class="form-control salary" id="toll"  step=".01" required>
+                <input type="number" class="form-control salary" id="toll"  min="0" step=".01" required>
               </div>
 
               <div class="col toggle-hide salary">
                 <label for="scale">Scale:</label>
-                <input type="number" class="form-control salary" id="scale" step=".01" required>
+                <input type="number" class="form-control salary" id="scale"  min="0" step=".01" required>
               </div>
               
               <div class="col">
                 <label for="extras">Extras:</label>
-                <input type="number" class="form-control"  id="extras" step=".01" required>
+                <input type="number" class="form-control"  id="extras" min="0" step=".01" required>
               </div>
             </div>
 
@@ -166,34 +166,34 @@
               <div class="row form-group">
                 <div class="col">
                   <label for="insurance">Insurance:</label>
-                  <input type="number" class="form-control" id="insurance" step=".01" required>
+                  <input type="number" class="form-control" id="insurance" min="0" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide owner-operator">
                   <label for="reserve-ownerOp">Reserve:</label>
-                  <input type="number" class="form-control owner-operator"  id="reserve-ownerOp" step=".01" required>
+                  <input type="number" class="form-control owner-operator"  id="reserve-ownerOp" min="0" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide salary">
                   <label for="accidental">Accidental:</label>
-                  <input type="number" class="form-control salary" id="accidental" step=".01" required>
+                  <input type="number" class="form-control salary" id="accidental" min="0" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide salary">
                   <label for="cashAdvance">Cash Advance:</label>
-                  <input type="number" class="form-control salary" id="cashAdvance" step=".01" required>
+                  <input type="number" class="form-control salary" id="cashAdvance" min="0" step=".01" required>
                 </div>
 
               </div>
               <div class="row form-group">
                 <div class="col toggle-hide salary">
                   <label for="escrow">Escrow:</label>
-                  <input type="number" class="form-control salary"  id="escrow" step=".01" required>
+                  <input type="number" class="form-control salary"  id="escrow" min="0" step=".01" required>
                 </div>
   
                 <div class="col toggle-hide salary">
                   <label for="reserve-salary">Reserve:</label>
-                  <input type="number" class="form-control salary"  id="reserve-salary" step=".01" required>
+                  <input type="number" class="form-control salary"  id="reserve-salary" min="0" step=".01" required>
                 </div>
               </div>
               <button type="submit" class="btn btn-primary mt-2" id="submitAdjustments">Submit Adjustments</button>
@@ -284,7 +284,7 @@
               </div>
               <div class="col">
                 <label for="client">Rate:</label>
-                <input type="number" class="form-control"  id="rate" step=".01" required>
+                <input type="number" class="form-control"  id="rate" min="0" step=".01" required>
               </div>
             </div>
 
@@ -304,7 +304,7 @@
             <div class="row form-group">
               <div class="col">
                 <label for="client">Route length:</label>
-                <input type="number" class="form-control"  id="routeLength" step=".01" required>
+                <input type="number" class="form-control"  id="routeLength" min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="client">Delivery Deadline:</label>
@@ -345,22 +345,22 @@
             <div class="row form-group">
               <div class="col">
                 <label for="detention">Detention/Layover:</label>
-                <input type="text" class="form-control" id="detention" step=".01" required>
+                <input type="text" class="form-control" id="detention" min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="extras">Extras:</label>
-                <input type="number" class="form-control"  id="extras" step=".01" required>
+                <input type="number" class="form-control"  id="extras" min="0" step=".01" required>
               </div>
             </div>
             <h3>Deductions</h3>
             <div class="row form-group">
               <div class="col">
                 <label for="insurance">Insurance:</label>
-                <input type="text" class="form-control" id="insurance" step=".01" required>
+                <input type="text" class="form-control" id="insurance" min="0"  step=".01" required>
               </div>
               <div class="col">
                 <label for="reserve">Reserve:</label>
-                <input type="number" class="form-control"  id="reserve" step=".01" required>
+                <input type="number" class="form-control"  id="reserve" min="0" step=".01" required>
               </div>
             </div>
             <button id="updateAdjOwnerOp" type="submit" class="btn btn-success">Update</button>
@@ -390,40 +390,40 @@
             <div class="row form-group">
               <div class="col">
                 <label for="toll">Toll:</label>
-                <input type="text" class="form-control" id="toll" step=".01" required>
+                <input type="text" class="form-control" id="toll" min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="scale">Scale:</label>
-                <input type="number" class="form-control"  id="scale" step=".01" required>
+                <input type="number" class="form-control"  id="scale" min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="extras">Extras:</label>
-                <input type="number" class="form-control"  id="extras" step=".01" required>
+                <input type="number" class="form-control"  id="extras" min="0" step=".01" required>
               </div>
             </div>
             <h3>Deductions</h3>
             <div class="row form-group">
               <div class="col">
                 <label for="insurance">Insurance:</label>
-                <input type="text" class="form-control" id="insurance" step=".01" required>
+                <input type="text" class="form-control" id="insurance" min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="accidental">Accidental:</label>
-                <input type="number" class="form-control"  id="accidental" step=".01" required>
+                <input type="number" class="form-control"  id="accidental" min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="cashAdvance">Cash Advance:</label>
-                <input type="number" class="form-control"  id="cashAdvance" step=".01" required>
+                <input type="number" class="form-control"  id="cashAdvance" min="0" step=".01" required>
               </div>
             </div>
             <div class="row form-group">
               <div class="col">
                 <label for="escrow">Escrow:</label>
-                <input type="text" class="form-control" id="escrow"  step=".01" required>
+                <input type="text" class="form-control" id="escrow"  min="0" step=".01" required>
               </div>
               <div class="col">
                 <label for="reserve">Reserve:</label>
-                <input type="number" class="form-control"  id="reserve" step=".01" required>
+                <input type="number" class="form-control"  id="reserve" min="0" step=".01" required>
               </div>
             </div>
             <button id="updateAdjSalary" type="submit" class="btn btn-success">Update</button>
