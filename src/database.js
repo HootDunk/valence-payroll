@@ -225,7 +225,7 @@
         email: newDriverForm['email'].value,
         fname: newDriverForm['fname'].value,
         lname: newDriverForm['lname'].value,
-        rate: newDriverForm['rate'].value,
+        rate: Number(newDriverForm['rate'].value),
         status: "active",
         type: $('input[name="driverTypeRadio"]:checked').val(),
       })

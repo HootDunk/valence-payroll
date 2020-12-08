@@ -218,14 +218,13 @@ const showOwnerOpAdjustmentInfo = ((doc) => {
       for(let key of Object.keys(reimbursements)){
           totalReimburse += reimbursements[key]
       }
-      $(`.datafield.ownerOp.detention.${collapseID}`).text(`$${(reimbursements.detention).toFixed(2)}`);
-      $(`.datafield.ownerOp.extras.${collapseID}`).text(`$${(reimbursements.extras).toFixed(2)}`);
-      $(`.datafield.ownerOp.insurance.${collapseID}`).text(`$${(deductions.insurance).toFixed(2)}`);
-      $(`.datafield.ownerOp.reserve.${collapseID}`).text(`$${(deductions.reserve).toFixed(2)}`);
-      $(`.datafield.ownerOp.insurance.${collapseID}`).text(`$${(deductions.insurance).toFixed(2)}`);
-      $(`.datafield.ownerOp.reimbursements.${collapseID}`).text(`$${(totalDeduct).toFixed(2)}`);
-      $(`.datafield.ownerOp.deductions.${collapseID}`).text(`$${(totalReimburse + totalAmount).toFixed(2)}`);
-      $(`.datafield.ownerOp.total.${collapseID}`).text(`$${(grossPay + totalReimburse - totalDeduct - totalAmount).toFixed(2)}`);
+      $(".datafield.ownerOp.detention").text(`$${(reimbursements.detention).toFixed(2)}`);
+      $(".datafield.ownerOp.extras").text(`$${(reimbursements.extras).toFixed(2)}`);
+      $(".datafield.ownerOp.reserve").text(`$${(deductions.reserve).toFixed(2)}`);
+      $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
+      $(".datafield.ownerOp.reimbursements").text(`$${(totalReimburse).toFixed(2)}`);
+      $(".datafield.ownerOp.deductions").text(`$${(totalDeduct + totalAmount).toFixed(2)}`);
+      $(".datafield.ownerOp.total").text(`$${(grossPay + totalReimburse - totalDeduct - totalAmount).toFixed(2)}`);
   }
   else{
       console.log("No adjustment data found")
@@ -357,7 +356,7 @@ accordion.addEventListener("click", (event) => {
                 <thead class="thead-light">
                   <tr>
                     <th scope="col">Total Miles</th>
-                    <th scope="col">Pay Per Miles</th>
+                    <th scope="col">Pay Per Mile</th>
                     <th scope="col">Total</th>
                   </tr>
                 </thead>

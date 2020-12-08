@@ -29,7 +29,7 @@ const completePayrollBtn = document.getElementById("complete-payroll");
 const payrollBtns = document.getElementById("payrollButtons");
 // console.log(dataFieldSalary)
 // console.log(driverInfoOwnerOp)
-
+console.log(dataFieldOwnerOp)
 
 let loadTableRows;
 let fuelTableRows;
@@ -277,11 +277,10 @@ const showOwnerOpAdjustmentInfo = ((doc) => {
         }
         $(".datafield.ownerOp.detention").text(`$${(reimbursements.detention).toFixed(2)}`);
         $(".datafield.ownerOp.extras").text(`$${(reimbursements.extras).toFixed(2)}`);
-        $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
         $(".datafield.ownerOp.reserve").text(`$${(deductions.reserve).toFixed(2)}`);
         $(".datafield.ownerOp.insurance").text(`$${(deductions.insurance).toFixed(2)}`);
-        $(".datafield.ownerOp.reimbursements").text(`$${(totalDeduct).toFixed(2)}`);
-        $(".datafield.ownerOp.deductions").text(`$${(totalReimburse + totalAmount).toFixed(2)}`);
+        $(".datafield.ownerOp.reimbursements").text(`$${(totalReimburse).toFixed(2)}`);
+        $(".datafield.ownerOp.deductions").text(`$${(totalDeduct + totalAmount).toFixed(2)}`);
         $(".datafield.ownerOp.total").text(`$${(grossPay + totalReimburse - totalDeduct - totalAmount).toFixed(2)}`);
     }
     else{
