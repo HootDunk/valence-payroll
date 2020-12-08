@@ -369,6 +369,8 @@
           myFunction(Snapshot.docs);
         })
     });
+
+
     
     // poorly named, should be get job by driver id
     const getJobByID = ((myFunction, driverID) => {
@@ -410,7 +412,7 @@
       getAdjustmentByID(myFunction2, 2, driverID);
     }
 
-    // untested
+    
     const getDriverJobsbyPayrollID = ((myFunction, payrollID) => {
       db.collection('jobs')
         .where("payrollID", "==", payrollID)
@@ -418,7 +420,7 @@
           myFunction(Snapshot.docs);
         })
     });
-    // untested
+    
     const getFuelbyPayrollID = ((myFunction, payrollID) => {
       db.collection("fuel")
         .where("payrollID", "==", payrollID)
@@ -486,6 +488,22 @@
       })
     });
 
+    const getAdminDoc = ((myFunction) => {
+      var docRef = db.collection("admin").doc("dPOd2cPd0JLWhHo3ciSV");
+      docRef.get().then(function(doc) {
+        if (doc.exists) {
+          myFunction(doc)
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }).catch(function(error) {
+        console.log("Error getting document:", error);
+      })
+    })
+
+
+
     const getUserDoc = ((myFunction, id) => {
       var docRef = db.collection("users").doc(id);
       docRef.get().then(function(doc) {
@@ -516,7 +534,8 @@
       getSalaryCompletedPayrollInfo,
       getDriverRecordsByDate,
       getAllActiveDrivers,
-      getUserDoc
+      getUserDoc,
+      getAdminDoc,
     }
   })();
   
@@ -713,6 +732,32 @@
       });
     })
 
+    const adminCode = ((myFunction) => {
+      db.collection('admin').doc('dPOd2cPd0JLWhHo3ciSV').update({
+        AdminRegistrationID: adminCodeForm['adminCode'].value,
+
+      }).then(  
+        read.getAdminDoc(myFunction)
+
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
+    const dispatchCode = ((myFunction) => {
+      db.collection('admin').doc('dPOd2cPd0JLWhHo3ciSV').update({
+        DispatcherRegistrationID: dispatcherCodeForm['dispatcherCode'].value,
+
+      }).then(
+        read.getAdminDoc(myFunction)
+
+      )
+      .catch(error =>{
+        console.log("Error updating document: ", error);
+      });
+    })
+
 
     return {
       setJobStatus,
@@ -728,6 +773,9 @@
       fuelPayrollRef,
       jobsPayrollRef,
       editUser,
+      adminCode,
+      dispatchCode,
+
     }
   })();
   

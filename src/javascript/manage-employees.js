@@ -12,7 +12,8 @@ const updateUserBtn = document.querySelector("#editUserConfirm")
 // const deleteDriverBtn = document.querySelector("#modalDeleteDriver");
 const addUserCard = document.querySelector("#add-user-card");
 const newDriverForm = document.querySelector("#newDriverForm");
-
+const dispatcherCodeForm = document.getElementById('dispatcherCodeForm');
+const adminCodeForm = document.getElementById('adminCodeForm');
 // set modal values to corresponding driver
 const setDriverFormValues = (doc) => {
     // give buttons a data-id that matches the job
@@ -225,5 +226,102 @@ logoutBtn.addEventListener('click', () => {
 })
 
 
+const displayCodes = (doc) => {
+  dispatcherCodeForm['dispatcherCode'].value = doc.data().DispatcherRegistrationID;
+  adminCodeForm['adminCode'].value = doc.data().AdminRegistrationID;
+
+}
+
+// could use blur event listener to allow update code buttons
+
+
+
+const checkCodesAdmin = () => {
+
+  const message = document.getElementById('message1');
+  const submit = document.getElementById('adminSubmit');
+
+  if (dispatcherCodeForm['dispatcherCode'].value !=
+  adminCodeForm['adminCode'].value) {
+    message.innerHTML = '';
+    submit.disabled = false;
+  } else {
+    message.style.color = 'red';
+    message.innerHTML = 'Codes cannot be the same';
+    submit.disabled = true;
+
+  }
+
+}
+
+const checkCodesDispatch = () => {
+  const message = document.getElementById('message');
+  const submit = document.getElementById('dispatchSubmit');
+
+  if (dispatcherCodeForm['dispatcherCode'].value !=
+  adminCodeForm['adminCode'].value) {
+    message.innerHTML = '';
+
+
+    submit.disabled = false;
+
+  } else {
+    message.style.color = 'red';
+    message.innerHTML = 'Codes cannot be the same';
+    submit.disabled = true;
+  }
+
+}
+
+const revertButtonColor = (buttonType) => {
+
+  if(buttonType == "dispatch"){
+    console.log('hello?')
+    document.getElementById('dispatchSubmit').className = "btn btn-primary m-2";
+    document.getElementById('dispatchSubmit').innerText = "Update Code";
+  }
+  else if (buttonType == "admin"){
+    document.getElementById('adminSubmit').className = "btn btn-primary m-2";
+    document.getElementById('adminSubmit').innerText = "Update Code";
+  }
+}
+
+dispatcherCodeForm['dispatcherCode'].addEventListener("keyup", checkCodesDispatch)
+adminCodeForm['adminCode'].addEventListener("keyup", checkCodesAdmin)
+
+dispatcherCodeForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  // update entry.
+  console.log(dispatcherCodeForm['dispatcherCode'].value)
+
+
+  db.update.dispatchCode(displayCodes)
+  
+  document.getElementById('dispatchSubmit').className = "btn btn-success m-2";
+  document.getElementById('dispatchSubmit').innerText = "Success!";
+  setTimeout(() => {
+    revertButtonColor("dispatch")
+  }, 2000);
+
+
+})
+
+adminCodeForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  // update entry.
+  console.log(adminCodeForm['adminCode'].value)
+  // in the .then call to update info
+
+
+  db.update.adminCode(displayCodes)
+  document.getElementById('adminSubmit').className = "btn btn-success m-2";
+  document.getElementById('adminSubmit').innerText = "Success!";
+  setTimeout(() => {
+    revertButtonColor("admin")
+  }, 2000);
+})
+
 db.read.getAllDrivers(displayDrivers);
 db.read.getAllUsers(displayUsers);
+
+db.read.getAdminDoc(displayCodes)

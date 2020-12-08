@@ -55,7 +55,7 @@ const showTables = (driverType) => {
     }
 }
 
-// Redo to make it specific to drive type like showtables
+
 const clearDriverInfo = (driverType) => {
 
     if(driverType == "salary"){
@@ -124,8 +124,6 @@ const showSalaryJobInfo = (data) => {
 }
 
 const showSalaryAdjustmentsInfo = (doc) => {
-    // need to add data-id to table element!!
-    
     if(doc.data()){
         salaryDriverAdjTB.setAttribute('data-id', doc.id)
         let totalReimburse = 0;
@@ -170,7 +168,6 @@ const showSalaryDriverInfo = ((doc) => {
         driverInfoSalary[0].innerHTML += ` ${driver.fname} ${driver.lname}`;
         driverInfoSalary[1].innerHTML += ` ${driver.address}`;
         driverInfoSalary[2].innerHTML += `${today.GetFirstDayOfWeek().toLocaleDateString('en-US')} - ${today.GetLastDayOfWeek().toLocaleDateString('en-US')}`
-
     }
     else{
         console.log('No data for this driver')
@@ -330,27 +327,27 @@ const populateDropdown = (data) => {
 }
 
 // saves a text document... not perfect but something.
-document.getElementById("file-reader-test").addEventListener("click", () => {
+// document.getElementById("file-reader-test").addEventListener("click", () => {
     
-    let content = "Some text to save into the file";
-    filename = dialog.showSaveDialog({}
-        ).then(result => {
-          filename = result.filePath;
-          if (filename === undefined) {
-            alert('the user clicked the btn but didn\'t created a file');
-            return;
-          }
-          fs.writeFile(filename, content, (err) => {
-            if (err) {
-              alert('an error ocurred with file creation ' + err.message);
-              return
-            }
-            alert('WE CREATED YOUR FILE SUCCESSFULLY');
-          })
-        }).catch(err => {
-          alert(err)
-        })
-});
+//     let content = "Some text to save into the file";
+//     filename = dialog.showSaveDialog({}
+//         ).then(result => {
+//           filename = result.filePath;
+//           if (filename === undefined) {
+//             alert('the user clicked the btn but didn\'t created a file');
+//             return;
+//           }
+//           fs.writeFile(filename, content, (err) => {
+//             if (err) {
+//               alert('an error ocurred with file creation ' + err.message);
+//               return
+//             }
+//             alert('WE CREATED YOUR FILE SUCCESSFULLY');
+//           })
+//         }).catch(err => {
+//           alert(err)
+//         })
+// });
 
 
 const changeDocumentStatuses = (status) => {

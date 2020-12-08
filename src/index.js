@@ -23,7 +23,7 @@ const createWindow = () => {
   });
 
   // Hides the default menu panel that appears. be sure to uncomment before deployment
-  // mainWindow.setMenu(null);
+  mainWindow.setMenu(null);
 
 
 
