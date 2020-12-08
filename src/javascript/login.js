@@ -55,12 +55,16 @@ loginForm.addEventListener("submit", (e) => {
     docRef.get().then(doc => {
 
       let userRole = doc.data().role;
+      let userStatus = doc.data().status;
       // redirect user to the page that matches their role
-      if(userRole == 'dispatcher'){
+      if(userRole == 'dispatcher' && userStatus == "active"){
         window.location.href = 'dispatch.html';
       }
-      else if (userRole == 'admin'){
+      else if (userRole == 'admin' && userStatus == "active"){
         window.location.href = 'dashboard.html';
+      }
+      else if (userStatus == "inactive"){
+        displayError("This users status has been changed to inactive which prevents application access.  To regain access, you must contact you administrator.")
       }
     }).catch(error => {
       displayError(error);
