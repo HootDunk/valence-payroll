@@ -20,3 +20,7 @@ header {
 form{
     margin: 20px;
 }
+
+.hide {
+    visibility: hidden;
+}

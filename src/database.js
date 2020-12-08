@@ -8,6 +8,8 @@
       });
   }
 
+
+
    // call to logout
    const logout = () => {
     auth.signOut().then(function() {
@@ -17,6 +19,10 @@
         console.log(err)
     })
   }
+
+  // const checkUser = () => {
+  //   console.log(auth.currentUser);
+  // }
   
   // Module for writing client side dates
   const dateInfo = (() => {
@@ -736,7 +742,8 @@
       db.collection('admin').doc('dPOd2cPd0JLWhHo3ciSV').update({
         AdminRegistrationID: adminCodeForm['adminCode'].value,
 
-      }).then(  
+      }).then(
+
         read.getAdminDoc(myFunction)
 
       )
@@ -814,5 +821,6 @@ module.exports = {
     deleteData: deleteData,
     logout: logout,
     AuthStateListener: AuthStateListener,
+
 
 }

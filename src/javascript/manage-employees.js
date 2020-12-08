@@ -273,10 +273,17 @@ const checkCodesDispatch = () => {
 
 }
 
+// const revertButtonColor = () => {
+//   document.getElementById('dispatchSubmit').className = "btn btn-primary m-2";
+//   document.getElementById('dispatchSubmit').innerText = "Update Code";
+
+//       document.getElementById('adminSubmit').className = "btn btn-primary m-2";
+//     document.getElementById('adminSubmit').innerText = "Update Code";
+// }
+
 const revertButtonColor = (buttonType) => {
 
   if(buttonType == "dispatch"){
-    console.log('hello?')
     document.getElementById('dispatchSubmit').className = "btn btn-primary m-2";
     document.getElementById('dispatchSubmit').innerText = "Update Code";
   }
@@ -296,9 +303,10 @@ dispatcherCodeForm.addEventListener("submit", (event) => {
 
 
   db.update.dispatchCode(displayCodes)
-  
+    // this should happen in the asynchronous part of the dispatchCode
   document.getElementById('dispatchSubmit').className = "btn btn-success m-2";
   document.getElementById('dispatchSubmit').innerText = "Success!";
+
   setTimeout(() => {
     revertButtonColor("dispatch")
   }, 2000);
@@ -314,8 +322,10 @@ adminCodeForm.addEventListener("submit", (event) => {
 
 
   db.update.adminCode(displayCodes)
+  // this should happen in the asynchronous part of the admin Code
   document.getElementById('adminSubmit').className = "btn btn-success m-2";
   document.getElementById('adminSubmit').innerText = "Success!";
+
   setTimeout(() => {
     revertButtonColor("admin")
   }, 2000);
