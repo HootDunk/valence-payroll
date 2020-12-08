@@ -53,45 +53,39 @@
             </li>
 
             <li>
-                <a href="#">Current Pay Period</a>
+                <a href="#manage-employees-main-heading">Current Pay Period</a>
             </li>
             <ul class="sub-level-list">
-              <li>testing</li>
-              <li>testing</li>
+              <li><a href="#current-pay-period-sub-heading-1">Reviewing and Adding Weekly Inputs</a></li>
+              <li><a href="#current-pay-period-sub-heading-2">Processing Payroll</a></li>
             </ul>
             <li>
               <hr>
             </li>
 
             <li>
-                <a href="#">Manage Employees</a>
+                <a href="#manage-employees-main-heading">Manage Employees</a>
             </li>
             <ul class="sub-level-list">
-              <li>testing</li>
-              <li>testing</li>
+              <li><a href="#manage-employees-sub-heading-1">View and Edit Drivers</a></li>
+              <li><a href="#manage-employees-sub-heading-2">View and Edit Users</a></li>
+              <li><a href="#manage-employees-sub-heading-3">Altering Registration Codes</a></li>
             </ul>
             <li>
               <hr>
             </li>
 
             <li>
-                <a href="#">View Records</a>
+                <a href="#view-records-main-heading">View Records</a>
             </li>
             <ul class="sub-level-list">
-              <li>testing</li>
-              <li>testing</li>
+              <li><a href="#view-records-sub-heading-1">View Driver Records</a></li>
+              <li><a href="#view-records-sub-heading-2">View All Driver Records</a></li>
             </ul>
             <li>
               <hr>
             </li>
 
-            <li>
-                <a href="#">All book-instances</a>
-            </li>
-            <ul class="sub-level-list">
-              <li>testing</li>
-              <li>testing</li>
-            </ul>
             <li>
               <hr>
             </li>
@@ -104,18 +98,49 @@
           <div id="dispatcher-div">
             <h1 id="dispatcher-main-heading">Dispatcher Terminal</h1>
             <div class="container-fluid">
+              
               <h4 id="dispatch-sub-heading-1">Creating a Job</h4>
               <p>To create a job in the dispatcher terminal first you must click on the driver for the job being created. Then, input the name of the client who the load was booked through. Next, input origin, destination, route length (as stated on the confirmation sheet), and delivery date. Once all this information has been inputted, click the submit button. You have now created a job. </p>
               <h4 id="dispatch-sub-heading-2">Completing a Job</h4>
               <p>When a driver has completed delivery and confirmation has been received, then the job must be completed through on the application. To do this, simply scroll down on the dispatcher terminal page and go to the active jobs listings. Click on the job you wish to complete and click submit. You have now completed a job. </p>
             </div>
           </div>
+          
           <div id="current-pay-period-div">
             <h1 id="current-pay-period-main-heading">Pay Period</h1>
+            <div class="container-fluid">
+              <h4 id="current-pay-period-sub-heading-1">Reviewing and Adding Weekly Inputs</h4>
+              <p>To review and add weekly inputs, please navigate to the Current Pay Period screen and select the Review & Add Weekly Inputs tab. Select the driver you wish to view or create inputs for from the Select Driver list. </p>
+              <h4 id="current-pay-period-sub-heading-2">Processing Payroll</h4>
+              <p>To process payroll, please navigate to the Current Pay Period screen and select the Process Payroll tab. Select the driver you wish to process and carefully review the information. If there are any troubles, click the yellow Send Back to Edit button at the bottom of the page. If there are no troubles, click the green Send to Records button at the bottom of the page. </p>
+            </div>
           </div>
+
+          <div id="manage-employees-div">
+            <h1 id="manage-employees-main-heading">Manage Employees</h1>
+            <div class="container-fluid">
+              <h4 id="manage-employees-sub-heading-1">Viewing and Editting Drivers</h4>
+              <p>To view or edit drivers, navigate to the Manage Employees screen. The first section on the screen will display drivers. If you wish to change information of an existing driver, select the edit button at the bottom of that driver. Make the desired edits in the form, and then click the green update button or the close button to cancel. If you wish to add a new driver, select the Click here to add new drivers button, fill out the form, and select the green update button to submit of the close button to cancel. </p>
+              <h4 id="manage-employees-sub-heading-2">Viewing and Editting Users</h4>
+              <p>To view or edit users, navigate to the Manage Employees screen. The second section on the screen will display users. If you wish to change information of an existing user, select the edit button at the bottom of that user. Make the desired edits in the form, and then click the green update button or the close button to cancel. </p>
+              <h4 id="manage-employees-sub-heading-3">Altering Registration Codes</h4>
+              <p>To alter registration codes, navigate to the Manage Employees screen. At the bottom of the Manage Employees screen, the existing registration codes will be listed in the Dispatcher Code: and Admin Code: text fields. To alter a code, update the text to the desired code and select the blue update button.</p>
+            </div>
+          </div>
+
+          <div id="view-records-div">
+            <h1 id="view-records-main-heading">View Records</h1>
+              <div class="container-fluid">
+                <h4 id="view-records-sub-heading-1">Viewing Individual Driver Records</h4>
+                <p>To view records for an individual driver, navigate to the View Records screen. In the Search by Driver or All Drivers panel, select the desired driver. The period for which you would like to see records for must be defined. To select the start date, either manually type the start date into the preformatted field, or click the calender icon for a helpful calender dropdown where you can select the appropriate date. Repeat the same process for the end date and click the Search button. </p>
+                <h4 id="view-records-sub-heading-2">Viewing All Driver Records</h4>
+                <p>To view records for all drivers, navigate to the View Records screen. In the Search by Driver or All Drivers panel, select the All Drivers option at the top of the list. The period for which you would like to see records for must be defined. To select the start date, either manually type the start date into the preformatted field, or click the calender icon for a helpful calender dropdown where you can select the appropriate date. Repeat the same process for the end date and click the Search button. </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
-  </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
