@@ -64,7 +64,7 @@ loginForm.addEventListener("submit", (e) => {
         window.location.href = 'dashboard.html';
       }
       else if (userStatus == "inactive"){
-        displayError("This users status has been changed to inactive which prevents application access.  To regain access, you must contact you administrator.")
+        displayError("This users status has been changed to inactive which prevents application access.  To regain access, you must contact your administrator.")
       }
     }).catch(error => {
       displayError(error);

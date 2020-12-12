@@ -50,3 +50,7 @@ li.list-group-item {
 /* #underline-list{
   width: 100% !important;
 } */
+#help-link{
+  float: right;
+  padding: 10px;
+}

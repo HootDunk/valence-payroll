@@ -62,7 +62,6 @@ const clearDriverInfo = (driverType) => {
         driverInfoSalary[0].innerText = "Name: ";
         driverInfoSalary[1].innerText = "Address: ";
         driverInfoSalary[2].innerText = `Week: `;
-        
     }
     else if (driverType == "owner-operator"){
         driverInfoOwnerOp[0].innerText = "Name: ";

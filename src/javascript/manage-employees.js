@@ -184,7 +184,6 @@ const displayUsers = ((data) => {
             const userID = event.currentTarget.dataset.id;
             console.log(userID)
             db.read.getUserDoc(setUserFormValues, userID)
-
           })
         })
   }

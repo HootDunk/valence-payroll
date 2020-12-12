@@ -381,8 +381,8 @@
     // poorly named, should be get job by driver id
     const getJobByID = ((myFunction, driverID) => {
       var docRef = db.collection("jobs").doc(driverID);
-
-      docRef.get().then(doc => {
+      docRef.get()
+      .then(doc => {
         if (doc.exists) {
           myFunction(doc)
       } else {

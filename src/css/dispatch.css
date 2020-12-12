@@ -23,4 +23,18 @@ form{
 
 .hide {
     visibility: hidden;
+
+}
+#dispatch-link{
+    visibility: hidden;
+    color: #343a40 !important;
+    
+}
+#dispatch-link:hover{
+    font-weight: bolder;
+}
+
+#help-link{
+    float: right;
+    padding: 10px;
 }

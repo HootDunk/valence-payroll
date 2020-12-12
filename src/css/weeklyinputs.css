@@ -36,3 +36,7 @@ form{
 .toggle-hide {
   display: none;
 }
+#help-link{
+  float: right;
+  padding: 10px;
+}

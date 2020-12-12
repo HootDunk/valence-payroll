@@ -44,3 +44,21 @@
 .navbar{
   background: #5D6D7E;
 }
+
+.hide {
+  visibility: hidden;
+
+}
+#dispatch-link{
+  visibility: hidden;
+  color: #343a40 !important;
+  
+}
+#dispatch-link:hover{
+  font-weight: bolder;
+}
+
+#back-button{
+  float: right;
+  padding: 10px;
+}

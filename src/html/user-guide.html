@@ -11,30 +11,30 @@
   <body>
     <header id="top-header">
       <nav class="navbar navbar-expand-lg navbar-light">
-        <a class="navbar-brand" href="dashboard.html">
+        <a class="navbar-brand" href="#">
             <img id="valence-logo" src="../assets/valence-logo.png"  alt="valence-logo"/>
         </a>
-        
+
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
+          <div class="navbar-nav hide">
             <a class="nav-link" href="dashboard.html">Home</a>
-            <a class="nav-link" href="dispatch.html">Dispatcher Terminal</a>
+            <a class="nav-link active" href="dispatch.html">Dispatcher Terminal</a>
             <a class="nav-link" href="weeklyinputs.html">Current Pay Period</a>
             <a class="nav-link" href="manage-employees.html">Manage Employees</a>
             <a class="nav-link" href="view-records.html">View Records</a>
-            <a class="nav-link active" href="user-guide.html">User Guide</a>
+            <a class="nav-link" href="user-guide.html">User Guide</a>
             <!-- <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a> -->
           </div>
 
         </div>
-
+        <a class="nav-link" id="dispatch-link" href="dispatch.html">Dispatcher Terminal</a>
         <button id="logout" type="button" class="btn btn-dark">Log Out</button>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       </nav>
   </header>
-  
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-2">
@@ -51,8 +51,8 @@
             <li>
               <hr>
             </li>
-
-            <li>
+            <div class="hide">
+              <li>
                 <a href="#manage-employees-main-heading">Current Pay Period</a>
             </li>
             <ul class="sub-level-list">
@@ -89,11 +89,22 @@
             <li>
               <hr>
             </li>
+            </div>
+
+            
         </ul> 
         </nav>
       </div>
 
       <div class="col-10">
+
+        <button onclick="window.history.back();" id="back-button" type="button" class="btn btn-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"></path>
+            <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"></path>
+          </svg>
+        </button>
+
         <div class="container-fluid">
           <div id="dispatcher-div">
             <h1 id="dispatcher-main-heading">Dispatcher Terminal</h1>
@@ -105,39 +116,41 @@
               <p>When a driver has completed delivery and confirmation has been received, then the job must be completed through on the application. To do this, simply scroll down on the dispatcher terminal page and go to the active jobs listings. Click on the job you wish to complete and click submit. You have now completed a job. </p>
             </div>
           </div>
-          
-          <div id="current-pay-period-div">
-            <h1 id="current-pay-period-main-heading">Pay Period</h1>
-            <div class="container-fluid">
-              <h4 id="current-pay-period-sub-heading-1">Reviewing and Adding Weekly Inputs</h4>
-              <p>To review and add weekly inputs, please navigate to the Current Pay Period screen and select the Review & Add Weekly Inputs tab. Select the driver you wish to view or create inputs for from the Select Driver list. </p>
-              <h4 id="current-pay-period-sub-heading-2">Processing Payroll</h4>
-              <p>To process payroll, please navigate to the Current Pay Period screen and select the Process Payroll tab. Select the driver you wish to process and carefully review the information. If there are any troubles, click the yellow Send Back to Edit button at the bottom of the page. If there are no troubles, click the green Send to Records button at the bottom of the page. </p>
-            </div>
-          </div>
-
-          <div id="manage-employees-div">
-            <h1 id="manage-employees-main-heading">Manage Employees</h1>
-            <div class="container-fluid">
-              <h4 id="manage-employees-sub-heading-1">Viewing and Editting Drivers</h4>
-              <p>To view or edit drivers, navigate to the Manage Employees screen. The first section on the screen will display drivers. If you wish to change information of an existing driver, select the edit button at the bottom of that driver. Make the desired edits in the form, and then click the green update button or the close button to cancel. If you wish to add a new driver, select the Click here to add new drivers button, fill out the form, and select the green update button to submit of the close button to cancel. </p>
-              <h4 id="manage-employees-sub-heading-2">Viewing and Editting Users</h4>
-              <p>To view or edit users, navigate to the Manage Employees screen. The second section on the screen will display users. If you wish to change information of an existing user, select the edit button at the bottom of that user. Make the desired edits in the form, and then click the green update button or the close button to cancel. </p>
-              <h4 id="manage-employees-sub-heading-3">Altering Registration Codes</h4>
-              <p>To alter registration codes, navigate to the Manage Employees screen. At the bottom of the Manage Employees screen, the existing registration codes will be listed in the Dispatcher Code: and Admin Code: text fields. To alter a code, update the text to the desired code and select the blue update button.</p>
-            </div>
-          </div>
-
-          <div id="view-records-div">
-            <h1 id="view-records-main-heading">View Records</h1>
+          <div class="hide">
+            <div id="current-pay-period-div">
+              <h1 id="current-pay-period-main-heading">Pay Period</h1>
               <div class="container-fluid">
-                <h4 id="view-records-sub-heading-1">Viewing Individual Driver Records</h4>
-                <p>To view records for an individual driver, navigate to the View Records screen. In the Search by Driver or All Drivers panel, select the desired driver. The period for which you would like to see records for must be defined. To select the start date, either manually type the start date into the preformatted field, or click the calender icon for a helpful calender dropdown where you can select the appropriate date. Repeat the same process for the end date and click the Search button. </p>
-                <h4 id="view-records-sub-heading-2">Viewing All Driver Records</h4>
-                <p>To view records for all drivers, navigate to the View Records screen. In the Search by Driver or All Drivers panel, select the All Drivers option at the top of the list. The period for which you would like to see records for must be defined. To select the start date, either manually type the start date into the preformatted field, or click the calender icon for a helpful calender dropdown where you can select the appropriate date. Repeat the same process for the end date and click the Search button. </p>
+                <h4 id="current-pay-period-sub-heading-1">Reviewing and Adding Weekly Inputs</h4>
+                <p>To review and add weekly inputs, please navigate to the Current Pay Period screen and select the Review & Add Weekly Inputs tab. Select the driver you wish to view or create inputs for from the Select Driver list. </p>
+                <h4 id="current-pay-period-sub-heading-2">Processing Payroll</h4>
+                <p>To process payroll, please navigate to the Current Pay Period screen and select the Process Payroll tab. Select the driver you wish to process and carefully review the information. If there are any troubles, click the yellow Send Back to Edit button at the bottom of the page. If there are no troubles, click the green Send to Records button at the bottom of the page. </p>
+              </div>
+            </div>
+  
+            <div id="manage-employees-div">
+              <h1 id="manage-employees-main-heading">Manage Employees</h1>
+              <div class="container-fluid">
+                <h4 id="manage-employees-sub-heading-1">Viewing and Editting Drivers</h4>
+                <p>To view or edit drivers, navigate to the Manage Employees screen. The first section on the screen will display drivers. If you wish to change information of an existing driver, select the edit button at the bottom of that driver. Make the desired edits in the form, and then click the green update button or the close button to cancel. If you wish to add a new driver, select the Click here to add new drivers button, fill out the form, and select the green update button to submit of the close button to cancel. </p>
+                <h4 id="manage-employees-sub-heading-2">Viewing and Editting Users</h4>
+                <p>To view or edit users, navigate to the Manage Employees screen. The second section on the screen will display users. If you wish to change information of an existing user, select the edit button at the bottom of that user. Make the desired edits in the form, and then click the green update button or the close button to cancel. </p>
+                <h4 id="manage-employees-sub-heading-3">Altering Registration Codes</h4>
+                <p>To alter registration codes, navigate to the Manage Employees screen. At the bottom of the Manage Employees screen, the existing registration codes will be listed in the Dispatcher Code: and Admin Code: text fields. To alter a code, update the text to the desired code and select the blue update button.</p>
+              </div>
+            </div>
+  
+            <div id="view-records-div">
+              <h1 id="view-records-main-heading">View Records</h1>
+                <div class="container-fluid">
+                  <h4 id="view-records-sub-heading-1">Viewing Individual Driver Records</h4>
+                  <p>To view records for an individual driver, navigate to the View Records screen. In the Search by Driver or All Drivers panel, select the desired driver. The period for which you would like to see records for must be defined. To select the start date, either manually type the start date into the preformatted field, or click the calender icon for a helpful calender dropdown where you can select the appropriate date. Repeat the same process for the end date and click the Search button. </p>
+                  <h4 id="view-records-sub-heading-2">Viewing All Driver Records</h4>
+                  <p>To view records for all drivers, navigate to the View Records screen. In the Search by Driver or All Drivers panel, select the All Drivers option at the top of the list. The period for which you would like to see records for must be defined. To select the start date, either manually type the start date into the preformatted field, or click the calender icon for a helpful calender dropdown where you can select the appropriate date. Repeat the same process for the end date and click the Search button. </p>
+                </div>
               </div>
             </div>
           </div>
+
 
         </div>
       </div>
