@@ -22,7 +22,7 @@ const createWindow = () => {
     show: false,
   });
 
-  // Hides the default menu panel that appears. be sure to uncomment before deployment
+  // Hides the default menu panel that appears
   mainWindow.setMenu(null);
 
 
@@ -33,15 +33,6 @@ const createWindow = () => {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
-
-  // Likely not needed
-  // mainWindow.on('closed', () => {
-  //   mainWindow = null
-  // });
-
-  // Open the DevTools on startup.  be sure to remove before packaging .exe
-  mainWindow.webContents.openDevTools();
-
 
 };
 
