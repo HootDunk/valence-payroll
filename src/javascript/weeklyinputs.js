@@ -1,4 +1,5 @@
 // database
+const { stat } = require('fs');
 const db = require('../database');
 // listens to the authentication state and handles changes
 db.AuthStateListener();
@@ -20,6 +21,13 @@ const formControlOwnerOperator = document.querySelectorAll('.form-control.owner-
 const adjModalFormSalary = document.getElementById('adjModalFormSalary');
 const adjModalFormOwnerOp = document.getElementById('adjModalFormOP');
 const toPayrollBtn = document.getElementById('toPayrollBtn');
+let currentDriverId;
+let currentDriverType;
+
+
+// const driverSelect = document.getElementById('driver');
+// const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+// const currentDriverID = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
 
 
 // creates driver object from the job document, used to populate and sort array for the dropdown
@@ -69,10 +77,15 @@ const populateDropdown = (data) => {
           html += option;
       })
       dropdown.innerHTML = html;
-      
+
+      const driverSelect = document.getElementById('driver');
       //here is where the function for handling the display will go
       document.querySelectorAll('.driver-option').forEach(option => {
         option.addEventListener('click', event => {
+          currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+          currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
+          console.log(currentDriverId)
+          console.log(currentDriverType)
           // Hide all elements
           toggleHide.forEach(element => {
             element.style.display = "none";
@@ -81,9 +94,9 @@ const populateDropdown = (data) => {
           const driverType = event.target.dataset.type;
 
           setRequiredStatus('reset') // sets all form inputs to required
-          clearAdjustmentsSection() // text in adjustments table is removed
+          clearAdjustmentsSection() // removes text in adjustments section (table cell text)
           adjustmentsForm['submitAdjustments'].style.display = "revert"; // Unhides the submit button
-          
+          adjustmentsFormReadOnly(false)  // set adjustments form read only attribute to false (allow input)
 
           db.read.getDriverJobs(renderRows, 1, driverID)
           db.read.getAdjustmentByID(setAdjustmentValues, 1, driverID)
@@ -215,14 +228,26 @@ const setJobFormValues = (doc) => {
 
 
 /** Edit Jobs Modal buttons **/
-
+// figure why the driver gets deselected on edit.
+// updates and closes modal on submit. driver gets deselected...
 jobForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const jobID = jobForm['submitJobEdit'].dataset.id;
   const jobInstance = new JobAttributes(jobForm);
+
   db.update.editJobByID(jobInstance, jobID);
+
   $("#editJobModal").modal("hide");
+
 });
+
+// Udate and close Adjustments modal (Owner Op)when update button is pressed
+// adjModalFormOwnerOp.addEventListener('submit', (event) => {
+//   event.preventDefault();
+//   const adjID = adjustmentsForm['editAdjustments'].dataset.id;
+//   db.update.editAdjustmentsOwnerOp(adjModalFormOwnerOp, adjID)
+//   $("#adjModalOwnerOp").modal("hide");
+// })
 
 // Clicking delete removes the job entirely
 modalDeleteBtn.addEventListener('click', (event) => {
@@ -235,9 +260,7 @@ modalDeleteBtn.addEventListener('click', (event) => {
 // Create a new fuel record on from submit. pass in 4 data fields + driverID and year and date
 fuelForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  // gets reference to entire dropdown element
-  const driverSelect = document.getElementById('driver');
-  const currentDriverId = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+
   db.create.fuelEntry(fuelForm, currentDriverId);
   fuelForm.reset();
 })
@@ -246,8 +269,8 @@ fuelForm.addEventListener('submit', (event) => {
 fuelTB.addEventListener('click', (event) => {
   if(event.target.className === "btn btn-outline-danger btn-md")
     db.deleteData.deleteFuelEntry(event.target.dataset.id)
-    
 })
+
 
 
 /** Adjustments Section **/
@@ -255,10 +278,7 @@ fuelTB.addEventListener('click', (event) => {
 // Creating adjustments document on submit
 adjustmentsForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  const driverSelect = document.getElementById('driver');
-  const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
-  const currentDriverID = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
-  db.create.newAdjustments(setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverID)
+  db.create.newAdjustments(setAdjustmentValues, adjustmentsForm, currentDriverType, currentDriverId)
 })
 
 // Setting adjustment table values to match the record
@@ -287,7 +307,9 @@ const setAdjustmentValues = (doc) => {
   adjustmentsForm['editAdjustments'].dataset.id = doc.id; // give edit button the document id
   adjustmentsForm['editAdjustments'].dataset.type = doc.data().driverType;
 
-  
+  //set form fields to read only
+  adjustmentsFormReadOnly(true)
+
 }
 
 // Opens the adjustments Model with corresponding table values
@@ -337,6 +359,15 @@ const clearAdjustmentsSection = () => {
   })
 }
 
+// change read only attribute of adjustments form
+const adjustmentsFormReadOnly = (status) => {
+  for(let i = 0; i < adjustmentsForm.length; i++){
+    if(adjustmentsForm[i].type === "number"){
+      adjustmentsForm[i].readOnly = status;
+    }
+  }
+}
+
 // Removes required status of the hidden elements or re-sets status to true for all inputs
 // prevents error on form submit by 'turning off' the required attribute for the form inputs that are hidden
 const setRequiredStatus = (type) => {
@@ -382,9 +413,7 @@ const updateAllFuelStatus = () => {
 
 // 
 toPayrollBtn.addEventListener("click", () => {
-  const driverSelect = document.getElementById('driver');
-  const currentDriverType = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-type');
-  // const currentDriverID = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-id');
+
   const adjustmentsID = adjustmentsForm['editAdjustments'].dataset.id;
 
   updateJobsStatus()
@@ -405,6 +434,11 @@ logoutBtn.addEventListener('click', () => {
 })
 
 db.read.jobsByStatus(populateDropdown, 1, true)
+
+
+
+
+
 
 
 
