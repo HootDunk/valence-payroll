@@ -1,15 +1,32 @@
 {
-  "name": "payroll",
-  "productName": "payroll",
+  "name": "valence",
+  "productName": "Valence Transportation",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Payroll application for Valence Transportation",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "build-installer": "electron-builder"
+  },
+  "build": {
+    "appId": "valence",
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "src/assets/icon.ico"
+    },
+    "nsis": {
+      "installerIcon": "src/assets/icon.ico",
+      "uninstallerIcon": "src/assets/icon.ico",
+      "uninstallDisplayName": "Valence Transportation",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "keywords": [],
   "author": {
@@ -55,6 +72,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.53",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.53",
     "@electron-forge/maker-zip": "^6.0.0-beta.53",
-    "electron": "10.1.3"
+    "electron": "10.1.3",
+    "electron-builder": "^22.9.1"
   }
 }

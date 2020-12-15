@@ -569,7 +569,7 @@ const populateAccordian = (collection) => {
     
   }
   else{
-    console.log("no payroll records found")
+    accordianDiv.innerHTML = `<div class="text-center"><h2 class="text-warning">No records found for this date range.</h2></div>`
   }
 }
 

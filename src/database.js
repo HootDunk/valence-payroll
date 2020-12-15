@@ -596,7 +596,7 @@
       });
     })
 
-    // fix
+ 
     const editJobByID = ((obj, id) => {
       const parts = dateInfo.createDateArray(obj.deadline);
       db.collection('jobs').doc(id).update({

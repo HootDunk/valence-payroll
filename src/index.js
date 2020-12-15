@@ -26,13 +26,13 @@ const createWindow = () => {
   mainWindow.setMenu(null);
 
 
-
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'html/index.html'));
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
 
 };
 

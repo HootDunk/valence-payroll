@@ -2,14 +2,12 @@ const database = require('../database');
 const db = require('../database');
 const creatJobForm = document.getElementById('create-job-form');
 const hiddenNav = document.getElementsByClassName('hide');
-console.log(hiddenNav)
+
 
 
 
 const handleUser = (doc) => {
-    console.log(doc.data().role)
     if (doc.data().role == "admin"){
-        console.log("is admin")
         // unhides nav links, use for each for nodelist
         for (i = 0; i < hiddenNav.length; ++i){
             hiddenNav[i].style.visibility = "visible"
@@ -124,7 +122,6 @@ const populateDropdown = (data) => {
             // add object to list
             drivers.push(driver)
         })
-        // curiously drivers is sorted before calling it, but only if you call sort. if you dont it isn't...
         // sort this list by last name then first name
         drivers.sort((a, b) => a.lname.localeCompare(b.lname))
 
